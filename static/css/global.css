@@ -1,0 +1,30 @@
+/* Global Styles */
+body {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.page-header {
+	border-bottom: 0;
+	margin-top: 0;
+}
+
+/* Notification Styles */
+#flash-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 100;
+  margin: 0;
+}
+
+.alert-box-fixed {
+  margin: 0 15px 15px 0;
+}
+
+.button-form {
+	display: inline-block;
+}

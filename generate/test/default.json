@@ -1,0 +1,12 @@
+{
+	"info": {
+		"output": "model/{{.package}}/{{.package}}.go"
+	},
+	"package": "{{.table}}",
+	"arm": "{{.chair}}",
+	"chair": "{{.row}}",
+	"row": "{{.column}}",
+	"column": "{{.table}}",
+	"table": "",
+	"fish": ""
+}

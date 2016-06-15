@@ -1,0 +1,12 @@
+{{define "title"}}Blueprint{{end}}
+{{define "head"}}{{end}}
+{{define "content"}}
+<div class="container">
+	<div class="page-header">
+		<h1>{{template "title" .}}</h1>
+	</div>
+	<p>Click {{LINK "login" "here"}} to login.</p>
+	{{template "footer" .}}
+</div>
+{{end}}
+{{define "foot"}}{{end}}

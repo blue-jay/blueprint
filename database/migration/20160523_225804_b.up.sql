@@ -1,0 +1,1 @@
+ALTER TABLE brother ADD COLUMN age int;

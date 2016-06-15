@@ -1,0 +1,1 @@
+ALTER TABLE brother DROP COLUMN age;
