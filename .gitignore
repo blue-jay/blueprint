@@ -22,3 +22,9 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# OS Files
+.DS_Store
+
+# Blue Jay Files
+env.json
