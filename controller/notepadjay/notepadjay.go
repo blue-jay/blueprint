@@ -14,6 +14,7 @@ var (
 	uri = "/notepad"
 )
 
+// Load the routes
 func Load() {
 	c := router.Chain(acl.DisallowAnon)
 	router.Get(uri, Index, c...)

@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	// Table name
 	Table     = "migration"
 	extension = "sql"
 )
@@ -88,10 +89,11 @@ func (t *Entity) RecordDown(name string) error {
 
 	// If the record was removed successfully
 	if err == nil {
-		// Get the last migration record now
-		ID, err := statusID()
-
+		var ID uint32
 		var nextID uint32 = 1
+
+		// Get the last migration record now
+		ID, err = statusID()
 
 		// If there are no more migrations in the table
 		if err == model.ErrNoResult {

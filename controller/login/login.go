@@ -1,4 +1,4 @@
-package auth
+package login
 
 import (
 	"log"
@@ -15,28 +15,29 @@ import (
 	"github.com/blue-jay/blueprint/model/user"
 )
 
-func LoadLogin() {
-	router.Get("/login", LoginGET, acl.DisallowAuth)
-	router.Post("/login", LoginPOST, acl.DisallowAuth)
-	router.Get("/logout", LogoutGET)
+// Load the routes
+func Load() {
+	router.Get("/login", Index, acl.DisallowAuth)
+	router.Post("/login", Store, acl.DisallowAuth)
+	router.Get("/logout", Logout)
 }
 
-// LoginGET displays the login page
-func LoginGET(w http.ResponseWriter, r *http.Request) {
+// Index displays the login page
+func Index(w http.ResponseWriter, r *http.Request) {
 	v := view.New("auth/login")
 	form.Repopulate(r.Form, v.Vars, "email")
 	v.Render(w, r)
 }
 
-// LoginPOST handles the login form submission
-func LoginPOST(w http.ResponseWriter, r *http.Request) {
+// Store handles the login form submission
+func Store(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 
 	// Validate with required fields
 	if validate, missingField := form.Required(r, "email", "password"); !validate {
 		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Error})
 		sess.Save(r, w)
-		LoginGET(w, r)
+		Index(w, r)
 		return
 	}
 
@@ -78,11 +79,11 @@ func LoginPOST(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Show the login page again
-	LoginGET(w, r)
+	Index(w, r)
 }
 
-// LogoutGET clears the session and logs the user out
-func LogoutGET(w http.ResponseWriter, r *http.Request) {
+// Logout clears the session and logs the user out
+func Logout(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 
 	// If user is authenticated

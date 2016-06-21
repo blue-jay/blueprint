@@ -10,7 +10,7 @@ var (
 	ErrNoResult = errors.New("Result not found.")
 )
 
-// StrandardError returns a model defined error
+// StandardError returns a model defined error
 func StandardError(err error) error {
 	if err == sql.ErrNoRows {
 		return ErrNoResult

@@ -29,8 +29,8 @@ func Config() SMTPInfo {
 	return e
 }
 
-// SendEmail sends an email
-func SendEmail(to, subject, body string) error {
+// Send mails an email
+func Send(to, subject, body string) error {
 	auth := smtp.PlainAuth("", e.Username, e.Password, e.Hostname)
 
 	header := make(map[string]string)

@@ -7,7 +7,7 @@ import (
 	"github.com/blue-jay/blueprint/lib/view"
 )
 
-// Asset returns a template.FuncMap
+// Assets returns a template.FuncMap
 // * JS returns JavaScript tag with timestamp
 // * CSS returns stylesheet tag with timestamp
 func Assets(v view.View) template.FuncMap {

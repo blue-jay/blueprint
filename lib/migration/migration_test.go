@@ -78,8 +78,8 @@ func teardown() {
 		log.Fatal(err)
 	}
 
-	_, err = deleteTable("test_brother")
-	_, err = deleteTable("test_migration")
+	deleteTable("test_brother")
+	deleteTable("test_migration")
 
 }
 
@@ -153,7 +153,7 @@ func TestInsertRows(t *testing.T) {
 	}
 
 	// Test querying the data
-	result, err := byID("1")
+	result, _ := byID("1")
 	if result.Name != "Joey" {
 		t.Errorf("record retrieved is incorrect: '%v'", result.Name)
 	}
@@ -197,7 +197,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 
 	// Test querying the data
-	result, err = byID("1")
+	result, _ = byID("1")
 	if result.Name == "Joey" {
 		t.Errorf("record retrieved is incorrect: '%v'", result.Name)
 	}
@@ -315,7 +315,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Test querying the data
-	result, err = byID("1")
+	result, _ = byID("1")
 	if result.Age != 28 {
 		t.Errorf("record retrieved is incorrect: '%v'", result.Age)
 	}

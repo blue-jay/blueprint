@@ -7,20 +7,21 @@ import (
 	"runtime"
 
 	"github.com/blue-jay/blueprint/controller"
-	"github.com/blue-jay/blueprint/controller/core"
+	"github.com/blue-jay/blueprint/controller/static"
 	"github.com/blue-jay/blueprint/lib/database"
 	"github.com/blue-jay/blueprint/lib/email"
 	"github.com/blue-jay/blueprint/lib/flash"
 	"github.com/blue-jay/blueprint/lib/jsonconfig"
 	"github.com/blue-jay/blueprint/lib/middleware/logrequest"
 	"github.com/blue-jay/blueprint/lib/middleware/rest"
+	"github.com/blue-jay/blueprint/lib/router"
 	"github.com/blue-jay/blueprint/lib/server"
 	"github.com/blue-jay/blueprint/lib/session"
 	"github.com/blue-jay/blueprint/lib/view"
 	"github.com/blue-jay/blueprint/lib/view/extend"
 	"github.com/blue-jay/blueprint/lib/view/modify"
-
 	"github.com/gorilla/context"
+
 	"github.com/josephspurrier/csrfbanana"
 )
 
@@ -104,27 +105,23 @@ func RegisterServices(config *Info) {
 // Middleware
 // *****************************************************************************
 
-// Middlware contains the middleware that applies to every request
+// SetUpMiddleware contains the middleware that applies to every request
 func SetUpMiddleware(h http.Handler) http.Handler {
+	return router.ChainHandler( // Chain middleware, bottom runs first
+		context.ClearHandler, // Clear handler for Gorilla Context
+		rest.Handler,         // Support changing HTTP method sent via form input
+		logrequest.Handler,   // Log every request
+		setUpBanana)          // Prevent CSRF and double submits
+}
 
-	// Prevents CSRF and Double Submits
+// setUpBanana makes csrfbanana compatible with the http.Handler
+func setUpBanana(h http.Handler) http.Handler {
 	cs := csrfbanana.New(h, session.Store, session.Name)
-	cs.FailureHandler(http.HandlerFunc(core.InvalidToken))
+	cs.FailureHandler(http.HandlerFunc(static.InvalidToken))
 	cs.ClearAfterUsage(true)
 	cs.ExcludeRegexPaths([]string{"/static(.*)"})
 	csrfbanana.TokenLength = 32
 	csrfbanana.TokenName = "_token"
 	csrfbanana.SingleToken = true
-	h = cs
-
-	// Log every request
-	h = logrequest.Handler(h)
-
-	// Support changing HTTP method sent via form input
-	h = rest.Handler(h)
-
-	// Clear handler for Gorilla Context
-	h = context.ClearHandler(h)
-
-	return h
+	return cs
 }

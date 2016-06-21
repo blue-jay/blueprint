@@ -10,7 +10,7 @@ type Parser interface {
 	ParseJSON([]byte) error
 }
 
-// Load the JSON config file and exit if it can't be parsed
+// LoadOrFatal loads the JSON config file and exits if it can't be parsed
 func LoadOrFatal(configFile string, p Parser) {
 	// Read the config file
 	jsonBytes, err := ioutil.ReadFile(configFile)

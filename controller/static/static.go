@@ -1,15 +1,33 @@
-package core
+package static
 
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/blue-jay/blueprint/lib/router"
 )
 
-func LoadError() {
+// Load the routes
+func Load() {
+	// Required so the trailing slash is not redirected
+	router.Instance().RedirectTrailingSlash = false
+
+	// Serve static files, no directory browsing
+	router.Get("/static/*filepath", Index)
+
 	router.MethodNotAllowed(Error405)
 	router.NotFound(Error404)
+}
+
+// Index maps static files
+func Index(w http.ResponseWriter, r *http.Request) {
+	// Disable listing directories
+	if strings.HasSuffix(r.URL.Path, "/") {
+		Error404(w, r)
+		return
+	}
+	http.ServeFile(w, r, r.URL.Path[1:])
 }
 
 // Error404 - Page Not Found

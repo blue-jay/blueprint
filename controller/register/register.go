@@ -1,4 +1,4 @@
-package auth
+package register
 
 import (
 	"log"
@@ -15,27 +15,28 @@ import (
 	"github.com/blue-jay/blueprint/model/user"
 )
 
-func LoadRegister() {
-	router.Get("/register", RegisterGET, acl.DisallowAuth)
-	router.Post("/register", RegisterPOST, acl.DisallowAuth)
+// Load the routes
+func Load() {
+	router.Get("/register", Index, acl.DisallowAuth)
+	router.Post("/register", Store, acl.DisallowAuth)
 }
 
-// RegisterGET displays the register page
-func RegisterGET(w http.ResponseWriter, r *http.Request) {
+// Index displays the register page
+func Index(w http.ResponseWriter, r *http.Request) {
 	v := view.New("auth/register")
 	form.Repopulate(r.Form, v.Vars, "first_name", "last_name", "email")
 	v.Render(w, r)
 }
 
-// RegisterPOST handles the registration form submission
-func RegisterPOST(w http.ResponseWriter, r *http.Request) {
+// Store handles the registration form submission
+func Store(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 
 	// Validate with required fields
 	if validate, missingField := form.Required(r, "first_name", "last_name", "email", "password"); !validate {
 		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Error})
 		sess.Save(r, w)
-		RegisterGET(w, r)
+		Index(w, r)
 		return
 	}
 
@@ -80,5 +81,5 @@ func RegisterPOST(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Display the page
-	RegisterGET(w, r)
+	Index(w, r)
 }

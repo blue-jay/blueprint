@@ -51,7 +51,7 @@ func ByUserID(userID string) ([]Entity, error) {
 	return result, model.StandardError(err)
 }
 
-// Create creates an entity
+// Create adds an entity
 func Create(name string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		INSERT INTO %v

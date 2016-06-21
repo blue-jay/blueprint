@@ -19,7 +19,7 @@ var (
 	ErrCurrent = errors.New("Database current. No changes made.")
 	// ErrMissing is when the migration file cannot be found
 	ErrMissing = errors.New("Migration not found.")
-	// ErrTableNotCreate is when the migration cannot be created
+	// ErrTableNotCreated is when the migration cannot be created
 	ErrTableNotCreated = errors.New("Could not create the migration table.")
 )
 
@@ -244,7 +244,7 @@ func (info *Info) up() error {
 	}
 
 	// Update the position
-	info.Position += 1
+	info.Position++
 
 	// Record a successful result
 	err = info.Db.RecordUp(name)
@@ -318,7 +318,7 @@ func (info *Info) down() error {
 	}
 
 	// Update the position
-	info.Position -= 1
+	info.Position--
 
 	// Record a successful result
 	err = info.Db.RecordDown(name)

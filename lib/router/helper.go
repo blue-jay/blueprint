@@ -18,6 +18,11 @@ func Chain(c ...alice.Constructor) []alice.Constructor {
 	return c
 }
 
+// ChainHandler returns a handler of chained middleware
+func ChainHandler(c ...alice.Constructor) http.Handler {
+	return alice.New(c...).Then(nil)
+}
+
 // Params returns the URL parameters
 func Params(r *http.Request) httprouter.Params {
 	return context.Get(r, params).(httprouter.Params)

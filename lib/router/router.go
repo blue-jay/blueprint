@@ -39,7 +39,7 @@ func NotFound(fn http.HandlerFunc) {
 	r.Router.NotFound = fn
 }
 
-// MethodNoteAllowed sets the 405 handler
+// MethodNotAllowed sets the 405 handler
 func MethodNotAllowed(fn http.HandlerFunc) {
 	r.Router.HandleMethodNotAllowed = true
 	r.Router.MethodNotAllowed = fn

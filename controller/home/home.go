@@ -1,4 +1,4 @@
-package core
+package home
 
 import (
 	"net/http"
@@ -8,12 +8,13 @@ import (
 	"github.com/blue-jay/blueprint/lib/view"
 )
 
-func LoadIndex() {
-	router.Get("/", IndexGET)
+// Load the routes
+func Load() {
+	router.Get("/", Index)
 }
 
-// IndexGET displays the home page
-func IndexGET(w http.ResponseWriter, r *http.Request) {
+// Index displays the home page
+func Index(w http.ResponseWriter, r *http.Request) {
 	session := session.Instance(r)
 
 	if session.Values["id"] != nil {

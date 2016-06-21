@@ -51,7 +51,7 @@ func ByUserID(userID string) ([]Item, error) {
 	return result, model.StandardError(err)
 }
 
-// Create creates an item
+// Create adds an item
 func Create(content string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		INSERT INTO %v
@@ -77,7 +77,7 @@ func Update(content string, ID string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// Delete removes an item
+// DeleteHard removes an item
 func DeleteHard(ID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		DELETE FROM %v
