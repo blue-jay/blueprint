@@ -29,9 +29,9 @@ type Info struct {
 
 // SetConfig stores the config
 func SetConfig(i Info) {
-	//infoMutex.Lock()
+	infoMutex.Lock()
 	info = i
-	//infoMutex.Unlock()
+	infoMutex.Unlock()
 }
 
 // ResetConfig removes the config
