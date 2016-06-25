@@ -1,6 +1,7 @@
 package home
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/blue-jay/blueprint/lib/router"
@@ -15,6 +16,7 @@ func Load() {
 
 // Index displays the home page
 func Index(w http.ResponseWriter, r *http.Request) {
+	log.Println("here4")
 	session := session.Instance(r)
 
 	if session.Values["id"] != nil {

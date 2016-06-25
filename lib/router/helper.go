@@ -19,8 +19,8 @@ func Chain(c ...alice.Constructor) []alice.Constructor {
 }
 
 // ChainHandler returns a handler of chained middleware
-func ChainHandler(c ...alice.Constructor) http.Handler {
-	return alice.New(c...).Then(nil)
+func ChainHandler(h http.Handler, c ...alice.Constructor) http.Handler {
+	return alice.New(c...).Then(h)
 }
 
 // Params returns the URL parameters
