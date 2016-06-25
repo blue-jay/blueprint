@@ -108,7 +108,7 @@ func RegisterServices(config *Info) {
 // SetUpMiddleware contains the middleware that applies to every request
 func SetUpMiddleware(h http.Handler) http.Handler {
 	return router.ChainHandler( // Chain middleware, bottom runs first
-		h,
+		h,                    // Handler to wrap
 		context.ClearHandler, // Clear handler for Gorilla Context
 		rest.Handler,         // Support changing HTTP method sent via form input
 		logrequest.Handler,   // Log every request
