@@ -64,14 +64,9 @@ func Connect(d Info) error {
 
 	switch d.Type {
 	case TypeMySQL:
-		// Connect to MySQL
+		// Connect to MySQL and ping
 		if SQL, err = sqlx.Connect("mysql", dsn(d.MySQL)); err != nil {
 			log.Println("SQL Driver Error", err)
-		}
-
-		// Check if is alive
-		if err = SQL.Ping(); err != nil {
-			log.Println("Database Error", err)
 		}
 	default:
 		log.Println("No registered database in config")

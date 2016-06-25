@@ -28,3 +28,6 @@ _testmain.go
 
 # Blue Jay Files
 env.json
+
+# Vendor Folder
+/vendor/
