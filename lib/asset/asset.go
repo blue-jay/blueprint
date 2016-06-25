@@ -1,3 +1,5 @@
+// Package asset contains FuncMap for template packages to provide assets paths
+// with timestamps.
 package asset
 
 import (
@@ -19,27 +21,27 @@ var (
 	infoMutex sync.RWMutex
 )
 
-// Info holds the config
+// Info holds the config.
 type Info struct {
 	// Folder is the parent folder path for the asset folder
 	Folder string
 }
 
-// SetConfig stores the config
+// SetConfig stores the config.
 func SetConfig(i Info) {
 	infoMutex.Lock()
 	info = i
 	infoMutex.Unlock()
 }
 
-// ResetConfig removes the config
+// ResetConfig removes the config.
 func ResetConfig() {
 	infoMutex.Lock()
 	info = Info{}
 	infoMutex.Unlock()
 }
 
-// Config returns the config
+// Config returns the config.
 func Config() Info {
 	infoMutex.RLock()
 	i := info
@@ -48,12 +50,11 @@ func Config() Info {
 }
 
 // *****************************************************************************
-// View Extend
+// FuncMap for Template Packages
 // *****************************************************************************
 
-// Extend returns a template.FuncMap
-// JS returns JavaScript tag with timestamp
-// CSS returns stylesheet tag with timestamp
+// Extend returns a template.FuncMap. JS returns JavaScript tag with a
+// timestamp. CSS returns stylesheet tag with a timestamp.
 func Extend(baseURI string) template.FuncMap {
 	f := make(template.FuncMap)
 
@@ -82,9 +83,14 @@ func Extend(baseURI string) template.FuncMap {
 	return f
 }
 
-// assetTimePath returns a URL with the proper base uri and timestamp appended
-// Works for CSS and JS assets
-// Determines if local or on the web
+// *****************************************************************************
+// Helpers
+// *****************************************************************************
+
+// assetTimePath returns a URL with the proper base URI and timestamp appended.
+// Works for CSS and JS assets and determines if local or on the web by the
+// number of slashes at the beginning of the string. A prefix of // is web and
+// / is local.
 func assetTimePath(baseURI, resource string) (string, error) {
 	if strings.HasPrefix(resource, "//") {
 		return resource, nil
@@ -105,7 +111,7 @@ func assetTimePath(baseURI, resource string) (string, error) {
 	return baseURI + resource + "?" + time, nil
 }
 
-// fileTime returns the modification time of the file
+// fileTime returns the modification time of the file.
 func fileTime(name string) (string, error) {
 	fi, err := os.Stat(name)
 	if err != nil {
