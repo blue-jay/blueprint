@@ -35,7 +35,7 @@ func SetConfig(i Info) {
 }
 
 // ResetConfig removes the config
-func ResetConfig(i Info) {
+func ResetConfig() {
 	infoMutex.Lock()
 	info = Info{}
 	infoMutex.Unlock()
