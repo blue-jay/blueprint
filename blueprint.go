@@ -6,10 +6,7 @@ import (
 	"github.com/blue-jay/blueprint/lib/server"
 )
 
-// *****************************************************************************
-// Entry Point
-// *****************************************************************************
-
+// main is the entry point
 func main() {
 	// Load the configuration file
 	info := bootstrap.LoadConfig("env.json")
