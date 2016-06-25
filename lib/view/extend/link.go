@@ -12,7 +12,7 @@ func Link(v view.View) template.FuncMap {
 	f := make(template.FuncMap)
 
 	f["LINK"] = func(path, name string) template.HTML {
-		return template.HTML(`<a href="` + v.PrependBaseURI(path) + `">` + name + `</a>`)
+		return template.HTML(`<a href="` + v.BaseURI + path + `">` + name + `</a>`)
 	}
 
 	return f

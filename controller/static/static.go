@@ -3,8 +3,10 @@ package static
 import (
 	"fmt"
 	"net/http"
+	"path"
 	"strings"
 
+	"github.com/blue-jay/blueprint/lib/asset"
 	"github.com/blue-jay/blueprint/lib/router"
 )
 
@@ -27,7 +29,8 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		Error404(w, r)
 		return
 	}
-	http.ServeFile(w, r, r.URL.Path[1:])
+
+	http.ServeFile(w, r, path.Join(asset.Config().Folder, r.URL.Path[1:]))
 }
 
 // Error404 - Page Not Found

@@ -8,6 +8,7 @@ import (
 
 	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/controller/static"
+	"github.com/blue-jay/blueprint/lib/asset"
 	"github.com/blue-jay/blueprint/lib/database"
 	"github.com/blue-jay/blueprint/lib/email"
 	"github.com/blue-jay/blueprint/lib/flash"
@@ -31,6 +32,7 @@ import (
 
 // Info contains the application settings
 type Info struct {
+	Asset    asset.Info      `json:"Asset"`
 	Database database.Info   `json:"Database"`
 	Email    email.SMTPInfo  `json:"Email"`
 	Server   server.Server   `json:"Server"`
@@ -80,13 +82,16 @@ func RegisterServices(config *Info) {
 	// Load the controller routes
 	controller.LoadRoutes()
 
+	// Set up the assets
+	asset.SetConfig(config.Asset)
+
 	// Set up the views
 	view.SetConfig(config.View)
 	view.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Set up the functions for the views
 	view.SetFunctions(
-		extend.Assets(config.View),
+		asset.Extend(config.View, config.Asset.Folder),
 		extend.Link(config.View),
 		extend.NoEscape(),
 		extend.PrettyTime(),
