@@ -91,7 +91,7 @@ func RegisterServices(config *Info) {
 
 	// Set up the functions for the views
 	view.SetFunctions(
-		asset.Extend(config.View, config.Asset.Folder),
+		asset.Extend(config.View.BaseURI),
 		extend.Link(config.View),
 		extend.NoEscape(),
 		extend.PrettyTime(),

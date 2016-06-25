@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-
-	"github.com/blue-jay/blueprint/lib/view"
 )
 
 // *****************************************************************************
@@ -56,11 +54,11 @@ func Config() Info {
 // Extend returns a template.FuncMap
 // JS returns JavaScript tag with timestamp
 // CSS returns stylesheet tag with timestamp
-func Extend(v view.View, assetFolder string) template.FuncMap {
+func Extend(baseURI string) template.FuncMap {
 	f := make(template.FuncMap)
 
 	f["JS"] = func(s string) template.HTML {
-		path, err := assetTimePath(v.BaseURI, s, assetFolder)
+		path, err := assetTimePath(baseURI, s)
 
 		if err != nil {
 			log.Println("JS Error:", err)
@@ -71,7 +69,7 @@ func Extend(v view.View, assetFolder string) template.FuncMap {
 	}
 
 	f["CSS"] = func(s string) template.HTML {
-		path, err := assetTimePath(v.BaseURI, s, assetFolder)
+		path, err := assetTimePath(baseURI, s)
 
 		if err != nil {
 			log.Println("CSS Error:", err)
@@ -87,14 +85,14 @@ func Extend(v view.View, assetFolder string) template.FuncMap {
 // assetTimePath returns a URL with the proper base uri and timestamp appended
 // Works for CSS and JS assets
 // Determines if local or on the web
-func assetTimePath(baseURI, s string, assetFolder string) (string, error) {
-	if strings.HasPrefix(s, "//") {
-		return s, nil
+func assetTimePath(baseURI, resource string) (string, error) {
+	if strings.HasPrefix(resource, "//") {
+		return resource, nil
 	}
 
-	s = strings.TrimLeft(s, "/")
+	resource = strings.TrimLeft(resource, "/")
 
-	abs, err := filepath.Abs(filepath.Join(assetFolder, s))
+	abs, err := filepath.Abs(filepath.Join(Config().Folder, resource))
 	if err != nil {
 		return "", err
 	}
@@ -104,7 +102,7 @@ func assetTimePath(baseURI, s string, assetFolder string) (string, error) {
 		return "", err
 	}
 
-	return baseURI + s + "?" + time, nil
+	return baseURI + resource + "?" + time, nil
 }
 
 // fileTime returns the modification time of the file
