@@ -1,4 +1,4 @@
-// Package asset contains FuncMap for template packages to provide assets paths
+// Package asset contains FuncMap for template packages to provide asset paths
 // with timestamps.
 package asset
 
