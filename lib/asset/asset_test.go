@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// BenchmarkRace detects race conditions
+// BenchmarkRace detects race conditions.
 func BenchmarkRace(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		go func() {
