@@ -21,8 +21,8 @@ import (
 	"github.com/blue-jay/blueprint/lib/view"
 	"github.com/blue-jay/blueprint/lib/view/extend"
 	"github.com/blue-jay/blueprint/lib/view/modify"
-	"github.com/gorilla/context"
 
+	"github.com/gorilla/context"
 	"github.com/josephspurrier/csrfbanana"
 )
 

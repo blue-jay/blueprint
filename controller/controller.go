@@ -20,7 +20,6 @@ func LoadRoutes() {
 	home.Load()
 	static.Load()
 	notepadjay.Load()
-	//monkey.Load()
 
 	if false {
 		notepad.Load()
