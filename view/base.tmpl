@@ -65,15 +65,15 @@
 	<div id="flash-container">
 	{{range $fm := .flashes}}
 		<div id="flash-message" class="alert alert-box-fixed0 alert-box-fixed alert-dismissible {{.Class}}" role="alert">
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		{{.Message}}</div>
-		<!-- <div data-alert id="flash-message" class="alert-box-fixed0 alert-box-fixed {{.Class}}">{{.Message}}<a href="#" class="close">&times;</a></div> -->
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{.Message}}
+		</div>
 	{{end}}
 	</div>
 
 	{{template "content" .}}
 	
-	{{JS "static/js/jquery1.11.0.min.js"}}
+	{{JS "static/js/jquery.min.js"}}
 	{{JS "static/js/underscore-min.js"}}
 	{{JS "static/js/bootstrap.min.js"}}
 	{{JS "static/js/global.js"}}
