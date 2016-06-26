@@ -1,4 +1,8 @@
 var gulp = require('gulp');
+var favicon = require ('gulp-real-favicon');
+var fs = require('fs');
+
+var faviconData = 'asset/dynamic/favicon/data.json';
 
 // SASS Task
 gulp.task('sass', function() {
@@ -41,10 +45,87 @@ gulp.task('underscore', function() {
 		.pipe(gulp.dest('asset/static/js/'));
 });
 
+// Generate the icons. This task takes a few seconds to complete.
+// You should run it at least once to create the icons. Then,
+// you should run it whenever RealFaviconGenerator updates its
+// package (see the check-for-favicon-update task below).
+gulp.task('favicon-generate', function(done) {
+	var favColor = '#525252';
+	return favicon.generateFavicon({
+		masterPicture: 'asset/dynamic/favicon/logo.png',
+		dest: 'asset/static/favicon/',
+		iconsPath: 'asset/dynamic/favicon/logo.png',
+		design: {
+			ios: {
+				pictureAspect: 'backgroundAndMargin',
+				backgroundColor: favColor,
+				margin: '14%'
+			},
+			desktopBrowser: {},
+			windows: {
+				pictureAspect: 'noChange',
+				backgroundColor: favColor,
+				onConflict: 'override'
+			},
+			androidChrome: {
+				pictureAspect: 'noChange',
+				themeColor: favColor,
+				manifest: {
+					name: 'Blueprint',
+					display: 'browser',
+					orientation: 'notSet',
+					onConflict: 'override',
+					declared: true
+				}
+			},
+			safariPinnedTab: {
+				pictureAspect: 'silhouette',
+				themeColor: favColor
+			}
+		},
+		settings: {
+			scalingAlgorithm: 'Mitchell',
+			errorOnImageTooSmall: false
+		},
+		versioning: {
+			paramName: 'v1.0',
+			paramValue: '3eepn6WlLO'
+		},
+		markupFile: faviconData
+	}, function() {
+		done();
+	});
+});
+
+// Inject the favicon markups in your HTML pages. You should run
+// this task whenever you modify a page. You can keep this task
+// as is or refactor your existing HTML pipeline.
+gulp.task('favicon-inject', function() {
+	return gulp.src(['view/partial/favicon.tmpl'])
+		.pipe(favicon.injectFaviconMarkups(JSON.parse(fs.readFileSync(faviconData)).favicon.html_code))
+		.pipe(gulp.dest('view/partial/'));
+});
+
+// Check for updates on RealFaviconGenerator (think: Apple has just
+// released a new Touch icon along with the latest version of iOS).
+// Run this task from time to time. Ideally, make it part of your
+// continuous integration system.
+gulp.task('favicon-update', function(done) {
+	var currentVersion = JSON.parse(fs.readFileSync(faviconData)).version;
+	return favicon.checkForUpdates(currentVersion, function(err) {
+		if (err) {
+			throw err;
+		}
+	});
+});
+
 // Watch
 gulp.task('watch', function() {
     gulp.watch('asset/dynamic/sass/**/*.scss', ['sass']);
 });
 
-// Default
-gulp.task('default', ['sass', 'javascript', 'jquery', 'bootstrap', 'underscore']);
+// Init - every task
+gulp.task('default', ['sass', 'javascript', 'jquery', 'bootstrap', 'underscore', 'favicon-generate', 'favicon-inject']);
+
+// Default - only run the tasks that change often
+gulp.task('default', ['sass', 'javascript']);
