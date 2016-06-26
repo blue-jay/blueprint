@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var favicon = require ('gulp-real-favicon');
 var fs = require('fs');
+// Using until gulp v4 is released
+var runSequence = require('run-sequence');
 
 var faviconData = 'asset/dynamic/favicon/data.json';
 
@@ -45,16 +47,21 @@ gulp.task('underscore', function() {
 		.pipe(gulp.dest('asset/static/js/'));
 });
 
+// Favicon Generation and Injection Task
+gulp.task('favicon', function() {
+	runSequence('favicon-generate', 'favicon-inject');
+});
+
 // Generate the icons. This task takes a few seconds to complete.
 // You should run it at least once to create the icons. Then,
 // you should run it whenever RealFaviconGenerator updates its
 // package (see the favicon-update task below).
 gulp.task('favicon-generate', function(done) {
 	var favColor = '#525252';
-	return favicon.generateFavicon({
+	favicon.generateFavicon({
 		masterPicture: 'asset/dynamic/favicon/logo.png',
 		dest: 'asset/static/favicon/',
-		iconsPath: 'asset/dynamic/favicon/logo.png',
+		iconsPath: '/static/favicon/',
 		design: {
 			ios: {
 				pictureAspect: 'backgroundAndMargin',
@@ -126,7 +133,7 @@ gulp.task('watch', function() {
 });
 
 // Init - every task
-gulp.task('default', ['sass', 'javascript', 'jquery', 'bootstrap', 'underscore', 'favicon-generate', 'favicon-inject']);
+gulp.task('init', ['sass', 'javascript', 'jquery', 'bootstrap', 'underscore', 'favicon']);
 
 // Default - only run the tasks that change often
 gulp.task('default', ['sass', 'javascript']);
