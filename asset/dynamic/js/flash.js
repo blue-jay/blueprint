@@ -1,8 +1,3 @@
-$(function() {		
-	// Hide any messages after a four seconds
-    hideFlash();
-});
-
 function hideFlash(rnum)
 {    
     if (!rnum) rnum = '0';
