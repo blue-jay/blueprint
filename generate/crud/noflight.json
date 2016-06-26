@@ -1,0 +1,22 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"model/default": {
+				"package": "{{.controller}}",
+				"table": "{{.model}}"
+			}
+		},
+		{
+			"controller/noflight": {
+				"package": "{{.controller}}",
+				"url": "{{.controller}}",
+				"model": "{{.model}}",
+				"view": "{{.view}}"
+			}
+		}
+	],
+	"model": "",
+	"controller": "",
+	"view": ""
+}

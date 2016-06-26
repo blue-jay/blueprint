@@ -6,7 +6,6 @@ import (
 	"github.com/blue-jay/blueprint/controller/home"
 	"github.com/blue-jay/blueprint/controller/login"
 	"github.com/blue-jay/blueprint/controller/notepad"
-	"github.com/blue-jay/blueprint/controller/notepadjay"
 	"github.com/blue-jay/blueprint/controller/register"
 	"github.com/blue-jay/blueprint/controller/static"
 )
@@ -19,9 +18,5 @@ func LoadRoutes() {
 	login.Load()
 	home.Load()
 	static.Load()
-	notepadjay.Load()
-
-	if false {
-		notepad.Load()
-	}
+	notepad.Load()
 }
