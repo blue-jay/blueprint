@@ -58,26 +58,26 @@ func Config() Info {
 func Extend(baseURI string) template.FuncMap {
 	f := make(template.FuncMap)
 
-	f["JS"] = func(s string) template.HTML {
-		path, err := assetTimePath(baseURI, s)
+	f["JS"] = func(fpath string) template.HTML {
+		path, err := assetTimePath(baseURI, fpath)
 
 		if err != nil {
 			log.Println("JS Error:", err)
-			return template.HTML("<!-- JS Error: " + s + " -->")
+			return template.HTML("<!-- JS Error: " + fpath + " -->")
 		}
 
 		return template.HTML(`<script type="text/javascript" src="` + path + `"></script>`)
 	}
 
-	f["CSS"] = func(s string) template.HTML {
-		path, err := assetTimePath(baseURI, s)
+	f["CSS"] = func(fpath, media string) template.HTML {
+		path, err := assetTimePath(baseURI, fpath)
 
 		if err != nil {
 			log.Println("CSS Error:", err)
-			return template.HTML("<!-- CSS Error: " + s + " -->")
+			return template.HTML("<!-- CSS Error: " + fpath + " -->")
 		}
 
-		return template.HTML(`<link rel="stylesheet" type="text/css" href="` + path + `" />`)
+		return template.HTML(fmt.Sprintf(`<link media="%v" rel="stylesheet" type="text/css" href="%v" />`, media, path))
 	}
 
 	return f

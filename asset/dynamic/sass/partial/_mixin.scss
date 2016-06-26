@@ -1,0 +1,25 @@
+// *****************************************************************************
+// Mixins
+// *****************************************************************************
+
+// Media queries for use with mobile first
+// Usage: @include media(sm) { text-align: left; }
+@mixin media($size) {
+    // Landscape Mobile Phones: xs - applies to min and higher
+    // Anything without media queries is for the small screen
+    @if $size == sm {
+        // Portrait Mobile Phone to Landscape Tablet: sm - applies to min and higher
+        @media (min-width: 768px) { @content; }
+    }
+    @else if $size == md {
+        // Landscape Tablet to Desktop: md - applies to min and higher
+        @media (min-width: 992px) { @content; }
+    }
+    @else if $size == lg{
+        // Large Desktop: lg - applies to min and higher
+        @media (min-width: 1200px)  { @content; }
+    }
+    @else {
+        @error "Fix: @import media(#{$size})"
+    }
+}
