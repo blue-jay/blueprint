@@ -48,7 +48,7 @@ gulp.task('underscore', function() {
 // Generate the icons. This task takes a few seconds to complete.
 // You should run it at least once to create the icons. Then,
 // you should run it whenever RealFaviconGenerator updates its
-// package (see the check-for-favicon-update task below).
+// package (see the favicon-update task below).
 gulp.task('favicon-generate', function(done) {
 	var favColor = '#525252';
 	return favicon.generateFavicon({
@@ -122,6 +122,7 @@ gulp.task('favicon-update', function(done) {
 // Watch
 gulp.task('watch', function() {
     gulp.watch('asset/dynamic/sass/**/*.scss', ['sass']);
+	gulp.watch('asset/dynamic/js/*.js', ['javascript']);
 });
 
 // Init - every task
