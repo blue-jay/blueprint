@@ -100,7 +100,7 @@ func RegisterServices(config *Info) {
 	// Set up the variables for the views
 	view.SetVariables(
 		modify.AuthLevel,
-		modify.BaseURI,
+		modify.URI,
 		modify.Token,
 		flash.Modify,
 	)

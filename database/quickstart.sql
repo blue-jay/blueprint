@@ -60,7 +60,7 @@ INSERT INTO `user_status` (`id`, `status`, `created_at`, `updated_at`, `deleted_
 CREATE TABLE note (
     id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     
-    content TEXT NOT NULL,
+    name TEXT NOT NULL,
     
     user_id INT(10) UNSIGNED NOT NULL,
     

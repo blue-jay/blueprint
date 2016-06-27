@@ -1,15 +1,11 @@
 package notepad
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/flash"
-	"github.com/blue-jay/blueprint/lib/form"
+	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/lib/middleware/acl"
 	"github.com/blue-jay/blueprint/lib/router"
-	"github.com/blue-jay/blueprint/lib/session"
 	"github.com/blue-jay/blueprint/lib/view"
 	"github.com/blue-jay/blueprint/model/note"
 )
@@ -30,71 +26,58 @@ func Load() {
 	router.Delete(uri+"/:id", Destroy, c...)
 }
 
-// Index displays the notes
+// Index displays the items
 func Index(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
-	userID := fmt.Sprintf("%v", sess.Values["id"])
+	c := flight.Context(w, r)
 
-	items, err := note.ByUserID(userID)
+	items, err := note.ByUserID(c.UserID)
 	if err != nil {
-		log.Println(err)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(err)
 		items = []note.Item{}
 	}
 
 	v := view.New("note/index")
-	v.Vars["first_name"] = sess.Values["first_name"]
 	v.Vars["items"] = items
 	v.Render(w, r)
 }
 
 // Create displays the create form
 func Create(w http.ResponseWriter, r *http.Request) {
+	c := flight.Context(w, r)
+
 	v := view.New("note/create")
-	v.Vars["method"] = "POST"
-	form.Repopulate(r.Form, v.Vars, "note")
+	c.Repopulate(v.Vars, "name")
 	v.Render(w, r)
 }
 
 // Store handles the create form submission
 func Store(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
-	userID := fmt.Sprintf("%v", sess.Values["id"])
+	c := flight.Context(w, r)
 
-	if validate, missingField := form.Required(r, "note"); !validate {
-		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Warning})
-		sess.Save(r, w)
+	if !c.FormValid("name") {
 		Create(w, r)
 		return
 	}
 
-	_, err := note.Create(r.FormValue("note"), userID)
+	_, err := note.Create(r.FormValue("name"), c.UserID)
 	if err != nil {
-		log.Println(err)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(err)
 		Create(w, r)
 		return
 	}
 
-	sess.AddFlash(flash.Info{"Item added.", flash.Success})
-	sess.Save(r, w)
-	http.Redirect(w, r, uri, http.StatusFound)
+	c.FlashSuccess("Item added.")
+	c.Redirect(uri)
 }
 
-// Show displays a single note
+// Show displays a single item
 func Show(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
-	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
+	c := flight.Context(w, r)
 
-	item, err := note.ByID(params.ByName("id"), userID)
-	if err != nil { // If the note doesn't exist
-		log.Println(err)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
-		http.Redirect(w, r, uri, http.StatusFound)
+	item, err := note.ByID(c.Param("id"), c.UserID)
+	if err != nil {
+		c.FlashError(err)
+		c.Redirect(uri)
 		return
 	}
 
@@ -105,67 +88,50 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 // Edit displays the edit form
 func Edit(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
-	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
+	c := flight.Context(w, r)
 
-	item, err := note.ByID(params.ByName("id"), userID)
-	if err != nil { // If the note doesn't exist
-		log.Println(err)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
-		http.Redirect(w, r, uri, http.StatusFound)
+	item, err := note.ByID(c.Param("id"), c.UserID)
+	if err != nil {
+		c.FlashError(err)
+		c.Redirect(uri)
 		return
 	}
 
 	v := view.New("note/edit")
-	v.Vars["method"] = "PATCH"
 	v.Vars["item"] = item
 	v.Render(w, r)
 }
 
 // Update handles the edit form submission
 func Update(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
-	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
+	c := flight.Context(w, r)
 
-	if validate, missingField := form.Required(r, "note"); !validate {
-		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Warning})
-		sess.Save(r, w)
+	if !c.FormValid("name") {
 		Edit(w, r)
 		return
 	}
 
-	_, err := note.Update(r.FormValue("note"), params.ByName("id"), userID)
+	_, err := note.Update(r.FormValue("name"), c.Param("id"), c.UserID)
 	if err != nil {
-		log.Println(err)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(err)
 		Edit(w, r)
 		return
 	}
 
-	sess.AddFlash(flash.Info{"Item updated.", flash.Success})
-	sess.Save(r, w)
-	http.Redirect(w, r, uri, http.StatusFound)
+	c.FlashSuccess("Item updated.")
+	c.Redirect(uri)
 }
 
 // Destroy handles the delete form submission
 func Destroy(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
-	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
+	c := flight.Context(w, r)
 
-	_, err := note.Delete(params.ByName("id"), userID)
+	_, err := note.Delete(c.Param("id"), c.UserID)
 	if err != nil {
-		log.Println(err)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(err)
 	} else {
-		sess.AddFlash(flash.Info{"Item deleted.", flash.Notice})
-		sess.Save(r, w)
+		c.FlashNotice("Item deleted.")
 	}
 
-	http.Redirect(w, r, uri, http.StatusFound)
+	c.Redirect(uri)
 }

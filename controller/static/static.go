@@ -3,8 +3,8 @@ package static
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"path"
-	"strings"
 
 	"github.com/blue-jay/blueprint/lib/asset"
 	"github.com/blue-jay/blueprint/lib/router"
@@ -12,10 +12,7 @@ import (
 
 // Load the routes
 func Load() {
-	// Required so the trailing slash is not redirected
-	router.Instance().RedirectTrailingSlash = false
-
-	// Serve static files, no directory browsing
+	// Serve static files
 	router.Get("/static/*filepath", Index)
 
 	router.MethodNotAllowed(Error405)
@@ -24,13 +21,16 @@ func Load() {
 
 // Index maps static files
 func Index(w http.ResponseWriter, r *http.Request) {
-	// Disable listing directories
-	if strings.HasSuffix(r.URL.Path, "/") {
-		Error404(w, r)
+	// File path
+	path := path.Join(asset.Config().Folder, r.URL.Path[1:])
+
+	// Only serve files
+	if fi, err := os.Stat(path); err == nil && !fi.IsDir() {
+		http.ServeFile(w, r, path)
 		return
 	}
 
-	http.ServeFile(w, r, path.Join(asset.Config().Folder, r.URL.Path[1:]))
+	Error404(w, r)
 }
 
 // Error404 - Page Not Found

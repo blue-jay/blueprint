@@ -35,16 +35,15 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	items, err := {{.model}}ByUserID(userID)
+	items, err := {{.model}}.ByUserID(userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
 		sess.Save(r, w)
-		items = []{{.model}}Item{}
+		items = []{{.model}}.Item{}
 	}
 
 	v := view.New("{{.view}}/index")
-	v.Vars["first_name"] = sess.Values["first_name"]
 	v.Vars["items"] = items
 	v.Render(w, r)
 }
@@ -52,8 +51,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 // Create displays the create form
 func Create(w http.ResponseWriter, r *http.Request) {
 	v := view.New("{{.view}}/create")
-	v.Vars["method"] = "POST"
-	form.Repopulate(r.Form, v.Vars, "name"")
+	form.Repopulate(r.Form, v.Vars, "name")
 	v.Render(w, r)
 }
 
@@ -119,7 +117,6 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := view.New("{{.view}}/edit")
-	v.Vars["method"] = "PATCH"
 	v.Vars["item"] = item
 	v.Render(w, r)
 }

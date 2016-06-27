@@ -3,7 +3,7 @@
 	"config.collection": [
 		{
 			"model/default": {
-				"package": "{{.controller}}",
+				"package": "{{.model}}",
 				"table": "{{.model}}"
 			}
 		},
@@ -13,6 +13,26 @@
 				"url": "{{.controller}}",
 				"model": "{{.model}}",
 				"view": "{{.view}}"
+			}
+		},
+		{
+			"view/create": {
+				"model": "{{.view}}"
+			}
+		},
+		{
+			"view/edit": {
+				"model": "{{.view}}"
+			}
+		},
+		{
+			"view/index": {
+				"model": "{{.view}}"
+			}
+		},
+		{
+			"view/show": {
+				"model": "{{.view}}"
 			}
 		}
 	],

@@ -37,7 +37,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := view.New("{{.view}}/index")
-	v.Vars["first_name"] = c.Sess.Values["first_name"]
 	v.Vars["items"] = items
 	v.Render(w, r)
 }
@@ -47,7 +46,6 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	v := view.New("{{.view}}/create")
-	v.Vars["method"] = "POST"
 	c.Repopulate(v.Vars, "name")
 	v.Render(w, r)
 }
@@ -100,7 +98,6 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := view.New("{{.view}}/edit")
-	v.Vars["method"] = "PATCH"
 	v.Vars["item"] = item
 	v.Render(w, r)
 }

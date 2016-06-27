@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/blue-jay/blueprint/config"
+	"github.com/blue-jay/blueprint/bootstrap"
 	"github.com/blue-jay/blueprint/lib/database"
 	"github.com/blue-jay/blueprint/lib/migration"
 	"github.com/blue-jay/blueprint/lib/migration/mysql"
@@ -33,7 +33,7 @@ func globalSetup() {
 	os.Chdir("../../")
 
 	// Load the configuration
-	info := config.Load()
+	info := bootstrap.LoadConfig("env.json")
 
 	// Set the table name
 	mysql.Table = "test_migration"
@@ -80,7 +80,6 @@ func teardown() {
 
 	deleteTable("test_brother")
 	deleteTable("test_migration")
-
 }
 
 // TestCreateTable

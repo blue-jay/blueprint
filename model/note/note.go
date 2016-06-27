@@ -16,7 +16,7 @@ var (
 // Item defines the model
 type Item struct {
 	ID        uint32         `db:"id"`
-	Content   string         `db:"content"`
+	Name      string         `db:"name"`
 	UserID    uint32         `db:"user_id"`
 	CreatedAt mysql.NullTime `db:"created_at"`
 	UpdatedAt mysql.NullTime `db:"updated_at"`
@@ -27,7 +27,7 @@ type Item struct {
 func ByID(ID string, userID string) (Item, error) {
 	result := Item{}
 	err := database.SQL.Get(&result, fmt.Sprintf(`
-		SELECT id, content, user_id, created_at, updated_at, deleted_at
+		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE id = ?
 			AND user_id = ?
@@ -38,11 +38,11 @@ func ByID(ID string, userID string) (Item, error) {
 	return result, model.StandardError(err)
 }
 
-// ByUserID gets all items for a user
+// ByUserID gets all entities for a user
 func ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	err := database.SQL.Select(&result, fmt.Sprintf(`
-		SELECT id, content, user_id, created_at, updated_at, deleted_at
+		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE user_id = ?
 			AND deleted_at IS NULL
@@ -52,32 +52,32 @@ func ByUserID(userID string) ([]Item, error) {
 }
 
 // Create adds an item
-func Create(content string, userID string) (sql.Result, error) {
+func Create(name string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		INSERT INTO %v
-		(content, user_id)
+		(name, user_id)
 		VALUES
 		(?,?)
 		`, table),
-		content, userID)
+		name, userID)
 	return result, model.StandardError(err)
 }
 
 // Update makes changes to an existing item
-func Update(content string, ID string, userID string) (sql.Result, error) {
+func Update(name string, ID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		UPDATE %v
-		SET content = ?
+		SET name = ?
 		WHERE id = ?
 			AND user_id = ?
 			AND deleted_at IS NULL
 		LIMIT 1
 		`, table),
-		content, ID, userID)
+		name, ID, userID)
 	return result, model.StandardError(err)
 }
 
-// DeleteHard removes an item
+// Delete removes an item
 func DeleteHard(ID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		DELETE FROM %v
