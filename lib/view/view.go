@@ -71,7 +71,6 @@ func (v *Info) Base(base string) *Info {
 // Render parses one or more templates and outputs to the screen.
 // Also returns an error if anything is wrong.
 func (v *Info) Render(w http.ResponseWriter, r *http.Request) error {
-
 	// Add the base template
 	v.templates = append([]string{v.base}, v.templates...)
 

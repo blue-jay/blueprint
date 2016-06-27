@@ -72,7 +72,6 @@ func LoadConfig(configFile string) *Info {
 
 // RegisterServices sets up all the components
 func RegisterServices(config *Info) {
-
 	// Set up the session cookie store
 	session.SetConfig(config.Session)
 
