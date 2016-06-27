@@ -1,0 +1,71 @@
+package {{.package}}
+
+import (
+	"database/sql"
+	"log"
+
+	"github.com/blue-jay/blueprint/model"
+	"github.com/go-sql-driver/mysql"
+)
+
+var (
+	table = "{{.table}}"
+)
+
+// Item defines the model
+type Item struct {
+	ID        uint32         `db:"id"`
+	Name      string         `db:"name"`
+	UserID    uint32         `db:"user_id"`
+	CreatedAt mysql.NullTime `db:"created_at"`
+	UpdatedAt mysql.NullTime `db:"updated_at"`
+	DeletedAt mysql.NullTime `db:"deleted_at"`
+}
+
+// ByID gets item by ID
+func ByID(ID string, userID string) (Item, error) {
+	var result Item
+	var err error
+	log.Println("Not Implemented")
+	return result, model.StandardError(err)
+}
+
+// ByUserID gets all entities for a user
+func ByUserID(userID string) ([]Item, error) {
+	var result []Item
+	var err error
+	log.Println("Not Implemented")
+	return result, model.StandardError(err)
+}
+
+// Create adds an item
+func Create(name string, userID string) (sql.Result, error) {
+	var result sql.Result
+	var err error
+	log.Println("Not Implemented")
+	return result, model.StandardError(err)
+}
+
+// Update makes changes to an existing item
+func Update(name string, ID string, userID string) (sql.Result, error) {
+	var result sql.Result
+	var err error
+	log.Println("Not Implemented")
+	return result, model.StandardError(err)
+}
+
+// DeleteHard removes an item
+func DeleteHard(ID string, userID string) (sql.Result, error) {
+	var result sql.Result
+	var err error
+	log.Println("Not Implemented")
+	return result, model.StandardError(err)
+}
+
+// Delete marks an item as removed
+func Delete(ID string, userID string) (sql.Result, error) {
+	var result sql.Result
+	var err error
+	log.Println("Not Implemented")
+	return result, model.StandardError(err)
+}
