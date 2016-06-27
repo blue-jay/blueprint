@@ -16,22 +16,7 @@
 			}
 		},
 		{
-			"view/create": {
-				"model": "{{.view}}"
-			}
-		},
-		{
-			"view/edit": {
-				"model": "{{.view}}"
-			}
-		},
-		{
-			"view/index": {
-				"model": "{{.view}}"
-			}
-		},
-		{
-			"view/show": {
+			"view/default": {
 				"model": "{{.view}}"
 			}
 		}

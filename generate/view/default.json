@@ -1,0 +1,26 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"view/create": {
+				"model": "{{.model}}"
+			}
+		},
+		{
+			"view/edit": {
+				"model": "{{.model}}"
+			}
+		},
+		{
+			"view/index": {
+				"model": "{{.model}}"
+			}
+		},
+		{
+			"view/show": {
+				"model": "{{.model}}"
+			}
+		}
+	],
+	"model": ""
+}
