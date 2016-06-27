@@ -51,6 +51,12 @@ func Error500(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Internal Server Error 500")
 }
 
+// Error501 - Not Implemented
+func Error501(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusInternalServerError)
+	fmt.Fprint(w, "Not Implemented 501")
+}
+
 // InvalidToken handles CSRF attacks
 func InvalidToken(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")

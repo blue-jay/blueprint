@@ -1,0 +1,59 @@
+package {{.package}}
+
+import (
+	"net/http"
+
+	"github.com/blue-jay/blueprint/controller/static"
+	"github.com/blue-jay/blueprint/lib/router"
+)
+
+var (
+	uri = "/{{.uri}}"
+)
+
+// Load the routes
+func Load() {
+	c := router.Chain()
+	router.Get(uri, Index, c...)
+	router.Get(uri+"/create", Create, c...)
+	router.Post(uri, Store, c...)
+	router.Get(uri+"/view/:id", Show, c...)
+	router.Get(uri+"/edit/:id", Edit, c...)
+	router.Patch(uri+"/edit/:id", Update, c...)
+	router.Delete(uri+"/:id", Destroy, c...)
+}
+
+// Index displays the items
+func Index(w http.ResponseWriter, r *http.Request) {
+	static.Error501(w, r)
+}
+
+// Create displays the create form
+func Create(w http.ResponseWriter, r *http.Request) {
+	static.Error501(w, r)
+}
+
+// Store handles the create form submission
+func Store(w http.ResponseWriter, r *http.Request) {
+	static.Error501(w, r)
+}
+
+// Show displays a single item
+func Show(w http.ResponseWriter, r *http.Request) {
+	static.Error501(w, r)
+}
+
+// Edit displays the edit form
+func Edit(w http.ResponseWriter, r *http.Request) {
+	static.Error501(w, r)
+}
+
+// Update handles the edit form submission
+func Update(w http.ResponseWriter, r *http.Request) {
+	static.Error501(w, r)
+}
+
+// Destroy handles the delete form submission
+func Destroy(w http.ResponseWriter, r *http.Request) {
+	static.Error501(w, r)
+}
