@@ -1,0 +1,6 @@
+{
+	"config.type": "single",
+	"config.output": "view/{{.model}}/create.tmpl",
+	"config.parse": false,
+	"model": ""
+}

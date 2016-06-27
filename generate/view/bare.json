@@ -1,0 +1,26 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"view/create_bare": {
+				"model": "{{.model}}"
+			}
+		},
+		{
+			"view/edit_bare": {
+				"model": "{{.model}}"
+			}
+		},
+		{
+			"view/index_bare": {
+				"model": "{{.model}}"
+			}
+		},
+		{
+			"view/show_bare": {
+				"model": "{{.model}}"
+			}
+		}
+	],
+	"model": ""
+}
