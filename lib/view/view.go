@@ -68,9 +68,9 @@ func (v *Info) Base(base string) *Info {
 	return v
 }
 
-// Render parses one or more templates and outputs to the screen
-//
-func (v *Info) Render(w http.ResponseWriter, r *http.Request) {
+// Render parses one or more templates and outputs to the screen.
+// Also returns an error if anything is wrong.
+func (v *Info) Render(w http.ResponseWriter, r *http.Request) error {
 
 	// Add the base template
 	v.templates = append([]string{v.base}, v.templates...)
@@ -100,7 +100,7 @@ func (v *Info) Render(w http.ResponseWriter, r *http.Request) {
 			path, err := filepath.Abs(v.Folder + string(os.PathSeparator) + name + "." + v.Extension)
 			if err != nil {
 				http.Error(w, "Template Path Error: "+err.Error(), http.StatusInternalServerError)
-				return
+				return err
 			}
 			// Store the full template path
 			v.templates[i] = path
@@ -110,7 +110,7 @@ func (v *Info) Render(w http.ResponseWriter, r *http.Request) {
 		templates, err := template.New(key).Funcs(pc).ParseFiles(v.templates...)
 		if err != nil {
 			http.Error(w, "Template Parse Error: "+err.Error(), http.StatusInternalServerError)
-			return
+			return err
 		}
 
 		// Cache the template collection
@@ -136,4 +136,6 @@ func (v *Info) Render(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Template File Error: "+err.Error(), http.StatusInternalServerError)
 	}
+
+	return err
 }
