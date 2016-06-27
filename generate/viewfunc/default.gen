@@ -1,0 +1,16 @@
+package {{.package}}
+
+import (
+	"html/template"
+)
+
+// Map returns a template.FuncMap for {{.package}}
+func Map() template.FuncMap {
+	f := make(template.FuncMap)
+
+	f["{{.package}}"] = func(s string) template.HTML {
+		return template.HTML(s)
+	}
+
+	return f
+}

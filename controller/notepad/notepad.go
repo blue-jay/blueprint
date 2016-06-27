@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/blue-jay/blueprint/lib/flight"
-	"github.com/blue-jay/blueprint/lib/middleware/acl"
 	"github.com/blue-jay/blueprint/lib/router"
 	"github.com/blue-jay/blueprint/lib/view"
+	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/note"
 )
 

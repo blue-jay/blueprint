@@ -1,0 +1,37 @@
+// Package {{.package}}
+package {{.package}}
+
+import (
+	"sync"
+)
+
+var (
+	info      Info
+	infoMutex sync.RWMutex
+)
+
+// Info holds the config.
+type Info struct {
+}
+
+// SetConfig stores the config.
+func SetConfig(i Info) {
+	infoMutex.Lock()
+	info = i
+	infoMutex.Unlock()
+}
+
+// ResetConfig resets the config.
+func ResetConfig() {
+	infoMutex.Lock()
+	info = Info{}
+	infoMutex.Unlock()
+}
+
+// Config returns the config.
+func Config() Info {
+	infoMutex.RLock()
+	i := info
+	infoMutex.RUnlock()
+	return i
+}

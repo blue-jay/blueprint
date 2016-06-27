@@ -1,12 +1,12 @@
-package extend
+package noescape
 
 import (
 	"html/template"
 )
 
-// NoEscape returns a template.FuncMap
-// * NOESCAPE prevents escaping variable
-func NoEscape() template.FuncMap {
+// Map returns a template.FuncMap for NOESCAPE
+// that returns an unescaped string.
+func Map() template.FuncMap {
 	f := make(template.FuncMap)
 
 	f["NOESCAPE"] = func(name string) template.HTML {

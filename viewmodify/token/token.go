@@ -1,4 +1,4 @@
-package modify
+package token
 
 import (
 	"net/http"
@@ -9,8 +9,8 @@ import (
 	"github.com/josephspurrier/csrfbanana"
 )
 
-// Token sets token in the template to the CSRF token
-func Token(w http.ResponseWriter, r *http.Request, v *view.Info) {
+// Modify sets token in the template to the CSRF token.
+func Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
 	sess := session.Instance(r)
 	v.Vars["token"] = csrfbanana.Token(w, r, sess)
 }

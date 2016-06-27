@@ -13,14 +13,18 @@ import (
 	"github.com/blue-jay/blueprint/lib/email"
 	"github.com/blue-jay/blueprint/lib/flash"
 	"github.com/blue-jay/blueprint/lib/jsonconfig"
-	"github.com/blue-jay/blueprint/lib/middleware/logrequest"
-	"github.com/blue-jay/blueprint/lib/middleware/rest"
 	"github.com/blue-jay/blueprint/lib/router"
 	"github.com/blue-jay/blueprint/lib/server"
 	"github.com/blue-jay/blueprint/lib/session"
 	"github.com/blue-jay/blueprint/lib/view"
-	"github.com/blue-jay/blueprint/lib/view/extend"
-	"github.com/blue-jay/blueprint/lib/view/modify"
+	"github.com/blue-jay/blueprint/middleware/logrequest"
+	"github.com/blue-jay/blueprint/middleware/rest"
+	"github.com/blue-jay/blueprint/viewfunc/link"
+	"github.com/blue-jay/blueprint/viewfunc/noescape"
+	"github.com/blue-jay/blueprint/viewfunc/prettytime"
+	"github.com/blue-jay/blueprint/viewmodify/authlevel"
+	"github.com/blue-jay/blueprint/viewmodify/token"
+	"github.com/blue-jay/blueprint/viewmodify/uri"
 
 	"github.com/gorilla/context"
 	"github.com/josephspurrier/csrfbanana"
@@ -89,18 +93,18 @@ func RegisterServices(config *Info) {
 	view.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Set up the functions for the views
-	view.SetFunctions(
-		asset.Extend(config.View.BaseURI),
-		extend.Link(config.View),
-		extend.NoEscape(),
-		extend.PrettyTime(),
+	view.SetFuncMaps(
+		asset.Map(config.View.BaseURI),
+		link.Map(config.View.BaseURI),
+		noescape.Map(),
+		prettytime.Map(),
 	)
 
 	// Set up the variables for the views
-	view.SetVariables(
-		modify.AuthLevel,
-		modify.URI,
-		modify.Token,
+	view.SetModifiers(
+		authlevel.Modify,
+		uri.Modify,
+		token.Modify,
 		flash.Modify,
 	)
 }

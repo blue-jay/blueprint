@@ -6,11 +6,11 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/flash"
 	"github.com/blue-jay/blueprint/lib/form"
-	"github.com/blue-jay/blueprint/lib/middleware/acl"
 	"github.com/blue-jay/blueprint/lib/passhash"
 	"github.com/blue-jay/blueprint/lib/router"
 	"github.com/blue-jay/blueprint/lib/session"
 	"github.com/blue-jay/blueprint/lib/view"
+	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model"
 	"github.com/blue-jay/blueprint/model/user"
 )

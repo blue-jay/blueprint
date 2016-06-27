@@ -41,17 +41,18 @@ func SetTemplates(rootTemp string, childTemps []string) {
 // ModifyFunc can modify the view before rendering
 type ModifyFunc func(http.ResponseWriter, *http.Request, *Info)
 
-// SetVariables will set the modify the View before rendering
-func SetVariables(fn ...ModifyFunc) {
+// SetModifiers will set the modifiers for the View that run
+// before rendering
+func SetModifiers(fn ...ModifyFunc) {
 	modifyMutex.Lock()
 	modifyList = fn
 	modifyMutex.Unlock()
 }
 
-// SetFunctions will combine all template.FuncMaps into one map and then set the
-// them for each template
-// If a func already exists, it is rewritten, there is no error
-func SetFunctions(fms ...template.FuncMap) {
+// SetFuncMaps will combine all template.FuncMaps into one map and then set the
+// them for each template.
+// If a func already exists, it is rewritten without a warning.
+func SetFuncMaps(fms ...template.FuncMap) {
 	// Final FuncMap
 	fm := make(template.FuncMap)
 

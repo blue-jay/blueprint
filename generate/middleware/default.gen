@@ -1,0 +1,14 @@
+package {{.package}}
+
+import (
+	"net/http"
+)
+
+// Handler
+func Handler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Logic BEFORE the other handlers and function goes here
+		next.ServeHTTP(w, r)
+		// Logic AFTER the other handlers and function goes here
+	})
+}

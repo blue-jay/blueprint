@@ -1,4 +1,4 @@
-package modify
+package uri
 
 import (
 	"net/http"
@@ -7,9 +7,9 @@ import (
 	"github.com/blue-jay/blueprint/lib/view"
 )
 
-// URI sets BaseURI, CurrentURI, ParentURI, and the GrandparentURI in the
-// template
-func URI(w http.ResponseWriter, r *http.Request, v *view.Info) {
+// Modify sets BaseURI, CurrentURI, ParentURI, and the GrandparentURI
+// variables for use in the templates.
+func Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
 	v.Vars["BaseURI"] = v.BaseURI
 	v.Vars["CurrentURI"] = r.URL.Path
 	v.Vars["ParentURI"] = path.Dir(r.URL.Path)

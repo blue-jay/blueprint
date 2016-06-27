@@ -53,9 +53,9 @@ func Config() Info {
 // FuncMap for Template Packages
 // *****************************************************************************
 
-// Extend returns a template.FuncMap. JS returns JavaScript tag with a
+// Map returns a template.FuncMap. JS returns JavaScript tag with a
 // timestamp. CSS returns stylesheet tag with a timestamp.
-func Extend(baseURI string) template.FuncMap {
+func Map(baseURI string) template.FuncMap {
 	f := make(template.FuncMap)
 
 	f["JS"] = func(fpath string) template.HTML {

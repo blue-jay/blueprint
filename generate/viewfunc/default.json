@@ -1,0 +1,5 @@
+{
+	"config.type": "single",
+	"config.output": "viewfunc/{{.package}}/{{.package}}.go",
+	"package": ""
+}

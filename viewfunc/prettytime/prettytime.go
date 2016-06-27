@@ -1,4 +1,4 @@
-package extend
+package prettytime
 
 import (
 	"html/template"
@@ -6,13 +6,12 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-// PrettyTime returns a template.FuncMap
-// * PRETTYTIME outputs a nice time format showing the updated time or the created time
-func PrettyTime() template.FuncMap {
+// Map returns a template.FuncMap for PRETTYTIME
+// which outputs a time in this format: 3:04 PM 01/02/2006.
+func Map() template.FuncMap {
 	f := make(template.FuncMap)
 
 	f["PRETTYTIME"] = func(createdAt mysql.NullTime, updatedAt mysql.NullTime) string {
-
 		if updatedAt.Valid {
 			return updatedAt.Time.Format("3:04 PM 01/02/2006")
 		}

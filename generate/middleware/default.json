@@ -1,0 +1,5 @@
+{
+	"config.type": "single",
+	"config.output": "middleware/{{.package}}/{{.package}}.go",
+	"package": ""
+}
