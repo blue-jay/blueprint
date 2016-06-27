@@ -73,7 +73,7 @@ func peekFlashes(w http.ResponseWriter, r *http.Request) []Info {
 }
 
 // Modify adds the flashes to the view
-func Modify(w http.ResponseWriter, r *http.Request, v *view.View) {
+func Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
 	sess := session.Instance(r)
 
 	// Get the flashes for the template

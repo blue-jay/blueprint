@@ -15,7 +15,7 @@ var (
 	templateCollection = make(map[string]*template.Template)
 	mutex              sync.RWMutex
 	sessionName        string
-	viewInfo           View
+	viewInfo           Info
 )
 
 // Template root and children
@@ -24,8 +24,8 @@ type Template struct {
 	Children []string `json:"Children"`
 }
 
-// View attributes
-type View struct {
+// Info attributes
+type Info struct {
 	BaseURI   string
 	Extension string
 	Folder    string
@@ -36,18 +36,18 @@ type View struct {
 }
 
 // SetConfig sets the view information
-func SetConfig(vi View) {
+func SetConfig(vi Info) {
 	viewInfo = vi
 }
 
 // Config returns the configuration
-func Config() View {
+func Config() Info {
 	return viewInfo
 }
 
 // New accepts multiple templates and then returns a new view
-func New(templateList ...string) *View {
-	v := &View{}
+func New(templateList ...string) *Info {
+	v := &Info{}
 	v.Vars = make(map[string]interface{})
 	v.BaseURI = viewInfo.BaseURI
 	v.Extension = viewInfo.Extension
@@ -60,7 +60,7 @@ func New(templateList ...string) *View {
 
 // Base sets the new base template instead of reading from
 // Template.Root of the config file
-func (v *View) Base(base string) *View {
+func (v *Info) Base(base string) *Info {
 	// Set the new base template
 	v.base = base
 
@@ -70,7 +70,7 @@ func (v *View) Base(base string) *View {
 
 // Render parses one or more templates and outputs to the screen
 //
-func (v *View) Render(w http.ResponseWriter, r *http.Request) {
+func (v *Info) Render(w http.ResponseWriter, r *http.Request) {
 
 	// Add the base template
 	v.templates = append([]string{v.base}, v.templates...)

@@ -10,7 +10,7 @@ import (
 )
 
 // Token sets token in the template to the CSRF token
-func Token(w http.ResponseWriter, r *http.Request, v *view.View) {
+func Token(w http.ResponseWriter, r *http.Request, v *view.Info) {
 	sess := session.Instance(r)
 	v.Vars["token"] = csrfbanana.Token(w, r, sess)
 }

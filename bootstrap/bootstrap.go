@@ -32,13 +32,13 @@ import (
 
 // Info contains the application settings
 type Info struct {
-	Asset    asset.Info      `json:"Asset"`
-	Database database.Info   `json:"Database"`
-	Email    email.SMTPInfo  `json:"Email"`
-	Server   server.Server   `json:"Server"`
-	Session  session.Session `json:"Session"`
-	Template view.Template   `json:"Template"`
-	View     view.View       `json:"View"`
+	Asset    asset.Info    `json:"Asset"`
+	Database database.Info `json:"Database"`
+	Email    email.Info    `json:"Email"`
+	Server   server.Info   `json:"Server"`
+	Session  session.Info  `json:"Session"`
+	Template view.Template `json:"Template"`
+	View     view.Info     `json:"View"`
 }
 
 // ParseJSON unmarshals bytes to structs

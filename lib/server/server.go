@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-// Server stores the hostname and port number
-type Server struct {
+// Info stores the hostname and port number
+type Info struct {
 	Hostname        string `json:"Hostname"`        // Server name
 	UseHTTP         bool   `json:"UseHTTP"`         // Listen on HTTP
 	UseHTTPS        bool   `json:"UseHTTPS"`        // Listen on HTTPS
@@ -20,21 +20,21 @@ type Server struct {
 }
 
 // Run starts the HTTP and/or HTTPS listener
-func Run(httpHandlers http.Handler, httpsHandlers http.Handler, s Server) {
+func Run(httpHandlers http.Handler, httpsHandlers http.Handler, info Info) {
 	// Determine if HTTP should redirect to HTTPS
-	if s.RedirectToHTTPS {
+	if info.RedirectToHTTPS {
 		httpHandlers = http.HandlerFunc(redirectToHTTPS)
 	}
 
-	if s.UseHTTP && s.UseHTTPS {
+	if info.UseHTTP && info.UseHTTPS {
 		go func() {
-			startHTTPS(httpsHandlers, s)
+			startHTTPS(httpsHandlers, info)
 		}()
-		startHTTP(httpHandlers, s)
-	} else if s.UseHTTP {
-		startHTTP(httpHandlers, s)
-	} else if s.UseHTTPS {
-		startHTTPS(httpsHandlers, s)
+		startHTTP(httpHandlers, info)
+	} else if info.UseHTTP {
+		startHTTP(httpHandlers, info)
+	} else if info.UseHTTPS {
+		startHTTPS(httpsHandlers, info)
 	} else {
 		log.Println("Config file does not specify a listener to start")
 	}
@@ -46,27 +46,27 @@ func redirectToHTTPS(w http.ResponseWriter, req *http.Request) {
 }
 
 // startHTTP starts the HTTP listener
-func startHTTP(handlers http.Handler, s Server) {
-	fmt.Println(time.Now().Format("2006-01-02 03:04:05 PM"), "Running HTTP "+httpAddress(s))
+func startHTTP(handlers http.Handler, info Info) {
+	fmt.Println(time.Now().Format("2006-01-02 03:04:05 PM"), "Running HTTP "+httpAddress(info))
 
 	// Start the HTTP listener
-	log.Fatal(http.ListenAndServe(httpAddress(s), handlers))
+	log.Fatal(http.ListenAndServe(httpAddress(info), handlers))
 }
 
 // startHTTPs starts the HTTPS listener
-func startHTTPS(handlers http.Handler, s Server) {
-	fmt.Println(time.Now().Format("2006-01-02 03:04:05 PM"), "Running HTTPS "+httpsAddress(s))
+func startHTTPS(handlers http.Handler, info Info) {
+	fmt.Println(time.Now().Format("2006-01-02 03:04:05 PM"), "Running HTTPS "+httpsAddress(info))
 
 	// Start the HTTPS listener
-	log.Fatal(http.ListenAndServeTLS(httpsAddress(s), s.CertFile, s.KeyFile, handlers))
+	log.Fatal(http.ListenAndServeTLS(httpsAddress(info), info.CertFile, info.KeyFile, handlers))
 }
 
 // httpAddress returns the HTTP address
-func httpAddress(s Server) string {
-	return s.Hostname + ":" + fmt.Sprintf("%d", s.HTTPPort)
+func httpAddress(info Info) string {
+	return info.Hostname + ":" + fmt.Sprintf("%d", info.HTTPPort)
 }
 
 // httpsAddress returns the HTTPS address
-func httpsAddress(s Server) string {
-	return s.Hostname + ":" + fmt.Sprintf("%d", s.HTTPSPort)
+func httpsAddress(info Info) string {
+	return info.Hostname + ":" + fmt.Sprintf("%d", info.HTTPSPort)
 }

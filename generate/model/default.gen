@@ -77,7 +77,7 @@ func Update(name string, ID string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// Delete removes an item
+// DeleteHard removes an item
 func DeleteHard(ID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		DELETE FROM %v

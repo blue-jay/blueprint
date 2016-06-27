@@ -6,8 +6,8 @@ var (
 	table = "user_status"
 )
 
-// Entity defines the table
-type Entity struct {
+// Item defines the model
+type Item struct {
 	ID        uint8     `db:"id"`
 	Status    string    `db:"status"`
 	CreatedAt time.Time `db:"created_at"`

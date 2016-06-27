@@ -9,7 +9,7 @@ import (
 
 // AuthLevel sets AuthLevel in the template to auth if the user is authenticated
 // Sets AuthLevel to anon if not authenticated
-func AuthLevel(w http.ResponseWriter, r *http.Request, v *view.View) {
+func AuthLevel(w http.ResponseWriter, r *http.Request, v *view.Info) {
 	sess := session.Instance(r)
 
 	// Set the AuthLevel to auth if the user is logged in

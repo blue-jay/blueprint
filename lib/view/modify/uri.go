@@ -9,7 +9,7 @@ import (
 
 // URI sets BaseURI, CurrentURI, ParentURI, and the GrandparentURI in the
 // template
-func URI(w http.ResponseWriter, r *http.Request, v *view.View) {
+func URI(w http.ResponseWriter, r *http.Request, v *view.Info) {
 	v.Vars["BaseURI"] = v.BaseURI
 	v.Vars["CurrentURI"] = r.URL.Path
 	v.Vars["ParentURI"] = path.Dir(r.URL.Path)

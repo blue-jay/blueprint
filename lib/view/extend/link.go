@@ -8,7 +8,7 @@ import (
 
 // Link returns a template.FuncMap
 // * LINK returns hyperlink tag
-func Link(v view.View) template.FuncMap {
+func Link(v view.Info) template.FuncMap {
 	f := make(template.FuncMap)
 
 	f["LINK"] = func(path, name string) template.HTML {

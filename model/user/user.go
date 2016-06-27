@@ -13,8 +13,8 @@ var (
 	table = "user"
 )
 
-// Entity defines the table
-type Entity struct {
+// Item defines the model
+type Item struct {
 	ID        uint32         `db:"id"`
 	FirstName string         `db:"first_name"`
 	LastName  string         `db:"last_name"`
@@ -27,8 +27,8 @@ type Entity struct {
 }
 
 // ByEmail gets user information from email
-func ByEmail(email string) (Entity, error) {
-	result := Entity{}
+func ByEmail(email string) (Item, error) {
+	result := Item{}
 	err := database.SQL.Get(&result, fmt.Sprintf(`
 		SELECT id, password, status_id, first_name
 		FROM %v

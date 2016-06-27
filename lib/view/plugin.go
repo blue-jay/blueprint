@@ -39,7 +39,7 @@ func SetTemplates(rootTemp string, childTemps []string) {
 }
 
 // ModifyFunc can modify the view before rendering
-type ModifyFunc func(http.ResponseWriter, *http.Request, *View)
+type ModifyFunc func(http.ResponseWriter, *http.Request, *Info)
 
 // SetVariables will set the modify the View before rendering
 func SetVariables(fn ...ModifyFunc) {

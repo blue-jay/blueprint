@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	e SMTPInfo
+	e Info
 )
 
-// SMTPInfo is the details for the SMTP server
-type SMTPInfo struct {
+// Info is the details for the SMTP server
+type Info struct {
 	Username string
 	Password string
 	Hostname string
@@ -20,12 +20,12 @@ type SMTPInfo struct {
 }
 
 // SetConfig adds the settings for the SMTP server
-func SetConfig(c SMTPInfo) {
+func SetConfig(c Info) {
 	e = c
 }
 
 // Config returns the configuration
-func Config() SMTPInfo {
+func Config() Info {
 	return e
 }
 
