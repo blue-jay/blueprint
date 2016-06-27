@@ -1,0 +1,27 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"model/bare": {
+				"package": "{{.model}}",
+				"table": "{{.model}}"
+			}
+		},
+		{
+			"controller/bare": {
+				"package": "{{.controller}}",
+				"url": "{{.controller}}",
+				"model": "{{.model}}",
+				"view": "{{.view}}"
+			}
+		},
+		{
+			"view/bare": {
+				"model": "{{.view}}"
+			}
+		}
+	],
+	"model": "",
+	"controller": "",
+	"view": ""
+}
