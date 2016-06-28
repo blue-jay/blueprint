@@ -1,0 +1,17 @@
+{{define "title"}}{{.title}}{{end}}
+{{define "head"}}{{end}}
+{{define "content"}}
+
+<div class="container">
+
+	<div class="page-header">
+		<h1>{{.title}}</h1>
+	</div>
+	<p>{{.message | NOESCAPE}} Click {{LINK "" "here"}} to go to the home page.</p>
+
+{{template "footer" .}}
+
+</div>
+
+{{end}}
+{{define "foot"}}{{end}}

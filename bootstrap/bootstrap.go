@@ -7,7 +7,7 @@ import (
 	"runtime"
 
 	"github.com/blue-jay/blueprint/controller"
-	"github.com/blue-jay/blueprint/controller/static"
+	"github.com/blue-jay/blueprint/controller/status"
 	"github.com/blue-jay/blueprint/lib/asset"
 	"github.com/blue-jay/blueprint/lib/database"
 	"github.com/blue-jay/blueprint/lib/email"
@@ -126,7 +126,7 @@ func SetUpMiddleware(h http.Handler) http.Handler {
 // setUpBanana makes csrfbanana compatible with the http.Handler
 func setUpBanana(h http.Handler) http.Handler {
 	cs := csrfbanana.New(h, session.Store, session.Name)
-	cs.FailureHandler(http.HandlerFunc(static.InvalidToken))
+	cs.FailureHandler(http.HandlerFunc(status.InvalidToken))
 	cs.ClearAfterUsage(true)
 	cs.ExcludeRegexPaths([]string{"/static(.*)"})
 	csrfbanana.TokenLength = 32
