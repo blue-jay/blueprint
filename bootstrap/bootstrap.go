@@ -22,6 +22,7 @@ import (
 	"github.com/blue-jay/blueprint/viewfunc/link"
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
+	"github.com/blue-jay/blueprint/viewfunc/repopulate"
 	"github.com/blue-jay/blueprint/viewmodify/authlevel"
 	"github.com/blue-jay/blueprint/viewmodify/token"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
@@ -98,6 +99,7 @@ func RegisterServices(config *Info) {
 		link.Map(config.View.BaseURI),
 		noescape.Map(),
 		prettytime.Map(),
+		repopulate.Map(),
 	)
 
 	// Set up the variables for the views

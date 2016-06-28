@@ -19,6 +19,8 @@ func Required(req *http.Request, required ...string) (bool, string) {
 // Repopulate updates the dst map so the form fields can be refilled
 func Repopulate(src url.Values, dst map[string]interface{}, list ...string) {
 	for _, v := range list {
-		dst[v] = src.Get(v)
+		if val, ok := src[v]; ok {
+			dst[v] = val
+		}
 	}
 }

@@ -19,7 +19,7 @@ func Load() {
 	c := router.Chain(acl.DisallowAnon)
 	router.Get(uri, Index, c...)
 	router.Get(uri+"/create", Create, c...)
-	router.Post(uri, Store, c...)
+	router.Post(uri+"/create", Store, c...)
 	router.Get(uri+"/view/:id", Show, c...)
 	router.Get(uri+"/edit/:id", Edit, c...)
 	router.Patch(uri+"/edit/:id", Update, c...)
