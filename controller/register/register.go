@@ -44,6 +44,15 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	firstName := r.FormValue("first_name")
 	lastName := r.FormValue("last_name")
 	email := r.FormValue("email")
+
+	// Validate passwords
+	if r.FormValue("password") != r.FormValue("password_verify") {
+		sess.AddFlash(flash.Info{"Passwords do not match.", flash.Error})
+		sess.Save(r, w)
+		Index(w, r)
+		return
+	}
+
 	password, errp := passhash.HashString(r.FormValue("password"))
 
 	// If password hashing failed
