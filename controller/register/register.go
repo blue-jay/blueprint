@@ -53,6 +53,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Hash password
 	password, errp := passhash.HashString(r.FormValue("password"))
 
 	// If password hashing failed
