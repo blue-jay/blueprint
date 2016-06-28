@@ -1,12 +1,27 @@
 {{define "title"}}Blueprint{{end}}
 {{define "head"}}{{end}}
 {{define "content"}}
+
 <div class="container">
+
+{{if eq .AuthLevel "auth"}}
+
+	<div class="page-header">
+		<h1>Hello, {{.first_name}}</h1>
+	</div>
+	<p>You have arrived. Click {{LINK "notepad" "here"}} to view your notepad.</p>
+
+{{else}}
+
 	<div class="page-header">
 		<h1>{{template "title" .}}</h1>
 	</div>
 	<p>Click {{LINK "login" "here"}} to login.</p>
-	{{template "footer" .}}
+
+{{end}}
+
+{{template "footer" .}}
 </div>
+
 {{end}}
 {{define "foot"}}{{end}}

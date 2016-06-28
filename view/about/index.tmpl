@@ -1,11 +1,11 @@
-{{define "title"}}Welcome{{end}}
+{{define "title"}}About Blueprint{{end}}
 {{define "head"}}{{end}}
 {{define "content"}}
 <div class="container">
 	<div class="page-header">
-		<h1>Hello, {{.first_name}}</h1>
+		<h1>{{template "title" .}}</h1>
 	</div>
-	<p>You have arrived. Click {{LINK "notepad" "here"}} to view your notepad.</p>
+	<p>Blueprint lays the foundation for your web application using the Go language.</p>
 	{{template "footer" .}}
 </div>
 {{end}}

@@ -14,5 +14,5 @@ func Load() {
 
 // Index displays the About page
 func Index(w http.ResponseWriter, r *http.Request) {
-	view.New("about/about").Render(w, r)
+	view.New("about/index").Render(w, r)
 }

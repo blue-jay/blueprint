@@ -17,11 +17,9 @@ func Load() {
 func Index(w http.ResponseWriter, r *http.Request) {
 	session := session.Instance(r)
 
+	v := view.New("home/index")
 	if session.Values["id"] != nil {
-		v := view.New("index/auth")
 		v.Vars["first_name"] = session.Values["first_name"]
-		v.Render(w, r)
-	} else {
-		view.New("index/anon").Render(w, r)
 	}
+	v.Render(w, r)
 }
