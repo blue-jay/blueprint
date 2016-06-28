@@ -50,7 +50,7 @@ func (c *Info) Redirect(urlStr string) {
 // FormValid determines if the user submitted all the required fields and then
 // saves an error flash. Returns true if form is valid.
 func (c *Info) FormValid(fields ...string) bool {
-	if validate, missingField := form.Required(c.R, fields...); !validate {
+	if valid, missingField := form.Required(c.R, fields...); !valid {
 		c.Sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Warning})
 		c.Sess.Save(c.R, c.W)
 		return false

@@ -60,7 +60,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	if validate, missingField := form.Required(r, "name"); !validate {
+	if valid, missingField := form.Required(r, "name"); !valid {
 		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Warning})
 		sess.Save(r, w)
 		Create(w, r)

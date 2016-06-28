@@ -34,7 +34,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 
 	// Validate with required fields
-	if validate, missingField := form.Required(r, "email", "password"); !validate {
+	if valid, missingField := form.Required(r, "email", "password"); !valid {
 		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Error})
 		sess.Save(r, w)
 		Index(w, r)
