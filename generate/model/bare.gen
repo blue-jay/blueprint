@@ -1,3 +1,4 @@
+// Package {{.package}}
 package {{.package}}
 
 import (
@@ -12,7 +13,7 @@ var (
 	table = "{{.table}}"
 )
 
-// Item defines the model
+// Item defines the model.
 type Item struct {
 	ID        uint32         `db:"id"`
 	Name      string         `db:"name"`
@@ -22,7 +23,7 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// ByID gets item by ID
+// ByID gets item by ID.
 func ByID(ID string, userID string) (Item, error) {
 	var result Item
 	var err error
@@ -30,7 +31,7 @@ func ByID(ID string, userID string) (Item, error) {
 	return result, model.StandardError(err)
 }
 
-// ByUserID gets all entities for a user
+// ByUserID gets all entities for a user.
 func ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	var err error
@@ -38,7 +39,7 @@ func ByUserID(userID string) ([]Item, error) {
 	return result, model.StandardError(err)
 }
 
-// Create adds an item
+// Create adds an item.
 func Create(name string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
@@ -46,7 +47,7 @@ func Create(name string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// Update makes changes to an existing item
+// Update makes changes to an existing item.
 func Update(name string, ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
@@ -54,7 +55,7 @@ func Update(name string, ID string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// DeleteHard removes an item
+// DeleteHard removes an item.
 func DeleteHard(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
@@ -62,7 +63,7 @@ func DeleteHard(ID string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// Delete marks an item as removed
+// Delete marks an item as removed.
 func Delete(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error

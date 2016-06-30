@@ -1,3 +1,4 @@
+// Package {{.package}}
 package {{.package}}
 
 import (
@@ -14,7 +15,7 @@ var (
 	uri = "/{{.url}}"
 )
 
-// Load the routes
+// Load the routes.
 func Load() {
 	c := router.Chain(acl.DisallowAnon)
 	router.Get(uri, Index, c...)
@@ -26,7 +27,7 @@ func Load() {
 	router.Delete(uri+"/:id", Destroy, c...)
 }
 
-// Index displays the items
+// Index displays the items.
 func Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
@@ -41,7 +42,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	v.Render(w, r)
 }
 
-// Create displays the create form
+// Create displays the create form.
 func Create(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
@@ -50,7 +51,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	v.Render(w, r)
 }
 
-// Store handles the create form submission
+// Store handles the create form submission.
 func Store(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
@@ -70,7 +71,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	c.Redirect(uri)
 }
 
-// Show displays a single item
+// Show displays a single item.
 func Show(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
@@ -86,7 +87,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	v.Render(w, r)
 }
 
-// Edit displays the edit form
+// Edit displays the edit form.
 func Edit(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
@@ -102,7 +103,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	v.Render(w, r)
 }
 
-// Update handles the edit form submission
+// Update handles the edit form submission.
 func Update(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
@@ -122,7 +123,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	c.Redirect(uri)
 }
 
-// Destroy handles the delete form submission
+// Destroy handles the delete form submission.
 func Destroy(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
