@@ -1,4 +1,5 @@
-// Package main is the entry point.
+// Package main is the entry point for the Blue Jay Blueprint web toolkit in
+// Go.
 package main
 
 import (
