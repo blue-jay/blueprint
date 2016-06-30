@@ -216,10 +216,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.UpOne()
-	if err != nil {
-		t.Errorf("could not migrate up: %v", err)
-	}
+	mig.UpOne()
 
 	// Insert rows migration
 	setupMigrateInsert(mig)
@@ -229,10 +226,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.UpOne()
-	if err != nil {
-		t.Errorf("could not migrate up: %v", err)
-	}
+	mig.UpOne()
 
 	// Test querying the data
 	result, err := byID("1")
@@ -241,10 +235,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.DownOne()
-	if err != nil {
-		t.Errorf("could not migrate down: %v", err)
-	}
+	mig.DownOne()
 
 	// Test querying the data
 	result, err = byID("1")
@@ -260,10 +251,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.UpAll()
-	if err != nil {
-		t.Errorf("could not migrate up: %v", err)
-	}
+	mig.UpAll()
 
 	// Test querying the data
 	result, err = byID("1")
@@ -272,10 +260,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.DownAll()
-	if err != nil {
-		t.Errorf("could not migrate down: %v", err)
-	}
+	mig.DownAll()
 
 	// Update column migration
 	setupMigrateUpdate(mig)
@@ -285,10 +270,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.UpAll()
-	if err != nil {
-		t.Errorf("could not migrate up: %v", err)
-	}
+	mig.UpAll()
 
 	// Test querying the data
 	result, err = byID("1")
@@ -297,10 +279,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.DownOne()
-	if err != nil {
-		t.Errorf("could not migrate down: %v", err)
-	}
+	mig.DownOne()
 
 	// Test querying the data
 	result, err = byID("1")
@@ -309,10 +288,7 @@ func TestAlterRows(t *testing.T) {
 	}
 
 	// Run the migration
-	err = mig.UpOne()
-	if err != nil {
-		t.Errorf("could not migrate up: %v", err)
-	}
+	mig.UpOne()
 
 	// Test querying the data
 	result, _ = byID("1")
