@@ -14,7 +14,7 @@ import (
 // *****************************************************************************
 
 var (
-	r         Info
+	r         *httprouter.Router
 	infoMutex sync.RWMutex
 )
 
@@ -22,50 +22,36 @@ const (
 	params = "params"
 )
 
-// Info is the configuration.
-type Info struct {
-	Router *httprouter.Router
-}
-
 // init sets up the router.
 func init() {
 	ResetConfig()
 }
 
-// Config returns the configuration.
-func Config() Info {
-	infoMutex.RLock()
-	i := r
-	infoMutex.RUnlock()
-	return i
-}
-
 // ResetConfig creates a new instance.
 func ResetConfig() {
 	infoMutex.Lock()
-	r.Router = httprouter.New()
+	r = httprouter.New()
 	infoMutex.Unlock()
 }
 
 // Instance returns the router.
 func Instance() *httprouter.Router {
 	infoMutex.RLock()
-	rr := r.Router
-	infoMutex.RUnlock()
-	return rr
+	defer infoMutex.RUnlock()
+	return r
 }
 
 // NotFound sets the 404 handler.
 func NotFound(fn http.HandlerFunc) {
 	infoMutex.Lock()
-	r.Router.NotFound = fn
+	r.NotFound = fn
 	infoMutex.Unlock()
 }
 
 // MethodNotAllowed sets the 405 handler.
 func MethodNotAllowed(fn http.HandlerFunc) {
 	infoMutex.Lock()
-	r.Router.HandleMethodNotAllowed = true
-	r.Router.MethodNotAllowed = fn
+	r.HandleMethodNotAllowed = true
+	r.MethodNotAllowed = fn
 	infoMutex.Unlock()
 }

@@ -44,9 +44,8 @@ func ResetConfig() {
 // Config returns the config.
 func Config() Info {
 	infoMutex.RLock()
-	i := info
-	infoMutex.RUnlock()
-	return i
+	defer infoMutex.RUnlock()
+	return info
 }
 
 // *****************************************************************************

@@ -50,7 +50,7 @@ func Delete(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("DELETE", path)
 
 	infoMutex.Lock()
-	r.Router.DELETE(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.DELETE(path, Handler(alice.New(c...).ThenFunc(fn)))
 	infoMutex.Unlock()
 }
 
@@ -59,7 +59,7 @@ func Get(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("GET", path)
 
 	infoMutex.Lock()
-	r.Router.GET(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.GET(path, Handler(alice.New(c...).ThenFunc(fn)))
 	infoMutex.Unlock()
 }
 
@@ -68,7 +68,7 @@ func Head(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("HEAD", path)
 
 	infoMutex.Lock()
-	r.Router.HEAD(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.HEAD(path, Handler(alice.New(c...).ThenFunc(fn)))
 	infoMutex.Unlock()
 }
 
@@ -77,7 +77,7 @@ func Options(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("OPTIONS", path)
 
 	infoMutex.Lock()
-	r.Router.OPTIONS(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.OPTIONS(path, Handler(alice.New(c...).ThenFunc(fn)))
 	infoMutex.Unlock()
 }
 
@@ -86,7 +86,7 @@ func Patch(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("PATCH", path)
 
 	infoMutex.Lock()
-	r.Router.PATCH(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.PATCH(path, Handler(alice.New(c...).ThenFunc(fn)))
 	infoMutex.Unlock()
 }
 
@@ -95,7 +95,7 @@ func Post(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("POST", path)
 
 	infoMutex.Lock()
-	r.Router.POST(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.POST(path, Handler(alice.New(c...).ThenFunc(fn)))
 	infoMutex.Unlock()
 }
 
@@ -104,6 +104,6 @@ func Put(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("PUT", path)
 
 	infoMutex.Lock()
-	r.Router.PUT(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.PUT(path, Handler(alice.New(c...).ThenFunc(fn)))
 	infoMutex.Unlock()
 }

@@ -4,19 +4,21 @@ package session
 import (
 	"log"
 	"net/http"
+	"sync"
 
 	"github.com/gorilla/sessions"
 )
 
 // *****************************************************************************
-// Configuration
+// Thread-Safe Configuration
 // *****************************************************************************
 
 var (
 	// store is the cookie store
 	store *sessions.CookieStore
 	// Name is the session name
-	Name string
+	Name      string
+	infoMutex sync.RWMutex
 )
 
 // Info holds the session level information.
@@ -28,13 +30,17 @@ type Info struct {
 
 // SetConfig stores the config.
 func SetConfig(i Info) {
+	infoMutex.Lock()
 	store = sessions.NewCookieStore([]byte(i.SecretKey))
 	store.Options = &i.Options
 	Name = i.Name
+	infoMutex.Unlock()
 }
 
 // Store returns the cookiestore
 func Store() *sessions.CookieStore {
+	infoMutex.RLock()
+	defer infoMutex.RUnlock()
 	return store
 }
 
@@ -44,10 +50,13 @@ func Store() *sessions.CookieStore {
 
 // Instance returns a new session and never returns an error, just displays one.
 func Instance(r *http.Request) *sessions.Session {
+	infoMutex.RLock()
 	session, err := store.Get(r, Name)
+	infoMutex.RUnlock()
 	if err != nil {
 		log.Println("Session error:", err)
 	}
+
 	return session
 }
 
