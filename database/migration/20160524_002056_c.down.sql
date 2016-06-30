@@ -1,1 +1,0 @@
-UPDATE brother SET age = NULL;

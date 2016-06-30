@@ -9,4 +9,3 @@ env.json
 # Folders
 /vendor/
 /node_modules/
-/bower_components/

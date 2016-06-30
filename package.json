@@ -1,10 +1,12 @@
 {
   "private": true,
   "devDependencies": {
+    "bootstrap": "^3.3.6",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-real-favicon": "^0.2.1",
     "gulp-sass": "^2.3.2",
-    "run-sequence": "^1.2.1"
+    "run-sequence": "^1.2.2",
+    "underscore": "^1.8.3"
   }
 }

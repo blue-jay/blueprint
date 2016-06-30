@@ -1,5 +1,5 @@
 /* *****************************************************************************
-// Setup the preferences
+// Set up the preferences
 // ****************************************************************************/
 SET NAMES utf8 COLLATE 'utf8_unicode_ci';
 SET foreign_key_checks = 1;

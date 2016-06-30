@@ -1,8 +1,0 @@
-{
-  "private": true,
-  "name": "Blue Jay Blueprint",
-  "dependencies": {
-    "bootstrap": "^3.3.6",
-    "underscore": "^1.8.3"
-  }
-}
