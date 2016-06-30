@@ -1,3 +1,4 @@
+// Package about displays the About page.
 package about
 
 import (

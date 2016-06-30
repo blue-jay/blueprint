@@ -1,3 +1,4 @@
+// Package debug provides access to pprof.
 package debug
 
 import (

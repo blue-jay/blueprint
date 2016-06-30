@@ -1,3 +1,4 @@
+// Package notepad provides a simple CRUD application in a web page.
 package notepad
 
 import (

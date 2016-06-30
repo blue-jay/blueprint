@@ -1,3 +1,4 @@
+// Package register handles the user creation.
 package register
 
 import (

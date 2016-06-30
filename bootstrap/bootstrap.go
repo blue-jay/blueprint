@@ -1,3 +1,4 @@
+// Package bootstrap handles the initialization of the web components.
 package bootstrap
 
 import (

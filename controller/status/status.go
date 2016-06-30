@@ -1,3 +1,5 @@
+// Package status provides all the error pages like 404, 405, 500, 501,
+// and the page when a CSRF token is invalid.
 package status
 
 import (

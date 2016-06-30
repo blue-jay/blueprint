@@ -1,3 +1,4 @@
+// Package controller loads the routes for each of the controllers.
 package controller
 
 import (

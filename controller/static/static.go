@@ -1,3 +1,4 @@
+// Package static serves static files like CSS, JavaScript, and images.
 package static
 
 import (

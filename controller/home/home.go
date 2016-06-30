@@ -1,3 +1,4 @@
+// Package home displays the Home page.
 package home
 
 import (

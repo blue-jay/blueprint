@@ -1,3 +1,4 @@
+// Package login handles the user login.
 package login
 
 import (
