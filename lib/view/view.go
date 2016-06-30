@@ -10,16 +10,21 @@ import (
 	"sync"
 )
 
+// *****************************************************************************
+// Thread-Safe Configuration
+// *****************************************************************************
+
 var (
 	childTemplates     []string
 	rootTemplate       string
 	templateCollection = make(map[string]*template.Template)
 	mutex              sync.RWMutex
 	sessionName        string
-	viewInfo           Info
+	info               Info
+	infoMutex          sync.RWMutex
 )
 
-// Template root and children.
+// Template holds the root and children templates.
 type Template struct {
 	Root     string   `json:"Root"`
 	Children []string `json:"Children"`
@@ -36,23 +41,39 @@ type Info struct {
 	templates []string
 }
 
-// SetConfig sets the view information.
-func SetConfig(vi Info) {
-	viewInfo = vi
+// SetConfig stores the config.
+func SetConfig(i Info) {
+	infoMutex.Lock()
+	info = i
+	infoMutex.Unlock()
 }
 
-// Config returns the configuration.
-func Config() Info {
-	return viewInfo
+// ResetConfig removes the config.
+func ResetConfig() {
+	infoMutex.Lock()
+	info = Info{}
+	infoMutex.Unlock()
 }
+
+// Config returns the config.
+func Config() Info {
+	infoMutex.RLock()
+	i := info
+	infoMutex.RUnlock()
+	return i
+}
+
+// *****************************************************************************
+// Template Handling
+// *****************************************************************************
 
 // New accepts multiple templates and then returns a new view.
 func New(templateList ...string) *Info {
 	v := &Info{}
 	v.Vars = make(map[string]interface{})
-	v.BaseURI = viewInfo.BaseURI
-	v.Extension = viewInfo.Extension
-	v.Folder = viewInfo.Folder
+	v.BaseURI = Config().BaseURI
+	v.Extension = Config().Extension
+	v.Folder = Config().Folder
 	v.templates = append(v.templates, templateList...)
 	v.base = rootTemplate
 
@@ -93,7 +114,7 @@ func (v *Info) Render(w http.ResponseWriter, r *http.Request) error {
 	pc := extend()
 
 	// If the template collection is not cached or caching is disabled
-	if !ok || !viewInfo.Caching {
+	if !ok || !Config().Caching {
 		// Loop through each template and test the full path
 		for i, name := range v.templates {
 			// Get the absolute path of the root template

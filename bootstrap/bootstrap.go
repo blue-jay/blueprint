@@ -129,7 +129,7 @@ func SetUpMiddleware(h http.Handler) http.Handler {
 
 // setUpBanana makes csrfbanana compatible with the http.Handler.
 func setUpBanana(h http.Handler) http.Handler {
-	cs := csrfbanana.New(h, session.Store, session.Name)
+	cs := csrfbanana.New(h, session.Store(), session.Name)
 	cs.FailureHandler(http.HandlerFunc(status.InvalidToken))
 	cs.ClearAfterUsage(true)
 	cs.ExcludeRegexPaths([]string{"/static(.*)"})

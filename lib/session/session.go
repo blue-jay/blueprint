@@ -8,30 +8,43 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+// *****************************************************************************
+// Configuration
+// *****************************************************************************
+
 var (
-	// Store is the cookie store
-	Store *sessions.CookieStore
+	// store is the cookie store
+	store *sessions.CookieStore
 	// Name is the session name
 	Name string
 )
 
-// Info stores session level information.
+// Info holds the session level information.
 type Info struct {
 	Options   sessions.Options `json:"Options"`   // Pulled from: http://www.gorillatoolkit.org/pkg/sessions#Options
 	Name      string           `json:"Name"`      // Name for: http://www.gorillatoolkit.org/pkg/sessions#CookieStore.Get
 	SecretKey string           `json:"SecretKey"` // Key for: http://www.gorillatoolkit.org/pkg/sessions#CookieStore.New
 }
 
-// SetConfig sets the session cookie store.
-func SetConfig(info Info) {
-	Store = sessions.NewCookieStore([]byte(info.SecretKey))
-	Store.Options = &info.Options
-	Name = info.Name
+// SetConfig stores the config.
+func SetConfig(i Info) {
+	store = sessions.NewCookieStore([]byte(i.SecretKey))
+	store.Options = &i.Options
+	Name = i.Name
 }
 
-// Instance returns a new session, never returns an error.
+// Store returns the cookiestore
+func Store() *sessions.CookieStore {
+	return store
+}
+
+// *****************************************************************************
+// Session Handling
+// *****************************************************************************
+
+// Instance returns a new session and never returns an error, just displays one.
 func Instance(r *http.Request) *sessions.Session {
-	session, err := Store.Get(r, Name)
+	session, err := store.Get(r, Name)
 	if err != nil {
 		log.Println("Session error:", err)
 	}

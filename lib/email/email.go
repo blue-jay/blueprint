@@ -5,13 +5,19 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/smtp"
+	"sync"
 )
+
+// *****************************************************************************
+// Thread-Safe Configuration
+// *****************************************************************************
 
 var (
-	e Info
+	info      Info
+	infoMutex sync.RWMutex
 )
 
-// Info is the details for the SMTP server.
+// Info holds the details for the SMTP server.
 type Info struct {
 	Username string
 	Password string
@@ -20,22 +26,38 @@ type Info struct {
 	From     string
 }
 
-// SetConfig adds the settings for the SMTP server.
-func SetConfig(c Info) {
-	e = c
+// SetConfig stores the config.
+func SetConfig(i Info) {
+	infoMutex.Lock()
+	info = i
+	infoMutex.Unlock()
 }
 
-// Config returns the configuration.
-func Config() Info {
-	return e
+// ResetConfig removes the config.
+func ResetConfig() {
+	infoMutex.Lock()
+	info = Info{}
+	infoMutex.Unlock()
 }
+
+// Config returns the config.
+func Config() Info {
+	infoMutex.RLock()
+	i := info
+	infoMutex.RUnlock()
+	return i
+}
+
+// *****************************************************************************
+// Email Handling
+// *****************************************************************************
 
 // Send mails an email.
 func Send(to, subject, body string) error {
-	auth := smtp.PlainAuth("", e.Username, e.Password, e.Hostname)
+	auth := smtp.PlainAuth("", Config().Username, Config().Password, Config().Hostname)
 
 	header := make(map[string]string)
-	header["From"] = e.From
+	header["From"] = Config().From
 	header["To"] = to
 	header["Subject"] = subject
 	header["MIME-Version"] = "1.0"
@@ -50,9 +72,9 @@ func Send(to, subject, body string) error {
 
 	// Send the email
 	err := smtp.SendMail(
-		fmt.Sprintf("%s:%d", e.Hostname, e.Port),
+		fmt.Sprintf("%s:%d", Config().Hostname, Config().Port),
 		auth,
-		e.From,
+		Config().From,
 		[]string{to},
 		[]byte(message),
 	)
