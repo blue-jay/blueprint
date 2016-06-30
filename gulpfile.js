@@ -25,25 +25,25 @@ gulp.task('javascript', function() {
 
 // jQuery Task
 gulp.task('jquery', function() {
-	return gulp.src('bower_components/jquery/dist/jquery.min.*')
+	return gulp.src('node_modules/jquery/dist/jquery.min.*')
 		.pipe(gulp.dest('asset/static/js/'));
 });
 
 // Bootstrap Task
 gulp.task('bootstrap', function() {
-	gulp.src('bower_components/bootstrap/dist/css/bootstrap-theme.min.*')
+	gulp.src('node_modules/bootstrap/dist/css/bootstrap-theme.min.*')
 		.pipe(gulp.dest('asset/static/css/'));
-	gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.*')
+	gulp.src('node_modules/bootstrap/dist/css/bootstrap.min.*')
 		.pipe(gulp.dest('asset/static/css/'));
-	gulp.src('bower_components/bootstrap/dist/fonts/*')
+	gulp.src('node_modules/bootstrap/dist/fonts/*')
 		.pipe(gulp.dest('asset/static/fonts/'));
-	return gulp.src('bower_components/bootstrap/dist/js/bootstrap.min.js')
+	return gulp.src('node_modules/bootstrap/dist/js/bootstrap.min.js')
 		.pipe(gulp.dest('asset/static/js/'));
 });
 
 // Underscore Task
 gulp.task('underscore', function() {
-	return gulp.src('bower_components/underscore/underscore-min.*')
+	return gulp.src('node_modules/underscore/underscore-min.*')
 		.pipe(gulp.dest('asset/static/js/'));
 });
 

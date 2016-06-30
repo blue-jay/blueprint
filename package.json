@@ -6,6 +6,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-real-favicon": "^0.2.1",
     "gulp-sass": "^2.3.2",
+    "jquery": "^3.0.0",
     "run-sequence": "^1.2.2",
     "underscore": "^1.8.3"
   }
