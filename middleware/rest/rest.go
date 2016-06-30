@@ -1,4 +1,4 @@
-// Packge rest allows changing the HTTP method via a form field.
+// Package rest allows changing the HTTP method via a form field.
 package rest
 
 import "net/http"
