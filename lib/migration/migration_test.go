@@ -273,7 +273,7 @@ func TestAlterRows(t *testing.T) {
 	mig.UpAll()
 
 	// Test querying the data
-	result, err = byID("1")
+	result, _ = byID("1")
 	if result.Age != 28 {
 		t.Errorf("record retrieved is incorrect: '%v'", result.Age)
 	}
