@@ -36,7 +36,7 @@ import (
 // Application Settings
 // *****************************************************************************
 
-// Info contains the application settings
+// Info contains the application settings.
 type Info struct {
 	Asset    asset.Info    `json:"Asset"`
 	Database database.Info `json:"Database"`
@@ -56,6 +56,7 @@ func (c *Info) ParseJSON(b []byte) error {
 // Application Logic
 // *****************************************************************************
 
+// init sets runtime settings.
 func init() {
 	// Verbose logging with file name and line number
 	log.SetFlags(log.Lshortfile)
@@ -64,7 +65,7 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
-// LoadConfig reads the configuration file
+// LoadConfig reads the configuration file.
 func LoadConfig(configFile string) *Info {
 	// Configuration
 	config := &Info{}
@@ -76,7 +77,7 @@ func LoadConfig(configFile string) *Info {
 	return config
 }
 
-// RegisterServices sets up all the components
+// RegisterServices sets up all the components.
 func RegisterServices(config *Info) {
 	// Set up the session cookie store
 	session.SetConfig(config.Session)
@@ -116,7 +117,7 @@ func RegisterServices(config *Info) {
 // Middleware
 // *****************************************************************************
 
-// SetUpMiddleware contains the middleware that applies to every request
+// SetUpMiddleware contains the middleware that applies to every request.
 func SetUpMiddleware(h http.Handler) http.Handler {
 	return router.ChainHandler( // Chain middleware, bottom runs first
 		h,                    // Handler to wrap
@@ -126,7 +127,7 @@ func SetUpMiddleware(h http.Handler) http.Handler {
 		setUpBanana)          // Prevent CSRF and double submits
 }
 
-// setUpBanana makes csrfbanana compatible with the http.Handler
+// setUpBanana makes csrfbanana compatible with the http.Handler.
 func setUpBanana(h http.Handler) http.Handler {
 	cs := csrfbanana.New(h, session.Store, session.Name)
 	cs.FailureHandler(http.HandlerFunc(status.InvalidToken))

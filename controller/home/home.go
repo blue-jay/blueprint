@@ -9,12 +9,12 @@ import (
 	"github.com/blue-jay/blueprint/lib/view"
 )
 
-// Load the routes
+// Load the routes.
 func Load() {
 	router.Get("/", Index)
 }
 
-// Index displays the home page
+// Index displays the home page.
 func Index(w http.ResponseWriter, r *http.Request) {
 	session := session.Instance(r)
 

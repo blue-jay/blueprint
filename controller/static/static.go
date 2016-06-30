@@ -11,13 +11,13 @@ import (
 	"github.com/blue-jay/blueprint/lib/router"
 )
 
-// Load the routes
+// Load the routes.
 func Load() {
 	// Serve static files
 	router.Get("/static/*filepath", Index)
 }
 
-// Index maps static files
+// Index maps static files.
 func Index(w http.ResponseWriter, r *http.Request) {
 	// File path
 	path := path.Join(asset.Config().Folder, r.URL.Path[1:])

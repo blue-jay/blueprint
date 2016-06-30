@@ -12,7 +12,7 @@ import (
 	"github.com/blue-jay/blueprint/controller/status"
 )
 
-// LoadRoutes loads the routes for each of the controllers
+// LoadRoutes loads the routes for each of the controllers.
 func LoadRoutes() {
 	about.Load()
 	debug.Load()

@@ -8,12 +8,12 @@ import (
 	"github.com/blue-jay/blueprint/lib/view"
 )
 
-// Load the routes
+// Load the routes.
 func Load() {
 	router.Get("/about", Index)
 }
 
-// Index displays the About page
+// Index displays the About page.
 func Index(w http.ResponseWriter, r *http.Request) {
 	view.New("about/index").Render(w, r)
 }

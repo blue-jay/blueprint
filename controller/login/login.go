@@ -16,21 +16,21 @@ import (
 	"github.com/blue-jay/blueprint/model/user"
 )
 
-// Load the routes
+// Load the routes.
 func Load() {
 	router.Get("/login", Index, acl.DisallowAuth)
 	router.Post("/login", Store, acl.DisallowAuth)
 	router.Get("/logout", Logout)
 }
 
-// Index displays the login page
+// Index displays the login page.
 func Index(w http.ResponseWriter, r *http.Request) {
 	v := view.New("login/index")
 	form.Repopulate(r.Form, v.Vars, "email")
 	v.Render(w, r)
 }
 
-// Store handles the login form submission
+// Store handles the login form submission.
 func Store(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 
@@ -83,7 +83,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	Index(w, r)
 }
 
-// Logout clears the session and logs the user out
+// Logout clears the session and logs the user out.
 func Logout(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 

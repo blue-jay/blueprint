@@ -7,7 +7,7 @@ import (
 	"github.com/blue-jay/blueprint/middleware/pprofhandler"
 )
 
-// Load the routes
+// Load the routes.
 func Load() {
 	// Enable Pprof
 	router.Get("/debug/pprof/*pprof", pprofhandler.Handler, acl.DisallowAnon)
