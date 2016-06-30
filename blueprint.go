@@ -1,3 +1,4 @@
+// Package main is the entry point.
 package main
 
 import (
@@ -6,7 +7,8 @@ import (
 	"github.com/blue-jay/blueprint/lib/server"
 )
 
-// main is the entry point
+// main loads the configuration file, registers the services, applies the
+// middlware to the router, and then starts the HTTP and HTTPS listeners.
 func main() {
 	// Load the configuration file
 	info := bootstrap.LoadConfig("env.json")

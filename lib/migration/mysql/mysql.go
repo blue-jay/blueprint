@@ -1,3 +1,4 @@
+// Package mysql implements MySQL migrations.
 package mysql
 
 import (

@@ -1,3 +1,5 @@
+// Package migration provides an interface for migrating a database backwards
+// and forwards.
 package migration
 
 import (
@@ -23,7 +25,7 @@ var (
 	ErrTableNotCreated = errors.New("Could not create the migration table.")
 )
 
-// Info contains the information for the migration status
+// Info holds the information for the migration.
 type Info struct {
 	// Db is the database information
 	Db Interface
@@ -43,7 +45,7 @@ type Info struct {
 	output string
 }
 
-// Interface defines all the functions required for a migration
+// Interface defines all the functions required for a migration.
 type Interface interface {
 	// Extension should return an extension without a period or a blank string
 	Extension() string
@@ -67,7 +69,7 @@ func (info *Info) log(text string) {
 	info.output += text
 }
 
-// Output returns the text output of the performed operations
+// Output returns the text output of the performed operations.
 func (info *Info) Output() string {
 	return info.output
 }
@@ -75,7 +77,7 @@ func (info *Info) Output() string {
 // New returns an instance of a migration after creating the migration
 // table (if one doesn't exist), retrieving a list of the available
 // migrations, and reading the last migration.
-// You must connect to the database prior to calling this function
+// You must connect to the database prior to calling this function.
 func New(db Interface, folder string) (*Info, error) {
 	info := &Info{
 		Db:         db,
@@ -118,7 +120,7 @@ func New(db Interface, folder string) (*Info, error) {
 	return info, err
 }
 
-// Status returns the last applied migration name without the file extension
+// Status returns the last applied migration name without the file extension.
 func (info *Info) Status() string {
 
 	if info.Position < 0 || info.Position >= len(info.List) {
@@ -132,12 +134,12 @@ func (info *Info) Status() string {
 	return strings.Replace(filepath.Base(file), ".up"+info.Db.Extension(), "", -1)
 }
 
-// updateList returns the list of Up migrations
+// updateList returns the list of Up migrations.
 func (info *Info) updateList() ([]string, error) {
 	return filepath.Glob(filepath.Join(info.Folder, "*.up"+info.Db.Extension()))
 }
 
-// migrtionPosition returns the position of the migration or an error
+// migrtionPosition returns the position of the migration or an error.
 func (info *Info) migrationPosition(current string) (int, error) {
 	for i := 0; i < len(info.List); i++ {
 		if strings.Contains(info.List[i], current) {
@@ -147,7 +149,7 @@ func (info *Info) migrationPosition(current string) (int, error) {
 	return 0, ErrMissing
 }
 
-// Create writes two new migration files to the folder with timestamps and descriptions
+// Create writes two new migration files to the folder with timestamps and descriptions.
 func (info *Info) Create(description string) error {
 	// Remove spaces and convert to lowercase
 	desc := strings.ToLower(strings.Replace(description, " ", "_", -1))
@@ -185,7 +187,7 @@ func (info *Info) Create(description string) error {
 	return nil
 }
 
-// UpOne applies only the next migration
+// UpOne applies only the next migration.
 func (info *Info) UpOne() error {
 	// If migration is current
 	if len(info.List) <= info.Position+1 {
@@ -203,7 +205,7 @@ func (info *Info) UpOne() error {
 	return nil
 }
 
-// UpAll applies all migrations that have not been applied
+// UpAll applies all migrations that have not been applied.
 func (info *Info) UpAll() error {
 	// If migration is current
 	if len(info.List) <= info.Position+1 {
@@ -223,7 +225,7 @@ func (info *Info) UpAll() error {
 	return nil
 }
 
-// up reads the query and passes it to the database
+// up reads the query and passes it to the database.
 func (info *Info) up() error {
 	// Get the name of the next Up file to migrate
 	file := info.List[info.Position+1]
@@ -257,7 +259,7 @@ func (info *Info) up() error {
 	return nil
 }
 
-// DownOne removes only the last migration
+// DownOne removes only the last migration.
 func (info *Info) DownOne() error {
 	// If migration is current
 	if info.Position < 0 {
@@ -274,7 +276,7 @@ func (info *Info) DownOne() error {
 	return nil
 }
 
-// DownAll removes all migrations
+// DownAll removes all migrations.
 func (info *Info) DownAll() error {
 	// If migration is current
 	if info.Position < 0 {
@@ -294,7 +296,7 @@ func (info *Info) DownAll() error {
 	return nil
 }
 
-// down reads the query and passes it to the database
+// down reads the query and passes it to the database.
 func (info *Info) down() error {
 	// Get the name of the current Down file to migrate
 	fileUp := info.List[info.Position]

@@ -1,3 +1,4 @@
+// Package flash provides one-time messages for the user.
 package flash
 
 import (
@@ -33,7 +34,7 @@ func init() {
 	gob.Register(Info{})
 }
 
-// SendFlashes allows retrieval of flash messages for using with Ajax
+// SendFlashes allows retrieval of flash messages for using with Ajax.
 func SendFlashes(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 
@@ -50,6 +51,7 @@ func SendFlashes(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+// peekFlashes returns the flashes without destroying them.
 func peekFlashes(w http.ResponseWriter, r *http.Request) []Info {
 	sess := session.Instance(r)
 
@@ -72,7 +74,7 @@ func peekFlashes(w http.ResponseWriter, r *http.Request) []Info {
 	return v
 }
 
-// Modify adds the flashes to the view
+// Modify adds the flashes to the view.
 func Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
 	sess := session.Instance(r)
 

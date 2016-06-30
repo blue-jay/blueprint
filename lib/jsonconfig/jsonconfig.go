@@ -1,3 +1,4 @@
+// Package jsonconfig handles loading a JSON file into a struct.
 package jsonconfig
 
 import (
@@ -5,12 +6,12 @@ import (
 	"log"
 )
 
-// Parser must implement ParseJSON
+// Parser must implement ParseJSON.
 type Parser interface {
 	ParseJSON([]byte) error
 }
 
-// LoadOrFatal loads the JSON config file and exits if it can't be parsed
+// LoadOrFatal loads the JSON config file and exits if it can't be parsed.
 func LoadOrFatal(configFile string, p Parser) {
 	// Read the config file
 	jsonBytes, err := ioutil.ReadFile(configFile)
@@ -25,7 +26,7 @@ func LoadOrFatal(configFile string, p Parser) {
 	}
 }
 
-// Load the JSON config file
+// Load the JSON config file.
 func Load(configFile string, p Parser) error {
 	// Read the config file
 	jsonBytes, err := ioutil.ReadFile(configFile)

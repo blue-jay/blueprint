@@ -1,3 +1,4 @@
+// Package authlevel adds an AuthLevel variable to the view template.
 package authlevel
 
 import (

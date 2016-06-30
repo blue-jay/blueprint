@@ -13,7 +13,7 @@ var (
 	modifyList  = make([]ModifyFunc, 0)
 )
 
-// extend safely reads the extend list
+// extend safely reads the extend list.
 func extend() template.FuncMap {
 	extendMutex.RLock()
 	list := extendList
@@ -22,7 +22,7 @@ func extend() template.FuncMap {
 	return list
 }
 
-// modify safely reads the modify list
+// modify safely reads the modify list.
 func modify() []ModifyFunc {
 	// Get the setter collection
 	modifyMutex.RLock()
@@ -32,17 +32,17 @@ func modify() []ModifyFunc {
 	return list
 }
 
-// SetTemplates will set the root and child templates
+// SetTemplates will set the root and child templates.
 func SetTemplates(rootTemp string, childTemps []string) {
 	rootTemplate = rootTemp
 	childTemplates = childTemps
 }
 
-// ModifyFunc can modify the view before rendering
+// ModifyFunc can modify the view before rendering.
 type ModifyFunc func(http.ResponseWriter, *http.Request, *Info)
 
 // SetModifiers will set the modifiers for the View that run
-// before rendering
+// before rendering.
 func SetModifiers(fn ...ModifyFunc) {
 	modifyMutex.Lock()
 	modifyList = fn

@@ -1,3 +1,5 @@
+// Package prettytime provides a funcmap for html/template to that displays
+// time using an easy to read format.
 package prettytime
 
 import (
@@ -6,8 +8,8 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-// Map returns a template.FuncMap for PRETTYTIME
-// which outputs a time in this format: 3:04 PM 01/02/2006.
+// Map returns a template.FuncMap for PRETTYTIME which outputs a time in this
+// format: 3:04 PM 01/02/2006.
 func Map() template.FuncMap {
 	f := make(template.FuncMap)
 

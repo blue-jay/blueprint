@@ -1,3 +1,4 @@
+// Package migration_test tests the migration process.
 package migration_test
 
 import (
@@ -19,7 +20,7 @@ var (
 	migrationFolder = filepath.Join("database", "migration_test")
 )
 
-// TestMain runs setup, tests, and then teardown
+// TestMain runs setup, tests, and then teardown.
 func TestMain(m *testing.M) {
 	globalSetup()
 	returnCode := m.Run()
@@ -27,7 +28,7 @@ func TestMain(m *testing.M) {
 	os.Exit(returnCode)
 }
 
-// globalSetup handles any start up tasks
+// globalSetup handles any start up tasks.
 func globalSetup() {
 	// Change the working directory to the root
 	os.Chdir("../../")
@@ -70,7 +71,7 @@ func setup() *migration.Info {
 	return mig
 }
 
-// teardown handles any cleanup teasks
+// teardown handles any cleanup teasks.
 func teardown() {
 	// Remove the folder
 	err := os.RemoveAll(migrationFolder)
@@ -82,7 +83,7 @@ func teardown() {
 	deleteTable("test_migration")
 }
 
-// TestCreateTable
+// TestCreateTable.
 func TestCreateTable(t *testing.T) {
 	var err error
 	mig := setup()
@@ -101,7 +102,7 @@ func TestCreateTable(t *testing.T) {
 	}
 }
 
-// TestDrppTable
+// TestDropTable.
 func TestDropTable(t *testing.T) {
 	var err error
 	mig := setup()
@@ -126,7 +127,7 @@ func TestDropTable(t *testing.T) {
 	}
 }
 
-// TestInsertRows
+// TestInsertRows.
 func TestInsertRows(t *testing.T) {
 	var err error
 	mig := setup()
@@ -158,7 +159,7 @@ func TestInsertRows(t *testing.T) {
 	}
 }
 
-// TestDeleteRows
+// TestDeleteRows.
 func TestDeleteRows(t *testing.T) {
 	var err error
 	mig := setup()
@@ -202,7 +203,7 @@ func TestDeleteRows(t *testing.T) {
 	}
 }
 
-// TestAlterRows
+// TestAlterRows.
 func TestAlterRows(t *testing.T) {
 	var err error
 	mig := setup()
@@ -324,21 +325,21 @@ func TestAlterRows(t *testing.T) {
 // Models
 // *****************************************************************************
 
-// Entity defines the brother table
+// Entity defines the brother table.
 type Entity struct {
 	ID   uint32 `db:"id"`
 	Name string `db:"name"`
 	Age  int    `db:"age"`
 }
 
-// byID gets note by ID
+// byID gets note by ID.
 func byID(ID string) (Entity, error) {
 	result := Entity{}
 	err := database.SQL.Get(&result, "SELECT * FROM test_brother WHERE id = ? LIMIT 1", ID)
 	return result, model.StandardError(err)
 }
 
-// deleteTable drops a table
+// deleteTable drops a table.
 func deleteTable(table string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf("DROP TABLE %v", table))
 	return result, model.StandardError(err)
@@ -403,7 +404,7 @@ UPDATE test_brother SET age = NULL;
 // Helpers
 // *****************************************************************************
 
-// folderExists will exit if the folder doesn't exist
+// folderExists will exit if the folder doesn't exist.
 func folderExists(dir string) bool {
 	if _, err := os.Stat(dir); err != nil {
 		if os.IsNotExist(err) {

@@ -1,3 +1,4 @@
+// Package token adds a CSRF token variable to the view template.
 package token
 
 import (

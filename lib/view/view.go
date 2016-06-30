@@ -1,3 +1,4 @@
+// Package view provides thread-safe caching of HTML templates.
 package view
 
 import (
@@ -18,13 +19,13 @@ var (
 	viewInfo           Info
 )
 
-// Template root and children
+// Template root and children.
 type Template struct {
 	Root     string   `json:"Root"`
 	Children []string `json:"Children"`
 }
 
-// Info attributes
+// Info holds view attributes.
 type Info struct {
 	BaseURI   string
 	Extension string
@@ -35,17 +36,17 @@ type Info struct {
 	templates []string
 }
 
-// SetConfig sets the view information
+// SetConfig sets the view information.
 func SetConfig(vi Info) {
 	viewInfo = vi
 }
 
-// Config returns the configuration
+// Config returns the configuration.
 func Config() Info {
 	return viewInfo
 }
 
-// New accepts multiple templates and then returns a new view
+// New accepts multiple templates and then returns a new view.
 func New(templateList ...string) *Info {
 	v := &Info{}
 	v.Vars = make(map[string]interface{})
@@ -59,7 +60,7 @@ func New(templateList ...string) *Info {
 }
 
 // Base sets the new base template instead of reading from
-// Template.Root of the config file
+// Template.Root of the config file.
 func (v *Info) Base(base string) *Info {
 	// Set the new base template
 	v.base = base

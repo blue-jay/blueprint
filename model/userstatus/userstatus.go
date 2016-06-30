@@ -1,3 +1,4 @@
+// Package userstatus provides access to the user_status table in the MySQL database.
 package userstatus
 
 import "time"

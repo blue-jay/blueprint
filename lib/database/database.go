@@ -1,3 +1,4 @@
+// Package database provides a wrapper around the sqlx package.
 package database
 
 import (
@@ -15,7 +16,7 @@ var (
 	databases Info
 )
 
-// Type is the type of database from a Type* constant
+// Type is the type of database.
 type Type string
 
 const (
@@ -23,7 +24,7 @@ const (
 	TypeMySQL Type = "MySQL"
 )
 
-// Info contains the database configurations
+// Info contains the database configurations.
 type Info struct {
 	// Database type
 	Type Type
@@ -31,7 +32,7 @@ type Info struct {
 	MySQL MySQLInfo
 }
 
-// MySQLInfo is the details for the database connection
+// MySQLInfo holds the details for the database connection.
 type MySQLInfo struct {
 	Username  string
 	Password  string
@@ -41,7 +42,7 @@ type MySQLInfo struct {
 	Parameter string
 }
 
-// DSN returns the Data Source Name
+// DSN returns the Data Source Name.
 func dsn(ci MySQLInfo) string {
 	// Example: root:@tcp(localhost:3306)/test
 	return ci.Username +
@@ -55,7 +56,7 @@ func dsn(ci MySQLInfo) string {
 		ci.Database + ci.Parameter
 }
 
-// Connect to the database
+// Connect to the database.
 func Connect(d Info) error {
 	var err error
 
@@ -75,7 +76,7 @@ func Connect(d Info) error {
 	return err
 }
 
-// Config returns the configuration
+// Config returns the configuration.
 func Config() Info {
 	return databases
 }

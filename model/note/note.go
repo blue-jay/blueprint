@@ -1,3 +1,4 @@
+// Package note provides access to the note table in the MySQL database.
 package note
 
 import (
@@ -13,7 +14,7 @@ var (
 	table = "note"
 )
 
-// Item defines the model
+// Item defines the model.
 type Item struct {
 	ID        uint32         `db:"id"`
 	Name      string         `db:"name"`
@@ -23,7 +24,7 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// ByID gets item by ID
+// ByID gets item by ID.
 func ByID(ID string, userID string) (Item, error) {
 	result := Item{}
 	err := database.SQL.Get(&result, fmt.Sprintf(`
@@ -38,7 +39,7 @@ func ByID(ID string, userID string) (Item, error) {
 	return result, model.StandardError(err)
 }
 
-// ByUserID gets all entities for a user
+// ByUserID gets all entities for a user.
 func ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	err := database.SQL.Select(&result, fmt.Sprintf(`
@@ -51,7 +52,7 @@ func ByUserID(userID string) ([]Item, error) {
 	return result, model.StandardError(err)
 }
 
-// Create adds an item
+// Create adds an item.
 func Create(name string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		INSERT INTO %v
@@ -63,7 +64,7 @@ func Create(name string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// Update makes changes to an existing item
+// Update makes changes to an existing item.
 func Update(name string, ID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		UPDATE %v
@@ -77,7 +78,7 @@ func Update(name string, ID string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// DeleteHard removes an item
+// DeleteHard removes an item.
 func DeleteHard(ID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		DELETE FROM %v
@@ -89,7 +90,7 @@ func DeleteHard(ID string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// Delete marks an item as removed
+// Delete marks an item as removed.
 func Delete(ID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		UPDATE %v

@@ -1,3 +1,5 @@
+// Package server is a wrapper around the net/http package that starts
+// listeners for HTTP and HTTPS.
 package server
 
 import (
@@ -7,7 +9,7 @@ import (
 	"time"
 )
 
-// Info stores the hostname and port number
+// Info stores the hostname and port number.
 type Info struct {
 	Hostname        string `json:"Hostname"`        // Server name
 	UseHTTP         bool   `json:"UseHTTP"`         // Listen on HTTP
@@ -19,7 +21,7 @@ type Info struct {
 	KeyFile         string `json:"KeyFile"`         // HTTPS private key
 }
 
-// Run starts the HTTP and/or HTTPS listener
+// Run starts the HTTP and/or HTTPS listener.
 func Run(httpHandlers http.Handler, httpsHandlers http.Handler, info Info) {
 	// Determine if HTTP should redirect to HTTPS
 	if info.RedirectToHTTPS {
@@ -40,12 +42,12 @@ func Run(httpHandlers http.Handler, httpsHandlers http.Handler, info Info) {
 	}
 }
 
-// redirectToHTTPS will redirect from HTTP to HTTPS
+// redirectToHTTPS will redirect from HTTP to HTTPS.
 func redirectToHTTPS(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, "https://"+req.Host, http.StatusMovedPermanently)
 }
 
-// startHTTP starts the HTTP listener
+// startHTTP starts the HTTP listener.
 func startHTTP(handlers http.Handler, info Info) {
 	fmt.Println(time.Now().Format("2006-01-02 03:04:05 PM"), "Running HTTP "+httpAddress(info))
 
@@ -53,7 +55,7 @@ func startHTTP(handlers http.Handler, info Info) {
 	log.Fatal(http.ListenAndServe(httpAddress(info), handlers))
 }
 
-// startHTTPs starts the HTTPS listener
+// startHTTPs starts the HTTPS listener.
 func startHTTPS(handlers http.Handler, info Info) {
 	fmt.Println(time.Now().Format("2006-01-02 03:04:05 PM"), "Running HTTPS "+httpsAddress(info))
 
@@ -61,12 +63,12 @@ func startHTTPS(handlers http.Handler, info Info) {
 	log.Fatal(http.ListenAndServeTLS(httpsAddress(info), info.CertFile, info.KeyFile, handlers))
 }
 
-// httpAddress returns the HTTP address
+// httpAddress returns the HTTP address.
 func httpAddress(info Info) string {
 	return info.Hostname + ":" + fmt.Sprintf("%d", info.HTTPPort)
 }
 
-// httpsAddress returns the HTTPS address
+// httpsAddress returns the HTTPS address.
 func httpsAddress(info Info) string {
 	return info.Hostname + ":" + fmt.Sprintf("%d", info.HTTPSPort)
 }

@@ -1,3 +1,4 @@
+// Package user provides access to the user table in the MySQL database.
 package user
 
 import (
@@ -13,7 +14,7 @@ var (
 	table = "user"
 )
 
-// Item defines the model
+// Item defines the model.
 type Item struct {
 	ID        uint32         `db:"id"`
 	FirstName string         `db:"first_name"`
@@ -26,7 +27,7 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// ByEmail gets user information from email
+// ByEmail gets user information from email.
 func ByEmail(email string) (Item, error) {
 	result := Item{}
 	err := database.SQL.Get(&result, fmt.Sprintf(`
@@ -40,7 +41,7 @@ func ByEmail(email string) (Item, error) {
 	return result, model.StandardError(err)
 }
 
-// Create creates user
+// Create creates user.
 func Create(firstName, lastName, email, password string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		INSERT INTO %v

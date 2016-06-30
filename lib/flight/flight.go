@@ -1,3 +1,4 @@
+// Package flight provides an abstraction around commonly used features.
 package flight
 
 import (
@@ -14,7 +15,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// Info contains commonly used information
+// Info holds the commonly used information.
 type Info struct {
 	Sess   *sessions.Session
 	Params httprouter.Params
@@ -23,7 +24,7 @@ type Info struct {
 	R      *http.Request
 }
 
-// Context returns commonly used information
+// Context returns commonly used information.
 func Context(w http.ResponseWriter, r *http.Request) *Info {
 	sess := session.Instance(r)
 	params := router.Params(r)
@@ -37,12 +38,12 @@ func Context(w http.ResponseWriter, r *http.Request) *Info {
 	}
 }
 
-// Param gets the URL parameter
+// Param gets the URL parameter.
 func (c *Info) Param(name string) string {
 	return c.Params.ByName(name)
 }
 
-// Redirect sends a temporary redirect
+// Redirect sends a temporary redirect.
 func (c *Info) Redirect(urlStr string) {
 	http.Redirect(c.W, c.R, urlStr, http.StatusFound)
 }
@@ -59,30 +60,30 @@ func (c *Info) FormValid(fields ...string) bool {
 	return true
 }
 
-// Repopulate fills the forms on the page after the user submits
+// Repopulate fills the forms on the page after the user submits.
 func (c *Info) Repopulate(v map[string]interface{}, fields ...string) {
 	form.Repopulate(c.R.Form, v, fields...)
 }
 
-// FlashSuccess saves a success flash
+// FlashSuccess saves a success flash.
 func (c *Info) FlashSuccess(message string) {
 	c.Sess.AddFlash(flash.Info{message, flash.Success})
 	c.Sess.Save(c.R, c.W)
 }
 
-// FlashNotice saves a notice flash
+// FlashNotice saves a notice flash.
 func (c *Info) FlashNotice(message string) {
 	c.Sess.AddFlash(flash.Info{message, flash.Notice})
 	c.Sess.Save(c.R, c.W)
 }
 
-// FlashWarning saves a warning flash
+// FlashWarning saves a warning flash.
 func (c *Info) FlashWarning(message string) {
 	c.Sess.AddFlash(flash.Info{message, flash.Warning})
 	c.Sess.Save(c.R, c.W)
 }
 
-//FlashError saves an error flash and logs the error
+//FlashError saves an error flash and logs the error.
 func (c *Info) FlashError(err error) {
 	log.Println(err)
 	c.Sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})

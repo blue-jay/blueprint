@@ -1,3 +1,4 @@
+// Package uri adds URI shortcuts to the view template.
 package uri
 
 import (

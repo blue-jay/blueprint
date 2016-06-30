@@ -1,3 +1,4 @@
+// Package link provides a funcmap for html/template to generate a hyperlink.
 package link
 
 import (
@@ -5,8 +6,7 @@ import (
 	"html/template"
 )
 
-// Map returns a template.FuncMap for LINK
-// that returns a hyperlink tag.
+// Map returns a template.FuncMap for LINK that returns a hyperlink tag.
 func Map(baseURI string) template.FuncMap {
 	f := make(template.FuncMap)
 

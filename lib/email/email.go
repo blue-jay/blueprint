@@ -1,3 +1,4 @@
+// Package email provides email sending via SMTP.
 package email
 
 import (
@@ -10,7 +11,7 @@ var (
 	e Info
 )
 
-// Info is the details for the SMTP server
+// Info is the details for the SMTP server.
 type Info struct {
 	Username string
 	Password string
@@ -19,17 +20,17 @@ type Info struct {
 	From     string
 }
 
-// SetConfig adds the settings for the SMTP server
+// SetConfig adds the settings for the SMTP server.
 func SetConfig(c Info) {
 	e = c
 }
 
-// Config returns the configuration
+// Config returns the configuration.
 func Config() Info {
 	return e
 }
 
-// Send mails an email
+// Send mails an email.
 func Send(to, subject, body string) error {
 	auth := smtp.PlainAuth("", e.Username, e.Password, e.Hostname)
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestStringString tests string to string hash
+// TestStringString tests string to string hash.
 func TestStringString(t *testing.T) {
 	plainText := "This is a test."
 
@@ -19,7 +19,7 @@ func TestStringString(t *testing.T) {
 	}
 }
 
-// TestByteByte tests byte to byte hash
+// TestByteByte tests byte to byte hash.
 func TestByteByte(t *testing.T) {
 	plainText := []byte("This is a test.")
 
@@ -34,7 +34,7 @@ func TestByteByte(t *testing.T) {
 	}
 }
 
-// TestStringByte tests string to byte hash
+// TestStringByte tests string to byte hash.
 func TestStringByte(t *testing.T) {
 	plainText := "This is a test."
 
@@ -49,7 +49,7 @@ func TestStringByte(t *testing.T) {
 	}
 }
 
-// TestByteString tests byte to string hash
+// TestByteString tests byte to string hash.
 func TestByteString(t *testing.T) {
 	plainText := []byte("This is a test.")
 
