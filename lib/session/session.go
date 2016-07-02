@@ -2,6 +2,7 @@
 package session
 
 import (
+	"encoding/base64"
 	"log"
 	"net/http"
 	"sync"
@@ -23,15 +24,33 @@ var (
 
 // Info holds the session level information.
 type Info struct {
-	Options   sessions.Options `json:"Options"`   // Pulled from: http://www.gorillatoolkit.org/pkg/sessions#Options
-	Name      string           `json:"Name"`      // Name for: http://www.gorillatoolkit.org/pkg/sessions#CookieStore.Get
-	SecretKey string           `json:"SecretKey"` // Key for: http://www.gorillatoolkit.org/pkg/sessions#CookieStore.New
+	Options    sessions.Options `json:"Options"`    // Pulled from: http://www.gorillatoolkit.org/pkg/sessions#Options
+	Name       string           `json:"Name"`       // Name for: http://www.gorillatoolkit.org/pkg/sessions#CookieStore.Get
+	AuthKey    string           `json:"AuthKey"`    // Key for: http://www.gorillatoolkit.org/pkg/sessions#NewCookieStore
+	EncryptKey string           `json:"EncryptKey"` // Key for: http://www.gorillatoolkit.org/pkg/sessions#NewCookieStore
 }
 
 // SetConfig stores the config.
 func SetConfig(i Info) {
 	infoMutex.Lock()
-	store = sessions.NewCookieStore([]byte(i.SecretKey))
+
+	// Decode authentication key
+	auth, err := base64.StdEncoding.DecodeString(i.AuthKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// If the encrypt key is set
+	if len(i.EncryptKey) > 0 {
+		// Decode the encrypt key
+		encrypt, err := base64.StdEncoding.DecodeString(i.EncryptKey)
+		if err != nil {
+			log.Fatal(err)
+		}
+		store = sessions.NewCookieStore(auth, encrypt)
+	} else {
+		store = sessions.NewCookieStore(auth)
+	}
 	store.Options = &i.Options
 	Name = i.Name
 	infoMutex.Unlock()
