@@ -1,25 +1,17 @@
 /* *****************************************************************************
-// Set up the preferences
+// Settings
 // ****************************************************************************/
-SET NAMES utf8 COLLATE 'utf8_unicode_ci';
 SET foreign_key_checks = 1;
 SET time_zone = '+00:00';
-SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
-SET CHARACTER SET utf8;
 
 /* *****************************************************************************
-// Remove old database
+// Create new tables
 // ****************************************************************************/
-DROP DATABASE IF EXISTS blueprint;
+# CREATE DATABASE IF NOT EXISTS blueprint DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+# USE blueprint;
 
 /* *****************************************************************************
-// Create new database
-// ****************************************************************************/
-CREATE DATABASE blueprint DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;
-USE blueprint;
-
-/* *****************************************************************************
-// Create the tables
+// Create tables
 // ****************************************************************************/
 CREATE TABLE user_status (
     id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,

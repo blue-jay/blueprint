@@ -46,7 +46,7 @@ func globalSetup() {
 	db.UpdateConfig(&info.Database)
 
 	// Connect to database
-	database.Connect(info.Database)
+	database.Connect(info.Database, true)
 }
 
 func setup() *migration.Info {

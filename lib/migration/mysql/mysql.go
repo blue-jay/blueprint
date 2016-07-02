@@ -29,7 +29,7 @@ func (t *Entity) Extension() string {
 
 // UpdateConfig will update any parameters necessary
 func (t *Entity) UpdateConfig(config *database.Info) {
-	config.MySQL.Parameter = "?parseTime=true&multiStatements=true"
+	config.MySQL.Parameter = "parseTime=true&multiStatements=true"
 }
 
 // TableExist returns true if the migration table exists
@@ -46,11 +46,12 @@ func (t *Entity) TableExist() error {
 func (t *Entity) CreateTable() error {
 	_, err := database.SQL.Exec(fmt.Sprintf(`CREATE TABLE %v (
 		id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  		name VARCHAR(255) NOT NULL,
+  		name VARCHAR(191) NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		UNIQUE KEY (name),
   		PRIMARY KEY (id)
 		);`, Table))
+
 	if err != nil {
 		return err
 	}

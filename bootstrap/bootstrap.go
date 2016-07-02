@@ -83,7 +83,7 @@ func RegisterServices(config *Info) {
 	session.SetConfig(config.Session)
 
 	// Connect to database
-	database.Connect(config.Database)
+	database.Connect(config.Database, true)
 
 	// Load the controller routes
 	controller.LoadRoutes()

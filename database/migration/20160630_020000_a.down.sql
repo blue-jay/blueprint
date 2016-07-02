@@ -1,4 +1,11 @@
 /* *****************************************************************************
-// Remove old database
+// Settings
 // ****************************************************************************/
-DROP DATABASE IF EXISTS blueprint;
+SET foreign_key_checks = 0;
+
+/* *****************************************************************************
+// Remove tables
+// ****************************************************************************/
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS user_status;
+DROP TABLE IF EXISTS note;
