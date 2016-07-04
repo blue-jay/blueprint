@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	uri = "/{{.uri}}"
+	uri = "/{{.url}}"
 )
 
 // Load the routes.
