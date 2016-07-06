@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/husobee/vestigo"
 )
 
 // *****************************************************************************
@@ -14,12 +14,8 @@ import (
 // *****************************************************************************
 
 var (
-	r         *httprouter.Router
+	r         *vestigo.Router
 	infoMutex sync.RWMutex
-)
-
-const (
-	params = "params"
 )
 
 // init sets up the router.
@@ -30,12 +26,12 @@ func init() {
 // ResetConfig creates a new instance.
 func ResetConfig() {
 	infoMutex.Lock()
-	r = httprouter.New()
+	r = vestigo.NewRouter()
 	infoMutex.Unlock()
 }
 
 // Instance returns the router.
-func Instance() *httprouter.Router {
+func Instance() *vestigo.Router {
 	infoMutex.RLock()
 	defer infoMutex.RUnlock()
 	return r
@@ -44,14 +40,15 @@ func Instance() *httprouter.Router {
 // NotFound sets the 404 handler.
 func NotFound(fn http.HandlerFunc) {
 	infoMutex.Lock()
-	r.NotFound = fn
+	//r.NotFound = fn
+	vestigo.CustomNotFoundHandlerFunc(fn)
 	infoMutex.Unlock()
 }
 
 // MethodNotAllowed sets the 405 handler.
 func MethodNotAllowed(fn http.HandlerFunc) {
 	infoMutex.Lock()
-	r.HandleMethodNotAllowed = true
-	r.MethodNotAllowed = fn
+	//r.HandleMethodNotAllowed = true
+	//r.MethodNotAllowed = fn
 	infoMutex.Unlock()
 }

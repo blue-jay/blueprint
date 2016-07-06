@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/gorilla/context"
-	"github.com/julienschmidt/httprouter"
 	"github.com/justinas/alice"
 )
 
@@ -23,11 +21,6 @@ func Chain(c ...alice.Constructor) []alice.Constructor {
 // ChainHandler returns a handler of chained middleware.
 func ChainHandler(h http.Handler, c ...alice.Constructor) http.Handler {
 	return alice.New(c...).Then(h)
-}
-
-// Params returns the URL parameters.
-func Params(r *http.Request) httprouter.Params {
-	return context.Get(r, params).(httprouter.Params)
 }
 
 // Record stores the method and path.
@@ -50,7 +43,7 @@ func Delete(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("DELETE", path)
 
 	infoMutex.Lock()
-	r.DELETE(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.Delete(path, alice.New(c...).ThenFunc(fn).(http.HandlerFunc))
 	infoMutex.Unlock()
 }
 
@@ -59,25 +52,7 @@ func Get(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("GET", path)
 
 	infoMutex.Lock()
-	r.GET(path, Handler(alice.New(c...).ThenFunc(fn)))
-	infoMutex.Unlock()
-}
-
-// Head is a shortcut for router.Handle("HEAD", path, handle).
-func Head(path string, fn http.HandlerFunc, c ...alice.Constructor) {
-	record("HEAD", path)
-
-	infoMutex.Lock()
-	r.HEAD(path, Handler(alice.New(c...).ThenFunc(fn)))
-	infoMutex.Unlock()
-}
-
-// Options is a shortcut for router.Handle("OPTIONS", path, handle).
-func Options(path string, fn http.HandlerFunc, c ...alice.Constructor) {
-	record("OPTIONS", path)
-
-	infoMutex.Lock()
-	r.OPTIONS(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.Get(path, alice.New(c...).ThenFunc(fn).(http.HandlerFunc))
 	infoMutex.Unlock()
 }
 
@@ -86,7 +61,7 @@ func Patch(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("PATCH", path)
 
 	infoMutex.Lock()
-	r.PATCH(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.Patch(path, alice.New(c...).ThenFunc(fn).(http.HandlerFunc))
 	infoMutex.Unlock()
 }
 
@@ -95,7 +70,7 @@ func Post(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("POST", path)
 
 	infoMutex.Lock()
-	r.POST(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.Post(path, alice.New(c...).ThenFunc(fn).(http.HandlerFunc))
 	infoMutex.Unlock()
 }
 
@@ -104,6 +79,6 @@ func Put(path string, fn http.HandlerFunc, c ...alice.Constructor) {
 	record("PUT", path)
 
 	infoMutex.Lock()
-	r.PUT(path, Handler(alice.New(c...).ThenFunc(fn)))
+	r.Put(path, alice.New(c...).ThenFunc(fn).(http.HandlerFunc))
 	infoMutex.Unlock()
 }

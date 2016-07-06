@@ -8,17 +8,15 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/flash"
 	"github.com/blue-jay/blueprint/lib/form"
-	"github.com/blue-jay/blueprint/lib/router"
 	"github.com/blue-jay/blueprint/lib/session"
+	"github.com/husobee/vestigo"
 
 	"github.com/gorilla/sessions"
-	"github.com/julienschmidt/httprouter"
 )
 
 // Info holds the commonly used information.
 type Info struct {
 	Sess   *sessions.Session
-	Params httprouter.Params
 	UserID string
 	W      http.ResponseWriter
 	R      *http.Request
@@ -27,11 +25,9 @@ type Info struct {
 // Context returns commonly used information.
 func Context(w http.ResponseWriter, r *http.Request) *Info {
 	sess := session.Instance(r)
-	params := router.Params(r)
 
 	return &Info{
 		Sess:   sess,
-		Params: params,
 		UserID: fmt.Sprintf("%v", sess.Values["id"]),
 		W:      w,
 		R:      r,
@@ -40,7 +36,7 @@ func Context(w http.ResponseWriter, r *http.Request) *Info {
 
 // Param gets the URL parameter.
 func (c *Info) Param(name string) string {
-	return c.Params.ByName(name)
+	return vestigo.Param(c.R, name)
 }
 
 // Redirect sends a temporary redirect.

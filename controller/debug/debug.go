@@ -7,39 +7,34 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/router"
 	"github.com/blue-jay/blueprint/middleware/acl"
+
+	"github.com/husobee/vestigo"
 )
 
 // Load the routes.
 func Load() {
 	// Enable Pprof
-	router.Get("/debug/pprof/*pprof", Index, acl.DisallowAnon)
+	router.Get("/debug/pprof/", Index, acl.DisallowAnon)
+	router.Get("/debug/pprof/:pprof", Profile, acl.DisallowAnon)
 }
 
-// Copyright 2014 The Prometheus Authors
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Index displays the routes the pprof pages when using httprouter.
+// Index shows the profile index.
 func Index(w http.ResponseWriter, r *http.Request) {
-	p := router.Params(r)
+	pprof.Index(w, r)
+}
 
-	switch p.ByName("pprof") {
-	case "/cmdline":
+// Profile shows the individual profiles.
+func Profile(w http.ResponseWriter, r *http.Request) {
+	switch vestigo.Param(r, "pprof") {
+	case "cmdline":
 		pprof.Cmdline(w, r)
-	case "/profile":
+	case "profile":
 		pprof.Profile(w, r)
-	case "/symbol":
+	case "symbol":
 		pprof.Symbol(w, r)
+	case "trace":
+		pprof.Trace(w, r)
 	default:
-		pprof.Index(w, r)
+		Index(w, r)
 	}
 }

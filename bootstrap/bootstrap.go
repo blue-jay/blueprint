@@ -28,7 +28,6 @@ import (
 	"github.com/blue-jay/blueprint/viewmodify/token"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
 
-	"github.com/gorilla/context"
 	"github.com/josephspurrier/csrfbanana"
 )
 
@@ -120,11 +119,10 @@ func RegisterServices(config *Info) {
 // SetUpMiddleware contains the middleware that applies to every request.
 func SetUpMiddleware(h http.Handler) http.Handler {
 	return router.ChainHandler( // Chain middleware, bottom runs first
-		h,                    // Handler to wrap
-		context.ClearHandler, // Clear handler for Gorilla Context
-		rest.Handler,         // Support changing HTTP method sent via form input
-		logrequest.Handler,   // Log every request
-		setUpBanana)          // Prevent CSRF and double submits
+		h,                  // Handler to wrap
+		rest.Handler,       // Support changing HTTP method sent via form input
+		logrequest.Handler, // Log every request
+		/*setUpBanana*/) // Prevent CSRF and double submits
 }
 
 // setUpBanana makes csrfbanana compatible with the http.Handler.
