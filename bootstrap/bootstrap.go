@@ -122,7 +122,7 @@ func SetUpMiddleware(h http.Handler) http.Handler {
 		h,                  // Handler to wrap
 		rest.Handler,       // Support changing HTTP method sent via form input
 		logrequest.Handler, // Log every request
-		/*setUpBanana*/) // Prevent CSRF and double submits
+		setUpBanana)        // Prevent CSRF and double submits
 }
 
 // setUpBanana makes csrfbanana compatible with the http.Handler.

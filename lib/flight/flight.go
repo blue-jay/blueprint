@@ -36,7 +36,17 @@ func Context(w http.ResponseWriter, r *http.Request) *Info {
 
 // Param gets the URL parameter.
 func (c *Info) Param(name string) string {
-	return vestigo.Param(c.R, name)
+	value := vestigo.Param(c.R, name)
+	if len(value) < 1 {
+		value = c.R.FormValue(name)
+	}
+	if len(value) < 1 {
+		value = c.R.URL.Query().Get(":" + name)
+	}
+	if len(value) < 1 {
+		value = c.R.URL.Query().Get(name)
+	}
+	return value
 }
 
 // Redirect sends a temporary redirect.

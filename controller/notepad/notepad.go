@@ -2,7 +2,6 @@
 package notepad
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/blue-jay/blueprint/lib/flight"
@@ -10,7 +9,6 @@ import (
 	"github.com/blue-jay/blueprint/lib/view"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/note"
-	"github.com/husobee/vestigo"
 )
 
 var (
@@ -77,9 +75,6 @@ func Store(w http.ResponseWriter, r *http.Request) {
 func Show(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	r.ParseForm()
-	log.Println("Show ID:", c.Param("id"), r.Form)
-
 	item, err := note.ByID(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
@@ -130,28 +125,14 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 // Destroy handles the delete form submission.
 func Destroy(w http.ResponseWriter, r *http.Request) {
-	//c := flight.Context(w, r)
+	c := flight.Context(w, r)
 
-	// Ideal
-	/*log.Println("_method:", vestigo.Param(r, "_method"))
-	log.Println("_token:", vestigo.Param(r, "_token"))
-	log.Println("id:", vestigo.Param(r, "id"))*/
-
-	r.ParseForm()
-	//log.Println("Destroy ID:", c.Param("id"), r.Form)
-	log.Println("Destroy ID:", vestigo.Param(r, "id"))
-
-	// Actual
-	//log.Println("_method:", r.FormValue("_method"))
-	//log.Println("_token:", r.FormValue("_token"))
-	//log.Println("id:", r.URL.Query().Get(":id"))
-
-	/*_, err := note.Delete(c.Param(":id"), c.UserID)
+	_, err := note.Delete(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 	} else {
 		c.FlashNotice("Item deleted.")
-	}*/
+	}
 
-	//c.Redirect(uri)
+	c.Redirect(uri)
 }

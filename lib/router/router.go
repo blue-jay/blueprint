@@ -40,7 +40,6 @@ func Instance() *vestigo.Router {
 // NotFound sets the 404 handler.
 func NotFound(fn http.HandlerFunc) {
 	infoMutex.Lock()
-	//r.NotFound = fn
 	vestigo.CustomNotFoundHandlerFunc(fn)
 	infoMutex.Unlock()
 }
