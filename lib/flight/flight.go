@@ -9,7 +9,6 @@ import (
 	"github.com/blue-jay/blueprint/lib/flash"
 	"github.com/blue-jay/blueprint/lib/form"
 	"github.com/blue-jay/blueprint/lib/session"
-	"github.com/husobee/vestigo"
 
 	"github.com/gorilla/sessions"
 )
@@ -36,13 +35,7 @@ func Context(w http.ResponseWriter, r *http.Request) *Info {
 
 // Param gets the URL parameter.
 func (c *Info) Param(name string) string {
-	value := vestigo.Param(c.R, name)
-	if len(value) < 1 {
-		value = c.R.FormValue(name)
-	}
-	if len(value) < 1 {
-		value = c.R.URL.Query().Get(":" + name)
-	}
+	value := c.R.URL.Query().Get(":" + name)
 	if len(value) < 1 {
 		value = c.R.URL.Query().Get(name)
 	}
