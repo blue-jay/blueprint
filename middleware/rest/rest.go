@@ -10,8 +10,8 @@ func Handler(next http.Handler) http.Handler {
 			method := r.FormValue("_method")
 			if len(method) > 0 {
 				r.Method = method
-				r.Form = nil
 			}
+			r.Form = nil
 		}
 
 		next.ServeHTTP(w, r)

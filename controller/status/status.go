@@ -25,12 +25,14 @@ func Error404(w http.ResponseWriter, r *http.Request) {
 }
 
 // Error405 - Method Not Allowed.
-func Error405(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	v := view.New("status/index")
-	v.Vars["title"] = "405 Method Not Allowed"
-	v.Vars["message"] = "Method is not allowed."
-	v.Render(w, r)
+func Error405(allowedMethods string) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		v := view.New("status/index")
+		v.Vars["title"] = "405 Method Not Allowed"
+		v.Vars["message"] = "Method is not allowed."
+		v.Render(w, r)
+	}
 }
 
 // Error500 - Internal Server Error.
@@ -44,7 +46,7 @@ func Error500(w http.ResponseWriter, r *http.Request) {
 
 // Error501 - Not Implemented.
 func Error501(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusInternalServerError)
+	w.WriteHeader(http.StatusNotImplemented)
 	v := view.New("status/index")
 	v.Vars["title"] = "501 Not Implemented"
 	v.Vars["message"] = "Page is not yet implemented."

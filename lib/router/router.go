@@ -45,9 +45,8 @@ func NotFound(fn http.HandlerFunc) {
 }
 
 // MethodNotAllowed sets the 405 handler.
-func MethodNotAllowed(fn http.HandlerFunc) {
+func MethodNotAllowed(fn vestigo.MethodNotAllowedHandlerFunc) {
 	infoMutex.Lock()
-	//r.HandleMethodNotAllowed = true
-	//r.MethodNotAllowed = fn
+	vestigo.CustomMethodNotAllowedHandlerFunc(fn)
 	infoMutex.Unlock()
 }

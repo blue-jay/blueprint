@@ -2,6 +2,7 @@
 package bootstrap
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -19,16 +20,16 @@ import (
 	"github.com/blue-jay/blueprint/lib/server"
 	"github.com/blue-jay/blueprint/lib/session"
 	"github.com/blue-jay/blueprint/lib/view"
+	"github.com/blue-jay/blueprint/lib/xsrf"
 	"github.com/blue-jay/blueprint/middleware/logrequest"
 	"github.com/blue-jay/blueprint/middleware/rest"
 	"github.com/blue-jay/blueprint/viewfunc/link"
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
 	"github.com/blue-jay/blueprint/viewmodify/authlevel"
-	"github.com/blue-jay/blueprint/viewmodify/token"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
 
-	"github.com/josephspurrier/csrfbanana"
+	"github.com/gorilla/csrf"
 )
 
 // *****************************************************************************
@@ -81,6 +82,12 @@ func RegisterServices(config *Info) {
 	// Set up the session cookie store
 	session.SetConfig(config.Session)
 
+	// Set up CSRF protection
+	xsrf.SetConfig(xsrf.Info{
+		AuthKey: config.Session.CSRFKey,
+		Secure:  config.Session.Options.Secure,
+	})
+
 	// Connect to database
 	database.Connect(config.Database, true)
 
@@ -107,7 +114,7 @@ func RegisterServices(config *Info) {
 	view.SetModifiers(
 		authlevel.Modify,
 		uri.Modify,
-		token.Modify,
+		xsrf.Token,
 		flash.Modify,
 	)
 }
@@ -122,17 +129,22 @@ func SetUpMiddleware(h http.Handler) http.Handler {
 		h,                  // Handler to wrap
 		rest.Handler,       // Support changing HTTP method sent via form input
 		logrequest.Handler, // Log every request
-		setUpBanana)        // Prevent CSRF and double submits
+		setUpCSRF)          // Prevent CSRF
 }
 
-// setUpBanana makes csrfbanana compatible with the http.Handler.
-func setUpBanana(h http.Handler) http.Handler {
-	cs := csrfbanana.New(h, session.Store(), session.Name)
-	cs.FailureHandler(http.HandlerFunc(status.InvalidToken))
-	cs.ClearAfterUsage(true)
-	cs.ExcludeRegexPaths([]string{"/static(.*)"})
-	csrfbanana.TokenLength = 32
-	csrfbanana.TokenName = "_token"
-	csrfbanana.SingleToken = true
+// setUpCSRF sets up the CSRF protection
+func setUpCSRF(h http.Handler) http.Handler {
+	// Decode the string
+	key, err := base64.StdEncoding.DecodeString(xsrf.Config().AuthKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Configure the middleware
+	cs := csrf.Protect([]byte(key),
+		csrf.ErrorHandler(http.HandlerFunc(status.InvalidToken)),
+		csrf.FieldName("_token"),
+		csrf.Secure(xsrf.Config().Secure),
+	)(h)
 	return cs
 }

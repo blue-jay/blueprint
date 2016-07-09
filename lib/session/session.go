@@ -28,6 +28,7 @@ type Info struct {
 	Name       string           `json:"Name"`       // Name for: http://www.gorillatoolkit.org/pkg/sessions#CookieStore.Get
 	AuthKey    string           `json:"AuthKey"`    // Key for: http://www.gorillatoolkit.org/pkg/sessions#NewCookieStore
 	EncryptKey string           `json:"EncryptKey"` // Key for: http://www.gorillatoolkit.org/pkg/sessions#NewCookieStore
+	CSRFKey    string           `json:"CSRFKey"`    // Key for: http://www.gorillatoolkit.org/pkg/csrf#Protect
 }
 
 // SetConfig stores the config.
@@ -70,12 +71,8 @@ func Store() *sessions.CookieStore {
 // Instance returns a new session and never returns an error, just displays one.
 func Instance(r *http.Request) *sessions.Session {
 	infoMutex.RLock()
-	session, err := store.Get(r, Name)
+	session, _ := store.Get(r, Name)
 	infoMutex.RUnlock()
-	if err != nil {
-		log.Println("Session error:", err)
-	}
-
 	return session
 }
 
