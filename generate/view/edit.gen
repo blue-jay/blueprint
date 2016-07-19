@@ -6,7 +6,7 @@
 		<h1>{{template "title" .}}</h1>
 	</div>
 	
-	<form method="post" action="{{$.CurrentURI}}">
+	<form method="post" action="{{$.CurrentURI}}?_method=patch">
 		<div class="form-group">
 			<label for="name">Item</label>
 			<div><textarea rows="5" class="form-control" id="name" name="name" placeholder="Type your text here..." />{{.item.Name}}</textarea></div>
@@ -21,7 +21,6 @@
 		</a>
 		
 		<input type="hidden" name="_token" value="{{$.token}}">
-		<input type="hidden" name="_method" value="PATCH">
 	</form>
 	
 	{{template "footer" .}}

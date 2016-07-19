@@ -29,6 +29,7 @@ import (
 	"github.com/blue-jay/blueprint/viewmodify/authlevel"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
 
+	"github.com/gorilla/context"
 	"github.com/gorilla/csrf"
 )
 
@@ -125,11 +126,13 @@ func RegisterServices(config *Info) {
 
 // SetUpMiddleware contains the middleware that applies to every request.
 func SetUpMiddleware(h http.Handler) http.Handler {
-	return router.ChainHandler( // Chain middleware, bottom runs first
-		h,                  // Handler to wrap
-		rest.Handler,       // Support changing HTTP method sent via form input
-		logrequest.Handler, // Log every request
-		setUpCSRF)          // Prevent CSRF
+	return router.ChainHandler( // Chain middleware, top middlware runs first
+		h,                    // Handler to wrap
+		setUpCSRF,            // Prevent CSRF
+		rest.Handler,         // Support changing HTTP method sent via query string
+		logrequest.Handler,   // Log every request
+		context.ClearHandler, // Prevent memory leak with gorilla.sessions
+	)
 }
 
 // setUpCSRF sets up the CSRF protection

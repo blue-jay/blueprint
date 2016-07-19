@@ -21,7 +21,6 @@
 		</a>
 		
 		<input type="hidden" name="_token" value="{{$.token}}">
-		<input type="hidden" name="_method" value="POST">
 	</form>
 	
 	{{template "footer" .}}

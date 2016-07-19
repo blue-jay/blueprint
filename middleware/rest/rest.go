@@ -1,17 +1,25 @@
-// Package rest allows changing the HTTP method via a form field.
+// Package rest allows changing the HTTP method via a query string.
 package rest
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+)
 
 // Handler will update the HTTP request type.
 func Handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "POST" {
-			method := r.FormValue("_method")
+			// Clean the query string
+			values := r.URL.Query()
+			method := values.Get("_method")
+			values.Del("_method")
+			r.URL.RawQuery = values.Encode()
+
+			// Set the method
 			if len(method) > 0 {
-				r.Method = method
+				r.Method = strings.ToUpper(method)
 			}
-			r.Form = nil
 		}
 
 		next.ServeHTTP(w, r)
