@@ -11,9 +11,9 @@ gulp.task('sass', function() {
     var sass = require('gulp-sass');
 	var ext = require('gulp-ext-replace');
 	gulp.src('asset/dynamic/sass/**/*.scss')
-	        // Available for outputStyle: expanded, nested, compact, compressed
-	        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-	        .pipe(gulp.dest('asset/static/css/'));
+        // Available for outputStyle: expanded, nested, compact, compressed
+        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+        .pipe(gulp.dest('asset/static/css/'));
     return gulp.src('asset/dynamic/sass/**/*.scss')
         // Available for outputStyle: expanded, nested, compact, compressed
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
