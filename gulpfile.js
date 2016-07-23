@@ -9,17 +9,30 @@ var faviconData = 'asset/dynamic/favicon/data.json';
 // SASS Task
 gulp.task('sass', function() {
     var sass = require('gulp-sass');
+	var ext = require('gulp-ext-replace');
+	gulp.src('asset/dynamic/sass/**/*.scss')
+	        // Available for outputStyle: expanded, nested, compact, compressed
+	        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+	        .pipe(gulp.dest('asset/static/css/'));
     return gulp.src('asset/dynamic/sass/**/*.scss')
         // Available for outputStyle: expanded, nested, compact, compressed
-        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+		.pipe(ext('.min.css'))
         .pipe(gulp.dest('asset/static/css/'));
 });
 
 // JavaScript Task
 gulp.task('javascript', function() {
 	var concat = require('gulp-concat');
+	var minify = require('gulp-minify');
 	return gulp.src('asset/dynamic/js/*.js')
 		.pipe(concat('all.js'))
+		.pipe(minify({
+			ext:{
+			    src:'.js',
+			    min:'.min.js'
+			}
+		}))
 		.pipe(gulp.dest('asset/static/js/'));
 });
 

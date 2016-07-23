@@ -4,6 +4,8 @@
     "bootstrap": "^3.3.6",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
+    "gulp-ext-replace": "^0.3.0",
+    "gulp-minify": "0.0.13",
     "gulp-real-favicon": "^0.2.1",
     "gulp-sass": "^2.3.2",
     "jquery": "1.9.1 - 2",
