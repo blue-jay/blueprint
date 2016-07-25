@@ -1,31 +1,37 @@
+// Modules
 var gulp = require('gulp');
 var favicon = require ('gulp-real-favicon');
 var fs = require('fs');
-// Using until gulp v4 is released
-var runSequence = require('run-sequence');
+var runSequence = require('run-sequence');	// Using until gulp v4 is released
 
-var faviconData = 'asset/dynamic/favicon/data.json';
+// Enviroment variables
+var env = JSON.parse(fs.readFileSync('./env.json'))
+var folderAsset = env.Asset.Folder;
+var folderView = env.View.Folder; 
+
+// Other variables
+var faviconData = folderAsset + '/dynamic/favicon/data.json';
 
 // SASS Task
 gulp.task('sass', function() {
     var sass = require('gulp-sass');
 	var ext = require('gulp-ext-replace');
-	gulp.src('asset/dynamic/sass/**/*.scss')
+	gulp.src(folderAsset + '/dynamic/sass/**/*.scss')
         // Available for outputStyle: expanded, nested, compact, compressed
         .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(gulp.dest('asset/static/css/'));
-    return gulp.src('asset/dynamic/sass/**/*.scss')
+        .pipe(gulp.dest(folderAsset + '/static/css/'));
+    return gulp.src(folderAsset + '/dynamic/sass/**/*.scss')
         // Available for outputStyle: expanded, nested, compact, compressed
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
 		.pipe(ext('.min.css'))
-        .pipe(gulp.dest('asset/static/css/'));
+        .pipe(gulp.dest(folderAsset + '/static/css/'));
 });
 
 // JavaScript Task
 gulp.task('javascript', function() {
 	var concat = require('gulp-concat');
 	var minify = require('gulp-minify');
-	return gulp.src('asset/dynamic/js/*.js')
+	return gulp.src(folderAsset + '/dynamic/js/*.js')
 		.pipe(concat('all.js'))
 		.pipe(minify({
 			ext:{
@@ -33,31 +39,31 @@ gulp.task('javascript', function() {
 			    min:'.min.js'
 			}
 		}))
-		.pipe(gulp.dest('asset/static/js/'));
+		.pipe(gulp.dest(folderAsset + '/static/js/'));
 });
 
 // jQuery Task
 gulp.task('jquery', function() {
 	return gulp.src('node_modules/jquery/dist/jquery.min.*')
-		.pipe(gulp.dest('asset/static/js/'));
+		.pipe(gulp.dest(folderAsset + '/static/js/'));
 });
 
 // Bootstrap Task
 gulp.task('bootstrap', function() {
 	gulp.src('node_modules/bootstrap/dist/css/bootstrap-theme.min.*')
-		.pipe(gulp.dest('asset/static/css/'));
+		.pipe(gulp.dest(folderAsset + '/static/css/'));
 	gulp.src('node_modules/bootstrap/dist/css/bootstrap.min.*')
-		.pipe(gulp.dest('asset/static/css/'));
+		.pipe(gulp.dest(folderAsset + '/static/css/'));
 	gulp.src('node_modules/bootstrap/dist/fonts/*')
-		.pipe(gulp.dest('asset/static/fonts/'));
+		.pipe(gulp.dest(folderAsset + '/static/fonts/'));
 	return gulp.src('node_modules/bootstrap/dist/js/bootstrap.min.js')
-		.pipe(gulp.dest('asset/static/js/'));
+		.pipe(gulp.dest(folderAsset + '/static/js/'));
 });
 
 // Underscore Task
 gulp.task('underscore', function() {
 	return gulp.src('node_modules/underscore/underscore-min.*')
-		.pipe(gulp.dest('asset/static/js/'));
+		.pipe(gulp.dest(folderAsset + '/static/js/'));
 });
 
 // Favicon Generation and Injection Task
@@ -72,8 +78,8 @@ gulp.task('favicon', function() {
 gulp.task('favicon-generate', function(done) {
 	var favColor = '#525252';
 	favicon.generateFavicon({
-		masterPicture: 'asset/dynamic/favicon/logo.png',
-		dest: 'asset/static/favicon/',
+		masterPicture: folderAsset + '/dynamic/favicon/logo.png',
+		dest: folderAsset + '/static/favicon/',
 		iconsPath: '/static/favicon/',
 		design: {
 			ios: {
@@ -121,9 +127,9 @@ gulp.task('favicon-generate', function(done) {
 // this task whenever you modify a page. You can keep this task
 // as is or refactor your existing HTML pipeline.
 gulp.task('favicon-inject', function() {
-	return gulp.src(['view/partial/favicon.tmpl'])
+	return gulp.src([folderView + '/partial/favicon.tmpl'])
 		.pipe(favicon.injectFaviconMarkups(JSON.parse(fs.readFileSync(faviconData)).favicon.html_code))
-		.pipe(gulp.dest('view/partial/'));
+		.pipe(gulp.dest(folderView + '/partial/'));
 });
 
 // Check for updates on RealFaviconGenerator (think: Apple has just
@@ -141,8 +147,8 @@ gulp.task('favicon-update', function(done) {
 
 // Watch
 gulp.task('watch', function() {
-    gulp.watch('asset/dynamic/sass/**/*.scss', ['sass']);
-	gulp.watch('asset/dynamic/js/*.js', ['javascript']);
+    gulp.watch(folderAsset + '/dynamic/sass/**/*.scss', ['sass']);
+	gulp.watch(folderAsset + '/dynamic/js/*.js', ['javascript']);
 });
 
 // Init - every task
