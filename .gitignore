@@ -1,11 +1,13 @@
+# Folders
+/vendor/
+/node_modules/
+/database/filestorage/*
+
 # OS Files
 .DS_Store
 thumbs.db
+!/database/filestorage/README.md
 
 # Blue Jay Files
 env.json
 *.exe
-
-# Folders
-/vendor/
-/node_modules/

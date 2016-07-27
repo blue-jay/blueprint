@@ -33,7 +33,9 @@ const (
 
 // Info contains the database configurations.
 type Info struct {
-	// Database type
+	// FileStorage is the path to the folder where uploaded files are stored
+	FileStorage string
+	// Type of database
 	Type Type
 	// MySQL info if used
 	MySQL MySQLInfo

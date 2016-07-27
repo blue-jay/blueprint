@@ -3,16 +3,65 @@
 package form
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
+	"sync"
+
+	"github.com/blue-jay/blueprint/lib/uuid"
 )
 
-// Required returns true if all the required form values are passed.
+// *****************************************************************************
+// Thread-Safe Configuration
+// *****************************************************************************
+
+var (
+	info      Info
+	infoMutex sync.RWMutex
+
+	ErrTooLarge = errors.New("File is too large.")
+)
+
+// Info holds the details for the form handling.
+type Info struct {
+	FileStorage string
+}
+
+// SetConfig stores the config.
+func SetConfig(i Info) {
+	infoMutex.Lock()
+	info = i
+	infoMutex.Unlock()
+}
+
+// ResetConfig removes the config.
+func ResetConfig() {
+	infoMutex.Lock()
+	info = Info{}
+	infoMutex.Unlock()
+}
+
+// Config returns the config.
+func Config() Info {
+	infoMutex.RLock()
+	defer infoMutex.RUnlock()
+	return info
+}
+
+// *****************************************************************************
+// Form Handling
+// *****************************************************************************
+
+// Required returns true if all the required form values and files are passed.
 func Required(req *http.Request, required ...string) (bool, string) {
 	for _, v := range required {
-		if len(req.FormValue(v)) == 0 {
+		_, _, err := req.FormFile(v)
+		if len(req.FormValue(v)) == 0 && err != nil {
 			return false, v
 		}
 	}
@@ -27,6 +76,41 @@ func Repopulate(src url.Values, dst map[string]interface{}, list ...string) {
 			dst[v] = val
 		}
 	}
+}
+
+// UploadFile handles the file upload logic.
+func UploadFile(r *http.Request, name string, maxSize int64) (string, string, error) {
+	file, handler, err := r.FormFile(name)
+	if err != nil {
+		return "", "", err
+	}
+
+	fileID, err := uuid.Generate()
+	if err != nil {
+		return "", "", err
+	}
+
+	f, err := os.OpenFile(filepath.Join(Config().FileStorage, fileID), os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return "", "", err
+	}
+
+	fi, err := f.Stat()
+	if err != nil {
+		return "", "", err
+	}
+
+	if fi.Size() > maxSize {
+		return "", "", ErrTooLarge
+	}
+
+	_, err = io.Copy(f, file)
+	defer f.Close()
+	if err != nil {
+		return "", "", err
+	}
+
+	return handler.Filename, fileID, err
 }
 
 // Map returns a template.FuncMap that contains functions

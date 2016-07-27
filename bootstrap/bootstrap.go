@@ -92,6 +92,9 @@ func RegisterServices(config *Info) {
 	// Connect to database
 	database.Connect(config.Database, true)
 
+	// Configure form handling
+	form.SetConfig(form.Info{config.Database.FileStorage})
+
 	// Load the controller routes
 	controller.LoadRoutes()
 
