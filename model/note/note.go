@@ -18,6 +18,8 @@ var (
 type Item struct {
 	ID        uint32         `db:"id"`
 	Name      string         `db:"name"`
+	Filename  string         `db:"filename"`
+	FileID    string         `db:"file_id"`
 	UserID    uint32         `db:"user_id"`
 	CreatedAt mysql.NullTime `db:"created_at"`
 	UpdatedAt mysql.NullTime `db:"updated_at"`
@@ -28,7 +30,7 @@ type Item struct {
 func ByID(ID string, userID string) (Item, error) {
 	result := Item{}
 	err := database.SQL.Get(&result, fmt.Sprintf(`
-		SELECT id, name, user_id, created_at, updated_at, deleted_at
+		SELECT id, name, filename, file_id, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE id = ?
 			AND user_id = ?
@@ -43,7 +45,7 @@ func ByID(ID string, userID string) (Item, error) {
 func ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	err := database.SQL.Select(&result, fmt.Sprintf(`
-		SELECT id, name, user_id, created_at, updated_at, deleted_at
+		SELECT id, name, filename, file_id, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE user_id = ?
 			AND deleted_at IS NULL
@@ -53,14 +55,14 @@ func ByUserID(userID string) ([]Item, error) {
 }
 
 // Create adds an item.
-func Create(name string, userID string) (sql.Result, error) {
+func Create(name string, filename string, fileID string, userID string) (sql.Result, error) {
 	result, err := database.SQL.Exec(fmt.Sprintf(`
 		INSERT INTO %v
-		(name, user_id)
+		(name, filename, file_id, user_id)
 		VALUES
-		(?,?)
+		(?,?,?,?)
 		`, table),
-		name, userID)
+		name, filename, fileID, userID)
 	return result, model.StandardError(err)
 }
 

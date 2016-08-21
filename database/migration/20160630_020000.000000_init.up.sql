@@ -53,6 +53,8 @@ CREATE TABLE note (
     id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     
     name TEXT NOT NULL,
+	filename VARCHAR(100) NOT NULL,
+	file_id CHAR(36) NOT NULL,
     
     user_id INT(10) UNSIGNED NOT NULL,
     

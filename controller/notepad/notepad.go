@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/blue-jay/blueprint/lib/flight"
+	"github.com/blue-jay/blueprint/lib/form"
 	"github.com/blue-jay/blueprint/lib/router"
 	"github.com/blue-jay/blueprint/lib/view"
 	"github.com/blue-jay/blueprint/middleware/acl"
@@ -55,12 +56,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 func Store(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	if !c.FormValid("name") {
+	if !c.FormValid("name", "attachment") {
 		Create(w, r)
 		return
 	}
 
-	_, err := note.Create(r.FormValue("name"), c.UserID)
+	filename, fileID, err := form.UploadFile(r, "attachment", 1024*1024)
+	if err != nil {
+		c.FlashError(err)
+		Create(w, r)
+		return
+	}
+
+	_, err = note.Create(r.FormValue("name"), filename, fileID, c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		Create(w, r)
