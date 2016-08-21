@@ -75,9 +75,14 @@ func Connect(i Info, connectDatabase bool) error {
 	return err
 }
 
-// Disconnect closes the MySQL connection.
+// Disconnect closes the connection.
 func Disconnect() error {
-	return SQL.Close()
+	switch Config().Type {
+	case TypeMySQL:
+		return SQL.Close()
+	default:
+		return errors.New("No registered database in config")
+	}
 }
 
 // ResetConfig removes the config.
@@ -134,21 +139,6 @@ func dsn(ci MySQLInfo, includeDatabase bool) string {
 	}
 
 	return s
-}
-
-// Create a new database with the charset and collation
-func Create(ci MySQLInfo) error {
-	// Set defaults
-	ci = setDefaults(ci)
-
-	// Create the database
-	_, err := SQL.Exec(fmt.Sprintf(`CREATE DATABASE %v
-				DEFAULT CHARSET = %v
-				COLLATE = %v
-				;`, ci.Database,
-		ci.Charset,
-		ci.Collation))
-	return err
 }
 
 // setDefaults sets the charset and collation if they are not set
