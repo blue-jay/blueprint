@@ -50,3 +50,8 @@ func MethodNotAllowed(fn vestigo.MethodNotAllowedHandlerFunc) {
 	vestigo.CustomMethodNotAllowedHandlerFunc(fn)
 	infoMutex.Unlock()
 }
+
+// Param returns the URL parameter.
+func Param(r *http.Request, name string) string {
+	return vestigo.Param(r, name)
+}
