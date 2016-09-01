@@ -108,6 +108,18 @@ func Create(ci MySQLInfo) error {
 	}
 }
 
+// Delete a database.
+func Delete(ci MySQLInfo) error {
+	switch Config().Type {
+	case TypeMySQL:
+		// Delete the database
+		_, err := SQL.Exec(fmt.Sprintf(`DELETE DATABASE %v;`, ci.Database))
+		return err
+	default:
+		return errors.New("No registered database in config")
+	}
+}
+
 // *****************************************************************************
 // MySQL Specific
 // *****************************************************************************
