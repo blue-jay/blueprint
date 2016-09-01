@@ -1,4 +1,4 @@
-// Package main is the entry point for Blueprint.
+// Package main is the entry point for the web application.
 package main
 
 import (
