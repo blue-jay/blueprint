@@ -5,8 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/blue-jay/blueprint/lib/database"
 	"github.com/blue-jay/blueprint/model"
+
+	database "github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/go-sql-driver/mysql"
 )
 

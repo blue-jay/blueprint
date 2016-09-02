@@ -11,7 +11,6 @@ import (
 	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/controller/status"
 	"github.com/blue-jay/blueprint/lib/asset"
-	"github.com/blue-jay/blueprint/lib/database"
 	"github.com/blue-jay/blueprint/lib/email"
 	"github.com/blue-jay/blueprint/lib/flash"
 	"github.com/blue-jay/blueprint/lib/form"
@@ -29,6 +28,7 @@ import (
 	"github.com/blue-jay/blueprint/viewmodify/authlevel"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
 
+	"github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/gorilla/context"
 	"github.com/gorilla/csrf"
 )
@@ -40,12 +40,14 @@ import (
 // Info contains the application settings.
 type Info struct {
 	Asset    asset.Info    `json:"Asset"`
-	Database database.Info `json:"Database"`
 	Email    email.Info    `json:"Email"`
+	Form     form.Info     `json:"Form"`
+	MySQL    mysql.Info    `json:"MySQL"`
 	Server   server.Info   `json:"Server"`
 	Session  session.Info  `json:"Session"`
 	Template view.Template `json:"Template"`
 	View     view.Info     `json:"View"`
+	Path     string
 }
 
 // ParseJSON unmarshals bytes to structs
@@ -74,6 +76,9 @@ func LoadConfig(configFile string) *Info {
 	// Load the configuration file
 	jsonconfig.LoadOrFatal(configFile, config)
 
+	// Store the path of the file
+	config.Path = configFile
+
 	// Return the configuration
 	return config
 }
@@ -90,10 +95,11 @@ func RegisterServices(config *Info) {
 	})
 
 	// Connect to database
-	database.Connect(config.Database, true)
+	mysql.SetConfig(config.MySQL)
+	mysql.Connect(true)
 
 	// Configure form handling
-	form.SetConfig(form.Info{config.Database.FileStorage})
+	form.SetConfig(config.Form)
 
 	// Load the controller routes
 	controller.LoadRoutes()

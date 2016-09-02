@@ -29,7 +29,7 @@ var (
 
 // Info holds the details for the form handling.
 type Info struct {
-	FileStorage string
+	FileStorageFolder string `json:"FileStorageFolder"`
 }
 
 // SetConfig stores the config.
@@ -90,7 +90,7 @@ func UploadFile(r *http.Request, name string, maxSize int64) (string, string, er
 		return "", "", err
 	}
 
-	f, err := os.OpenFile(filepath.Join(Config().FileStorage, fileID), os.O_WRONLY|os.O_CREATE, 0644)
+	f, err := os.OpenFile(filepath.Join(Config().FileStorageFolder, fileID), os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return "", "", err
 	}
