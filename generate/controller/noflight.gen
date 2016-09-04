@@ -6,13 +6,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/flash"
-	"github.com/blue-jay/blueprint/lib/form"
-	"github.com/blue-jay/blueprint/lib/router"
-	"github.com/blue-jay/blueprint/lib/session"
-	"github.com/blue-jay/blueprint/lib/view"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/{{.model}}"
+
+	"github.com/blue-jay/core/flash"
+	"github.com/blue-jay/core/form"
+	"github.com/blue-jay/core/router"
+	"github.com/blue-jay/core/session"
+	"github.com/blue-jay/core/view"
 )
 
 var (
@@ -86,9 +87,8 @@ func Store(w http.ResponseWriter, r *http.Request) {
 func Show(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
 
-	item, err := {{.model}}.ByID(params.ByName("id"), userID)
+	item, err := {{.model}}.ByID(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -106,9 +106,8 @@ func Show(w http.ResponseWriter, r *http.Request) {
 func Edit(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
 
-	item, err := {{.model}}.ByID(params.ByName("id"), userID)
+	item, err := {{.model}}.ByID(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -126,7 +125,6 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 func Update(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
 
 	if validate, missingField := form.Required(r, "name"); !validate {
 		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Warning})
@@ -135,7 +133,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := {{.model}}.Update(r.FormValue("name"), params.ByName("id"), userID)
+	_, err := {{.model}}.Update(r.FormValue("name"), router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -153,9 +151,8 @@ func Update(w http.ResponseWriter, r *http.Request) {
 func Destroy(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
-	params := router.Params(r)
 
-	_, err := {{.model}}.Delete(params.ByName("id"), userID)
+	_, err := {{.model}}.Delete(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
