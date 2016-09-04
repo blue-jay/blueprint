@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"net/http/pprof"
 
-	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/blueprint/middleware/acl"
+
+	"github.com/blue-jay/core/router"
 
 	"github.com/husobee/vestigo"
 )

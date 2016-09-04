@@ -4,11 +4,12 @@ package notepad
 import (
 	"net/http"
 
+	"github.com/blue-jay/blueprint/middleware/acl"
+	"github.com/blue-jay/blueprint/model/note"
+
 	"github.com/blue-jay/core/flight"
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/view"
-	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model/note"
 )
 
 var (

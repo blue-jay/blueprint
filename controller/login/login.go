@@ -5,15 +5,16 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/blue-jay/blueprint/middleware/acl"
+	"github.com/blue-jay/blueprint/model"
+	"github.com/blue-jay/blueprint/model/user"
+
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/session"
 	"github.com/blue-jay/core/view"
-	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model"
-	"github.com/blue-jay/blueprint/model/user"
 )
 
 // Load the routes.

@@ -122,7 +122,7 @@ func RegisterServices(config *Info) {
 		form.Map(),
 	)
 
-	// Set up the variables for the views
+	// Set up the variables and modifiers for the views
 	view.SetModifiers(
 		authlevel.Modify,
 		uri.Modify,
