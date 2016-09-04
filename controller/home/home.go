@@ -4,9 +4,9 @@ package home
 import (
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/router"
-	"github.com/blue-jay/blueprint/lib/session"
-	"github.com/blue-jay/blueprint/lib/view"
+	"github.com/blue-jay/core/router"
+	"github.com/blue-jay/core/session"
+	"github.com/blue-jay/core/view"
 )
 
 // Load the routes.

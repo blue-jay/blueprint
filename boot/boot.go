@@ -1,5 +1,5 @@
-// Package bootstrap handles the initialization of the web components.
-package bootstrap
+// Package boot handles the initialization of the web components.
+package boot
 
 import (
 	"encoding/base64"
@@ -10,16 +10,6 @@ import (
 
 	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/controller/status"
-	"github.com/blue-jay/blueprint/lib/asset"
-	"github.com/blue-jay/blueprint/lib/email"
-	"github.com/blue-jay/blueprint/lib/flash"
-	"github.com/blue-jay/blueprint/lib/form"
-	"github.com/blue-jay/blueprint/lib/jsonconfig"
-	"github.com/blue-jay/blueprint/lib/router"
-	"github.com/blue-jay/blueprint/lib/server"
-	"github.com/blue-jay/blueprint/lib/session"
-	"github.com/blue-jay/blueprint/lib/view"
-	"github.com/blue-jay/blueprint/lib/xsrf"
 	"github.com/blue-jay/blueprint/middleware/logrequest"
 	"github.com/blue-jay/blueprint/middleware/rest"
 	"github.com/blue-jay/blueprint/viewfunc/link"
@@ -27,6 +17,17 @@ import (
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
 	"github.com/blue-jay/blueprint/viewmodify/authlevel"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
+	"github.com/blue-jay/core/asset"
+	"github.com/blue-jay/core/email"
+	"github.com/blue-jay/core/flash"
+	"github.com/blue-jay/core/form"
+	"github.com/blue-jay/core/generate"
+	"github.com/blue-jay/core/jsonconfig"
+	"github.com/blue-jay/core/router"
+	"github.com/blue-jay/core/server"
+	"github.com/blue-jay/core/session"
+	"github.com/blue-jay/core/view"
+	"github.com/blue-jay/core/xsrf"
 
 	"github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/gorilla/context"
@@ -39,15 +40,16 @@ import (
 
 // Info contains the application settings.
 type Info struct {
-	Asset    asset.Info    `json:"Asset"`
-	Email    email.Info    `json:"Email"`
-	Form     form.Info     `json:"Form"`
-	MySQL    mysql.Info    `json:"MySQL"`
-	Server   server.Info   `json:"Server"`
-	Session  session.Info  `json:"Session"`
-	Template view.Template `json:"Template"`
-	View     view.Info     `json:"View"`
-	Path     string
+	Asset      asset.Info    `json:"Asset"`
+	Email      email.Info    `json:"Email"`
+	Form       form.Info     `json:"Form"`
+	Generation generate.Info `json:"Generation"`
+	MySQL      mysql.Info    `json:"MySQL"`
+	Server     server.Info   `json:"Server"`
+	Session    session.Info  `json:"Session"`
+	Template   view.Template `json:"Template"`
+	View       view.Info     `json:"View"`
+	Path       string
 }
 
 // ParseJSON unmarshals bytes to structs

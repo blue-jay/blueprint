@@ -2,22 +2,22 @@
 package main
 
 import (
-	"github.com/blue-jay/blueprint/bootstrap"
-	"github.com/blue-jay/blueprint/lib/router"
-	"github.com/blue-jay/blueprint/lib/server"
+	"github.com/blue-jay/blueprint/boot"
+	"github.com/blue-jay/core/router"
+	"github.com/blue-jay/core/server"
 )
 
 // main loads the configuration file, registers the services, applies the
-// middlware to the router, and then starts the HTTP and HTTPS listeners.
+// middleware to the router, and then starts the HTTP and HTTPS listeners.
 func main() {
 	// Load the configuration file
-	info := bootstrap.LoadConfig("env.json")
+	info := boot.LoadConfig("env.json")
 
 	// Register the services
-	bootstrap.RegisterServices(info)
+	boot.RegisterServices(info)
 
 	// Retrieve the middleware
-	handler := bootstrap.SetUpMiddleware(router.Instance())
+	handler := boot.SetUpMiddleware(router.Instance())
 
 	// Start the HTTP and HTTPS listeners
 	server.Run(

@@ -19,6 +19,8 @@ Please submit issues to the correct repositories:
 related to the Blueprint source code
 - [Jay](https://github.com/blue-jay/jay/issues) - issues related to
 the Jay source code
+- [Core](https://github.com/blue-jay/core/issues) - issues related to
+the Core source code
 - [BlueJay Docs](https://github.com/blue-jay/blue-jay.github.io.hugo/issues)
 - issues related to the BlueJay website or documentation
 

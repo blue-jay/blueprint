@@ -5,8 +5,8 @@ package status
 import (
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/router"
-	"github.com/blue-jay/blueprint/lib/view"
+	"github.com/blue-jay/core/router"
+	"github.com/blue-jay/core/view"
 )
 
 // Load the routes.

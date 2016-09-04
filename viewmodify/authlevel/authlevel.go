@@ -4,8 +4,8 @@ package authlevel
 import (
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/session"
-	"github.com/blue-jay/blueprint/lib/view"
+	"github.com/blue-jay/core/session"
+	"github.com/blue-jay/core/view"
 )
 
 // Modify sets AuthLevel in the template to auth if the user is authenticated.

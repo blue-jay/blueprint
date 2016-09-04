@@ -5,7 +5,7 @@ package acl
 import (
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/session"
+	"github.com/blue-jay/core/session"
 )
 
 // DisallowAuth does not allow authenticated users to access the page.

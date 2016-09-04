@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/blue-jay/blueprint/lib/view"
+	"github.com/blue-jay/core/view"
 )
 
 // Modify sets BaseURI, CurrentURI, ParentURI, and the GrandparentURI
