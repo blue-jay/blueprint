@@ -39,7 +39,7 @@ func ByID(ID string) (Item, error) {
 }
 
 // All gets all items.
-func All(userID string) ([]Item, error) {
+func All() ([]Item, error) {
 	var result []Item
 	err := database.SQL.Select(&result, fmt.Sprintf(`
 		SELECT id, name, created_at, updated_at, deleted_at
