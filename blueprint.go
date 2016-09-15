@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/blue-jay/blueprint/boot"
+
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/server"
 )

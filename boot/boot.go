@@ -17,6 +17,7 @@ import (
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
 	"github.com/blue-jay/blueprint/viewmodify/authlevel"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
+
 	"github.com/blue-jay/core/asset"
 	"github.com/blue-jay/core/email"
 	"github.com/blue-jay/core/flash"
@@ -26,10 +27,10 @@ import (
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/server"
 	"github.com/blue-jay/core/session"
+	"github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/blue-jay/core/view"
 	"github.com/blue-jay/core/xsrf"
 
-	"github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/gorilla/context"
 	"github.com/gorilla/csrf"
 )

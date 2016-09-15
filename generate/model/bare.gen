@@ -31,7 +31,7 @@ func ByID(ID string, userID string) (Item, error) {
 	return result, model.StandardError(err)
 }
 
-// ByUserID gets all entities for a user.
+// ByUserID gets all items for a user.
 func ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	var err error

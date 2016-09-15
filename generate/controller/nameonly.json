@@ -1,0 +1,8 @@
+{
+	"config.type": "single",
+	"config.output": "controller/{{.package}}/{{.package}}.go",
+	"package": "",
+	"url": "",
+	"model": "",
+	"view": ""
+}
