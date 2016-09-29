@@ -9,7 +9,7 @@
 	<form method="post" action="{{$.CurrentURI}}">
 		<div class="form-group">
 			<label for="name">Item</label>
-			<div><textarea rows="5" class="form-control" id="name" name="name" placeholder="Type your text here..." />{{TEXTAREA "name" .}}</textarea></div>
+			<div><textarea rows="5" class="form-control" id="name" name="name" placeholder="Type your text here..." />{{TEXTAREA "name" .item.Name .}}</textarea></div>
 		</div>
 		
 		<button type="submit" class="btn btn-success" title="Save" />

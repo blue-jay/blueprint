@@ -100,6 +100,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := view.New("note/edit")
+	c.Repopulate(v.Vars, "name")
 	v.Vars["item"] = item
 	v.Render(w, r)
 }

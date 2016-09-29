@@ -117,6 +117,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := view.New("{{.view}}/edit")
+	form.Repopulate(r.Form, v.Vars, "name")
 	v.Vars["item"] = item
 	v.Render(w, r)
 }
