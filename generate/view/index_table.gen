@@ -1,0 +1,58 @@
+{{define "title"}}Items{{end}}
+{{define "head"}}{{end}}
+{{define "content"}}
+<div class="container">
+	<div class="page-header">
+		<h1>Items</h1>
+	</div>
+	<p>
+		<a title="Add" class="btn btn-primary" role="button" href="{{$.CurrentURI}}/create">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add
+		</a>
+	</p>
+	
+	<table class="table table-striped table-center">
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>created_at</th>
+				<th>updated_at</th>
+				<th>deleted_at</th>
+				<th>Actions</th>
+			<tr>
+		</thead>
+		<tbody>
+			{{range $n := .items}}
+				<tr>
+					<td>{{.ID}}</td>
+					<td>{{.Name}}</td>
+					<td>{{NULLTIME .CreatedAt}}</td>
+					<td>{{NULLTIME .UpdatedAt}}</td>
+					<td>{{NULLTIME .DeletedAt}}</td>
+					<td>
+						<div style="display: inline-block;">
+							<a title="View" class="btn btn-info" role="button" href="{{$.CurrentURI}}/view/{{.ID}}">
+								<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View
+							</a>
+							<a title="Edit" class="btn btn-warning" role="button" href="{{$.CurrentURI}}/edit/{{.ID}}">
+								<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit
+							</a>
+							
+							<form class="button-form" method="post" action="{{$.CurrentURI}}/{{.ID}}?_method=delete">
+								<button type="submit" class="btn btn-danger" />
+									<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+								</button>
+								<input type="hidden" name="_token" value="{{$.token}}">
+							</form>
+						</div>
+					</td>
+				</tr>
+			{{end}}
+		</tbody>
+	</table>
+	
+	{{template "footer" .}}
+</div>
+{{end}}
+{{define "foot"}}{{end}}
