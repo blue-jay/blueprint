@@ -46,11 +46,12 @@ type Info struct {
 	Form       form.Info     `json:"Form"`
 	Generation generate.Info `json:"Generation"`
 	MySQL      mysql.Info    `json:"MySQL"`
-	Server     server.Info   `json:"Server"`
-	Session    session.Info  `json:"Session"`
-	Template   view.Template `json:"Template"`
-	View       view.Info     `json:"View"`
-	Path       string
+	//PostgreSQL postgresql.Info `json:"PostgreSQL"`
+	Server   server.Info   `json:"Server"`
+	Session  session.Info  `json:"Session"`
+	Template view.Template `json:"Template"`
+	View     view.Info     `json:"View"`
+	Path     string
 }
 
 // ParseJSON unmarshals bytes to structs
@@ -97,9 +98,13 @@ func RegisterServices(config *Info) {
 		Secure:  config.Session.Options.Secure,
 	})
 
-	// Connect to database
+	// Connect to the MySQL database
 	mysql.SetConfig(config.MySQL)
 	mysql.Connect(true)
+
+	// Connect to the PostgreSQL database
+	/*postgresql.SetConfig(config.PostgreSQL)
+	postgresql.Connect(true)*/
 
 	// Configure form handling
 	form.SetConfig(config.Form)
