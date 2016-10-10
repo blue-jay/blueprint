@@ -6,12 +6,14 @@ import (
 	"fmt"
 
 	"github.com/blue-jay/blueprint/model"
-
 	database "github.com/blue-jay/core/storage/driver/mysql"
+
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
+	// table is the table name.
 	table = "note"
 )
 
@@ -25,10 +27,22 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// ByID gets item by ID.
-func ByID(ID string, userID string) (Item, error) {
+// Connection defines the shared database interface.
+type Connection struct {
+	db *sqlx.DB
+}
+
+// Shared returns the global connection information.
+func Shared() Connection {
+	return Connection{
+		db: database.SQL,
+	}
+}
+
+// ByID gets an item by ID.
+func (c Connection) ByID(ID string, userID string) (Item, error) {
 	result := Item{}
-	err := database.SQL.Get(&result, fmt.Sprintf(`
+	err := c.db.Get(&result, fmt.Sprintf(`
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE id = ?
@@ -41,9 +55,9 @@ func ByID(ID string, userID string) (Item, error) {
 }
 
 // ByUserID gets all entities for a user.
-func ByUserID(userID string) ([]Item, error) {
+func (c Connection) ByUserID(userID string) ([]Item, error) {
 	var result []Item
-	err := database.SQL.Select(&result, fmt.Sprintf(`
+	err := c.db.Select(&result, fmt.Sprintf(`
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE user_id = ?
@@ -54,8 +68,8 @@ func ByUserID(userID string) ([]Item, error) {
 }
 
 // Create adds an item.
-func Create(name string, userID string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) Create(name string, userID string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(name, user_id)
 		VALUES
@@ -66,8 +80,8 @@ func Create(name string, userID string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func Update(name string, ID string, userID string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) Update(name string, ID string, userID string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET name = ?
 		WHERE id = ?
@@ -80,8 +94,8 @@ func Update(name string, ID string, userID string) (sql.Result, error) {
 }
 
 // DeleteHard removes an item.
-func DeleteHard(ID string, userID string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) DeleteHard(ID string, userID string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		DELETE FROM %v
 		WHERE id = ?
 			AND user_id = ?
@@ -91,9 +105,9 @@ func DeleteHard(ID string, userID string) (sql.Result, error) {
 	return result, model.StandardError(err)
 }
 
-// Delete marks an item as removed.
-func Delete(ID string, userID string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+// DeleteSoft marks an item as removed.
+func (c Connection) DeleteSoft(ID string, userID string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET deleted_at = NOW()
 		WHERE id = ?

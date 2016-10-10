@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/blue-jay/blueprint/model"
+	"github.com/jmoiron/sqlx"
 
 	database "github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/go-sql-driver/mysql"
@@ -28,10 +29,22 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
+// Connection defines the shared database interface.
+type Connection struct {
+	db *sqlx.DB
+}
+
+// Shared returns the global connection information.
+func Shared() Connection {
+	return Connection{
+		db: database.SQL,
+	}
+}
+
 // ByEmail gets user information from email.
-func ByEmail(email string) (Item, error) {
+func (c Connection) ByEmail(email string) (Item, error) {
 	result := Item{}
-	err := database.SQL.Get(&result, fmt.Sprintf(`
+	err := c.db.Get(&result, fmt.Sprintf(`
 		SELECT id, password, status_id, first_name
 		FROM %v
 		WHERE email = ?
@@ -43,8 +56,8 @@ func ByEmail(email string) (Item, error) {
 }
 
 // Create creates user.
-func Create(firstName, lastName, email, password string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) Create(firstName, lastName, email, password string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(first_name, last_name, email, password)
 		VALUES

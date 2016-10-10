@@ -48,7 +48,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// Get database result
-	result, err := user.ByEmail(email)
+	result, err := user.Shared().ByEmail(email)
 
 	// Determine if user exists
 	if err == model.ErrNoResult {

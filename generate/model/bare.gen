@@ -6,10 +6,14 @@ import (
 	"log"
 
 	"github.com/blue-jay/blueprint/model"
+	database "github.com/blue-jay/core/storage/driver/mysql"
+
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
+	// table is the table name.
 	table = "{{.table}}"
 )
 
@@ -23,8 +27,20 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
+// Connection defines the shared database interface.
+type Connection struct {
+	db *sqlx.DB
+}
+
+// Shared returns the global connection information.
+func Shared() Connection {
+	return Connection{
+		db: database.SQL,
+	}
+}
+
 // ByID gets item by ID.
-func ByID(ID string, userID string) (Item, error) {
+func (c Connection) ByID(ID string, userID string) (Item, error) {
 	var result Item
 	var err error
 	log.Println("Not Implemented")
@@ -32,7 +48,7 @@ func ByID(ID string, userID string) (Item, error) {
 }
 
 // ByUserID gets all items for a user.
-func ByUserID(userID string) ([]Item, error) {
+func (c Connection) ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	var err error
 	log.Println("Not Implemented")
@@ -40,7 +56,7 @@ func ByUserID(userID string) ([]Item, error) {
 }
 
 // Create adds an item.
-func Create(name string, userID string) (sql.Result, error) {
+func (c Connection) Create(name string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -48,7 +64,7 @@ func Create(name string, userID string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func Update(name string, ID string, userID string) (sql.Result, error) {
+func (c Connection) Update(name string, ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -56,15 +72,15 @@ func Update(name string, ID string, userID string) (sql.Result, error) {
 }
 
 // DeleteHard removes an item.
-func DeleteHard(ID string, userID string) (sql.Result, error) {
+func (c Connection) DeleteHard(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
 	return result, model.StandardError(err)
 }
 
-// Delete marks an item as removed.
-func Delete(ID string, userID string) (sql.Result, error) {
+// DeleteSoft marks an item as removed.
+func (c Connection) DeleteSoft(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")

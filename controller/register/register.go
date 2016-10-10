@@ -68,10 +68,10 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get database result
-	_, err := user.ByEmail(email)
+	_, err := user.Shared().ByEmail(email)
 
 	if err == model.ErrNoResult { // If success (no user exists with that email)
-		_, err = user.Create(firstName, lastName, email, password)
+		_, err = user.Shared().Create(firstName, lastName, email, password)
 		// Will only error if there is a problem with the query
 		if err != nil {
 			log.Println(err)

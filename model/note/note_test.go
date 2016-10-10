@@ -39,7 +39,7 @@ func TestComplete(t *testing.T) {
 	data := "Test data."
 	dataNew := "New test data."
 
-	result, err := user.Create("John", "Doe", "jdoe@domain.com", "p@$$W0rD")
+	result, err := user.Shared().Create("John", "Doe", "jdoe@domain.com", "p@$$W0rD")
 	if err != nil {
 		t.Error("could not create user:", err)
 	}
@@ -53,7 +53,7 @@ func TestComplete(t *testing.T) {
 	userID := fmt.Sprintf("%v", uID)
 
 	// Create a record
-	result, err = note.Create(data, userID)
+	result, err = note.Shared().Create(data, userID)
 	if err != nil {
 		t.Error("could not create record:", err)
 	}
@@ -68,7 +68,7 @@ func TestComplete(t *testing.T) {
 	lastID := fmt.Sprintf("%v", ID)
 
 	// Select a record
-	record, err := note.ByID(lastID, userID)
+	record, err := note.Shared().ByID(lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != data {
@@ -76,13 +76,13 @@ func TestComplete(t *testing.T) {
 	}
 
 	// Update a record
-	result, err = note.Update(dataNew, lastID, userID)
+	result, err = note.Shared().Update(dataNew, lastID, userID)
 	if err != nil {
 		t.Error("could not update record:", err)
 	}
 
 	// Select a record
-	record, err = note.ByID(lastID, userID)
+	record, err = note.Shared().ByID(lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != dataNew {
@@ -90,7 +90,7 @@ func TestComplete(t *testing.T) {
 	}
 
 	// Delete a record by ID
-	result, err = note.Delete(lastID, userID)
+	result, err = note.Shared().DeleteSoft(lastID, userID)
 	if err != nil {
 		t.Error("could not delete record:", err)
 	}

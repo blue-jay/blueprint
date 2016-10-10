@@ -37,7 +37,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	items, err := {{.model}}.ByUserID(userID)
+	items, err := {{.model}}.Shared().ByUserID(userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -69,7 +69,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := {{.model}}.Create(r.FormValue("name"), userID)
+	_, err := {{.model}}.Shared().Create(r.FormValue("name"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -88,7 +88,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	item, err := {{.model}}.ByID(router.Param(r, "id"), userID)
+	item, err := {{.model}}.Shared().ByID(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -107,7 +107,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	item, err := {{.model}}.ByID(router.Param(r, "id"), userID)
+	item, err := {{.model}}.Shared().ByID(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -134,7 +134,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := {{.model}}.Update(r.FormValue("name"), router.Param(r, "id"), userID)
+	_, err := {{.model}}.Shared().Update(r.FormValue("name"), router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -153,7 +153,7 @@ func Destroy(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	_, err := {{.model}}.Delete(router.Param(r, "id"), userID)
+	_, err := {{.model}}.Shared().DeleteSoft(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})

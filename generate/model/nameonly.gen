@@ -6,12 +6,14 @@ import (
 	"fmt"
 
 	"github.com/blue-jay/blueprint/model"
-
 	database "github.com/blue-jay/core/storage/driver/mysql"
+
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
+	// table is the table name.
 	table = "{{.table}}"
 )
 
@@ -24,10 +26,22 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// ByID gets item by ID.
-func ByID(ID string) (Item, error) {
+// Connection defines the shared database interface.
+type Connection struct {
+	db *sqlx.DB
+}
+
+// Shared returns the global connection information.
+func Shared() Connection {
+	return Connection{
+		db: c.db,
+	}
+}
+
+// ByID gets an item by ID.
+func (c Connection) ByID(ID string) (Item, error) {
 	result := Item{}
-	err := database.SQL.Get(&result, fmt.Sprintf(`
+	err := c.db.Get(&result, fmt.Sprintf(`
 		SELECT id, name, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE id = ?
@@ -39,9 +53,9 @@ func ByID(ID string) (Item, error) {
 }
 
 // All gets all items.
-func All() ([]Item, error) {
+func (c Connection) All() ([]Item, error) {
 	var result []Item
-	err := database.SQL.Select(&result, fmt.Sprintf(`
+	err := c.db.Select(&result, fmt.Sprintf(`
 		SELECT id, name, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE deleted_at IS NULL
@@ -50,8 +64,8 @@ func All() ([]Item, error) {
 }
 
 // Create adds an item.
-func Create(name string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) Create(name string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(name)
 		VALUES
@@ -62,8 +76,8 @@ func Create(name string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func Update(name string, ID string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) Update(name string, ID string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET name = ?
 		WHERE id = ?
@@ -75,8 +89,8 @@ func Update(name string, ID string) (sql.Result, error) {
 }
 
 // DeleteHard removes an item.
-func DeleteHard(ID string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) DeleteHard(ID string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		DELETE FROM %v
 		WHERE id = ?
 			AND deleted_at IS NULL
@@ -86,8 +100,8 @@ func DeleteHard(ID string) (sql.Result, error) {
 }
 
 // Delete marks an item as removed.
-func Delete(ID string) (sql.Result, error) {
-	result, err := database.SQL.Exec(fmt.Sprintf(`
+func (c Connection) Delete(ID string) (sql.Result, error) {
+	result, err := c.db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET deleted_at = NOW()
 		WHERE id = ?
