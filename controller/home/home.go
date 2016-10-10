@@ -18,7 +18,7 @@ func Load() {
 func Index(w http.ResponseWriter, r *http.Request) {
 	session := session.Instance(r)
 
-	v := view.Shared().New("home/index")
+	v := view.Config().New("home/index")
 	if session.Values["id"] != nil {
 		v.Vars["first_name"] = session.Values["first_name"]
 	}

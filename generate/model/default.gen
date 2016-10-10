@@ -27,22 +27,22 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Connection defines the shared database interface.
-type Connection struct {
-	db *sqlx.DB
+// Configuration defines the shared configuration interface.
+type Configuration struct {
+	DB *sqlx.DB
 }
 
-// Shared returns the global connection information.
-func Shared() Connection {
-	return Connection{
-		db: database.SQL,
+// Config returns the global connection information.
+func Config() Configuration {
+	return Configuration{
+		DB: database.SQL,
 	}
 }
 
 // ByID gets an item by ID.
-func (c Connection) ByID(ID string, userID string) (Item, error) {
+func (c Configuration) ByID(ID string, userID string) (Item, error) {
 	result := Item{}
-	err := c.db.Get(&result, fmt.Sprintf(`
+	err := c.DB.Get(&result, fmt.Sprintf(`
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE id = ?
@@ -55,9 +55,9 @@ func (c Connection) ByID(ID string, userID string) (Item, error) {
 }
 
 // ByUserID gets all entities for a user.
-func (c Connection) ByUserID(userID string) ([]Item, error) {
+func (c Configuration) ByUserID(userID string) ([]Item, error) {
 	var result []Item
-	err := c.db.Select(&result, fmt.Sprintf(`
+	err := c.DB.Select(&result, fmt.Sprintf(`
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE user_id = ?
@@ -68,8 +68,8 @@ func (c Connection) ByUserID(userID string) ([]Item, error) {
 }
 
 // Create adds an item.
-func (c Connection) Create(name string, userID string) (sql.Result, error) {
-	result, err := c.db.Exec(fmt.Sprintf(`
+func (c Configuration) Create(name string, userID string) (sql.Result, error) {
+	result, err := c.DB.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(name, user_id)
 		VALUES
@@ -80,8 +80,8 @@ func (c Connection) Create(name string, userID string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func (c Connection) Update(name string, ID string, userID string) (sql.Result, error) {
-	result, err := c.db.Exec(fmt.Sprintf(`
+func (c Configuration) Update(name string, ID string, userID string) (sql.Result, error) {
+	result, err := c.DB.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET name = ?
 		WHERE id = ?
@@ -94,8 +94,8 @@ func (c Connection) Update(name string, ID string, userID string) (sql.Result, e
 }
 
 // DeleteHard removes an item.
-func (c Connection) DeleteHard(ID string, userID string) (sql.Result, error) {
-	result, err := c.db.Exec(fmt.Sprintf(`
+func (c Configuration) DeleteHard(ID string, userID string) (sql.Result, error) {
+	result, err := c.DB.Exec(fmt.Sprintf(`
 		DELETE FROM %v
 		WHERE id = ?
 			AND user_id = ?
@@ -106,8 +106,8 @@ func (c Connection) DeleteHard(ID string, userID string) (sql.Result, error) {
 }
 
 // DeleteSoft marks an item as removed.
-func (c Connection) DeleteSoft(ID string, userID string) (sql.Result, error) {
-	result, err := c.db.Exec(fmt.Sprintf(`
+func (c Configuration) DeleteSoft(ID string, userID string) (sql.Result, error) {
+	result, err := c.DB.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET deleted_at = NOW()
 		WHERE id = ?

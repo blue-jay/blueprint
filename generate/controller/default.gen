@@ -32,13 +32,13 @@ func Load() {
 func Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	items, err := {{.model}}.Shared().ByUserID(c.UserID)
+	items, err := {{.model}}.Config().ByUserID(c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		items = []{{.model}}.Item{}
 	}
 
-	v := view.Shared().New("{{.view}}/index")
+	v := view.Config().New("{{.view}}/index")
 	v.Vars["items"] = items
 	v.Render(w, r)
 }
@@ -47,7 +47,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func Create(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	v := view.Shared().New("{{.view}}/create")
+	v := view.Config().New("{{.view}}/create")
 	c.Repopulate(v.Vars, "name")
 	v.Render(w, r)
 }
@@ -61,7 +61,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := {{.model}}.Shared().Create(r.FormValue("name"), c.UserID)
+	_, err := {{.model}}.Config().Create(r.FormValue("name"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		Create(w, r)
@@ -76,14 +76,14 @@ func Store(w http.ResponseWriter, r *http.Request) {
 func Show(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	item, err := {{.model}}.Shared().ByID(c.Param("id"), c.UserID)
+	item, err := {{.model}}.Config().ByID(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		c.Redirect(uri)
 		return
 	}
 
-	v := view.Shared().New("{{.view}}/show")
+	v := view.Config().New("{{.view}}/show")
 	v.Vars["item"] = item
 	v.Render(w, r)
 }
@@ -92,14 +92,14 @@ func Show(w http.ResponseWriter, r *http.Request) {
 func Edit(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	item, err := {{.model}}.Shared().ByID(c.Param("id"), c.UserID)
+	item, err := {{.model}}.Config().ByID(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		c.Redirect(uri)
 		return
 	}
 
-	v := view.Shared().New("{{.view}}/edit")
+	v := view.Config().New("{{.view}}/edit")
 	c.Repopulate(v.Vars, "name")
 	v.Vars["item"] = item
 	v.Render(w, r)
@@ -114,7 +114,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := {{.model}}.Shared().Update(r.FormValue("name"), c.Param("id"), c.UserID)
+	_, err := {{.model}}.Config().Update(r.FormValue("name"), c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		Edit(w, r)
@@ -129,7 +129,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 func Destroy(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	_, err := {{.model}}.Shared().DeleteSoft(c.Param("id"), c.UserID)
+	_, err := {{.model}}.Config().DeleteSoft(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 	} else {

@@ -32,13 +32,13 @@ func Load() {
 func Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	items, err := note.Shared().ByUserID(c.UserID)
+	items, err := note.Config().ByUserID(c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		items = []note.Item{}
 	}
 
-	v := view.Shared().New("note/index")
+	v := view.Config().New("note/index")
 	v.Vars["items"] = items
 	v.Render(w, r)
 }
@@ -47,7 +47,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func Create(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	v := view.Shared().New("note/create")
+	v := view.Config().New("note/create")
 	c.Repopulate(v.Vars, "name")
 	v.Render(w, r)
 }
@@ -61,7 +61,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := note.Shared().Create(r.FormValue("name"), c.UserID)
+	_, err := note.Config().Create(r.FormValue("name"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		Create(w, r)
@@ -76,14 +76,14 @@ func Store(w http.ResponseWriter, r *http.Request) {
 func Show(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	item, err := note.Shared().ByID(c.Param("id"), c.UserID)
+	item, err := note.Config().ByID(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		c.Redirect(uri)
 		return
 	}
 
-	v := view.Shared().New("note/show")
+	v := view.Config().New("note/show")
 	v.Vars["item"] = item
 	v.Render(w, r)
 }
@@ -92,14 +92,14 @@ func Show(w http.ResponseWriter, r *http.Request) {
 func Edit(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	item, err := note.Shared().ByID(c.Param("id"), c.UserID)
+	item, err := note.Config().ByID(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		c.Redirect(uri)
 		return
 	}
 
-	v := view.Shared().New("note/edit")
+	v := view.Config().New("note/edit")
 	c.Repopulate(v.Vars, "name")
 	v.Vars["item"] = item
 	v.Render(w, r)
@@ -114,7 +114,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := note.Shared().Update(r.FormValue("name"), c.Param("id"), c.UserID)
+	_, err := note.Config().Update(r.FormValue("name"), c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		Edit(w, r)
@@ -129,7 +129,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 func Destroy(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	_, err := note.Shared().DeleteSoft(c.Param("id"), c.UserID)
+	_, err := note.Config().DeleteSoft(c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 	} else {

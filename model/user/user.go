@@ -29,22 +29,22 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Connection defines the shared database interface.
-type Connection struct {
-	db *sqlx.DB
+// Configuration defines the shared configuration interface.
+type Configuration struct {
+	DB *sqlx.DB
 }
 
-// Shared returns the global connection information.
-func Shared() Connection {
-	return Connection{
-		db: database.SQL,
+// Config returns the global connection information.
+func Config() Configuration {
+	return Configuration{
+		DB: database.SQL,
 	}
 }
 
 // ByEmail gets user information from email.
-func (c Connection) ByEmail(email string) (Item, error) {
+func (c Configuration) ByEmail(email string) (Item, error) {
 	result := Item{}
-	err := c.db.Get(&result, fmt.Sprintf(`
+	err := c.DB.Get(&result, fmt.Sprintf(`
 		SELECT id, password, status_id, first_name
 		FROM %v
 		WHERE email = ?
@@ -56,8 +56,8 @@ func (c Connection) ByEmail(email string) (Item, error) {
 }
 
 // Create creates user.
-func (c Connection) Create(firstName, lastName, email, password string) (sql.Result, error) {
-	result, err := c.db.Exec(fmt.Sprintf(`
+func (c Configuration) Create(firstName, lastName, email, password string) (sql.Result, error) {
+	result, err := c.DB.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(first_name, last_name, email, password)
 		VALUES

@@ -27,20 +27,20 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Connection defines the shared database interface.
-type Connection struct {
-	db *sqlx.DB
+// Configuration defines the shared configuration interface.
+type Configuration struct {
+	DB *sqlx.DB
 }
 
-// Shared returns the global connection information.
-func Shared() Connection {
-	return Connection{
-		db: database.SQL,
+// Config returns the global connection information.
+func Config() Configuration {
+	return Configuration{
+		DB: database.SQL,
 	}
 }
 
 // ByID gets item by ID.
-func (c Connection) ByID(ID string, userID string) (Item, error) {
+func (c Configuration) ByID(ID string, userID string) (Item, error) {
 	var result Item
 	var err error
 	log.Println("Not Implemented")
@@ -48,7 +48,7 @@ func (c Connection) ByID(ID string, userID string) (Item, error) {
 }
 
 // ByUserID gets all items for a user.
-func (c Connection) ByUserID(userID string) ([]Item, error) {
+func (c Configuration) ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	var err error
 	log.Println("Not Implemented")
@@ -56,7 +56,7 @@ func (c Connection) ByUserID(userID string) ([]Item, error) {
 }
 
 // Create adds an item.
-func (c Connection) Create(name string, userID string) (sql.Result, error) {
+func (c Configuration) Create(name string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -64,7 +64,7 @@ func (c Connection) Create(name string, userID string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func (c Connection) Update(name string, ID string, userID string) (sql.Result, error) {
+func (c Configuration) Update(name string, ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -72,7 +72,7 @@ func (c Connection) Update(name string, ID string, userID string) (sql.Result, e
 }
 
 // DeleteHard removes an item.
-func (c Connection) DeleteHard(ID string, userID string) (sql.Result, error) {
+func (c Configuration) DeleteHard(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -80,7 +80,7 @@ func (c Connection) DeleteHard(ID string, userID string) (sql.Result, error) {
 }
 
 // DeleteSoft marks an item as removed.
-func (c Connection) DeleteSoft(ID string, userID string) (sql.Result, error) {
+func (c Configuration) DeleteSoft(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")

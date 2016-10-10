@@ -37,7 +37,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	items, err := {{.model}}.Shared().ByUserID(userID)
+	items, err := {{.model}}.Config().ByUserID(userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -45,14 +45,14 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		items = []{{.model}}.Item{}
 	}
 
-	v := view.Shared().New("{{.view}}/index")
+	v := view.Config().New("{{.view}}/index")
 	v.Vars["items"] = items
 	v.Render(w, r)
 }
 
 // Create displays the create form.
 func Create(w http.ResponseWriter, r *http.Request) {
-	v := view.Shared().New("{{.view}}/create")
+	v := view.Config().New("{{.view}}/create")
 	form.Repopulate(r.Form, v.Vars, "name")
 	v.Render(w, r)
 }
@@ -69,7 +69,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := {{.model}}.Shared().Create(r.FormValue("name"), userID)
+	_, err := {{.model}}.Config().Create(r.FormValue("name"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -88,7 +88,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	item, err := {{.model}}.Shared().ByID(router.Param(r, "id"), userID)
+	item, err := {{.model}}.Config().ByID(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -97,7 +97,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	v := view.Shared().New("{{.view}}/show")
+	v := view.Config().New("{{.view}}/show")
 	v.Vars["item"] = item
 	v.Render(w, r)
 }
@@ -107,7 +107,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	item, err := {{.model}}.Shared().ByID(router.Param(r, "id"), userID)
+	item, err := {{.model}}.Config().ByID(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -116,7 +116,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	v := view.Shared().New("{{.view}}/edit")
+	v := view.Config().New("{{.view}}/edit")
 	form.Repopulate(r.Form, v.Vars, "name")
 	v.Vars["item"] = item
 	v.Render(w, r)
@@ -134,7 +134,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := {{.model}}.Shared().Update(r.FormValue("name"), router.Param(r, "id"), userID)
+	_, err := {{.model}}.Config().Update(r.FormValue("name"), router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
@@ -153,7 +153,7 @@ func Destroy(w http.ResponseWriter, r *http.Request) {
 	sess := session.Instance(r)
 	userID := fmt.Sprintf("%v", sess.Values["id"])
 
-	_, err := {{.model}}.Shared().DeleteSoft(router.Param(r, "id"), userID)
+	_, err := {{.model}}.Config().DeleteSoft(router.Param(r, "id"), userID)
 	if err != nil {
 		log.Println(err)
 		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})

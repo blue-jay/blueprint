@@ -26,7 +26,7 @@ func Load() {
 
 // Index displays the login page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	v := view.Shared().New("login/index")
+	v := view.Config().New("login/index")
 	form.Repopulate(r.Form, v.Vars, "email")
 	v.Render(w, r)
 }
@@ -48,7 +48,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// Get database result
-	result, err := user.Shared().ByEmail(email)
+	result, err := user.Config().ByEmail(email)
 
 	// Determine if user exists
 	if err == model.ErrNoResult {

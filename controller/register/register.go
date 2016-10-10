@@ -25,7 +25,7 @@ func Load() {
 
 // Index displays the register page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	v := view.Shared().New("register/index")
+	v := view.Config().New("register/index")
 	form.Repopulate(r.Form, v.Vars, "first_name", "last_name", "email")
 	v.Render(w, r)
 }
@@ -68,10 +68,10 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get database result
-	_, err := user.Shared().ByEmail(email)
+	_, err := user.Config().ByEmail(email)
 
 	if err == model.ErrNoResult { // If success (no user exists with that email)
-		_, err = user.Shared().Create(firstName, lastName, email, password)
+		_, err = user.Config().Create(firstName, lastName, email, password)
 		// Will only error if there is a problem with the query
 		if err != nil {
 			log.Println(err)

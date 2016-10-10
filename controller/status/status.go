@@ -18,7 +18,7 @@ func Load() {
 // Error404 - Page Not Found.
 func Error404(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	v := view.Shared().New("status/index")
+	v := view.Config().New("status/index")
 	v.Vars["title"] = "404 Not Found"
 	v.Vars["message"] = "Page could not be found."
 	v.Render(w, r)
@@ -28,7 +28,7 @@ func Error404(w http.ResponseWriter, r *http.Request) {
 func Error405(allowedMethods string) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		v := view.Shared().New("status/index")
+		v := view.Config().New("status/index")
 		v.Vars["title"] = "405 Method Not Allowed"
 		v.Vars["message"] = "Method is not allowed."
 		v.Render(w, r)
@@ -38,7 +38,7 @@ func Error405(allowedMethods string) func(w http.ResponseWriter, r *http.Request
 // Error500 - Internal Server Error.
 func Error500(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
-	v := view.Shared().New("status/index")
+	v := view.Config().New("status/index")
 	v.Vars["title"] = "500 Internal Server Error"
 	v.Vars["message"] = "An internal server error occurred."
 	v.Render(w, r)
@@ -47,7 +47,7 @@ func Error500(w http.ResponseWriter, r *http.Request) {
 // Error501 - Not Implemented.
 func Error501(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
-	v := view.Shared().New("status/index")
+	v := view.Config().New("status/index")
 	v.Vars["title"] = "501 Not Implemented"
 	v.Vars["message"] = "Page is not yet implemented."
 	v.Render(w, r)
@@ -56,7 +56,7 @@ func Error501(w http.ResponseWriter, r *http.Request) {
 // InvalidToken shows a page in response to CSRF attacks.
 func InvalidToken(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusForbidden)
-	v := view.Shared().New("status/index")
+	v := view.Config().New("status/index")
 	v.Vars["title"] = "Invalid Token"
 	v.Vars["message"] = `Your token <strong>expired</strong>,
 		click <a href="javascript:void(0)" onclick="location.replace(document.referrer)">here</a>

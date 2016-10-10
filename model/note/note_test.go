@@ -7,13 +7,13 @@ import (
 
 	"github.com/blue-jay/blueprint/model/note"
 	"github.com/blue-jay/blueprint/model/user"
-
-	"github.com/blue-jay/core/storage/migration"
 	"github.com/blue-jay/core/storage/migration/mysql"
+
+	"github.com/jmoiron/sqlx"
 )
 
 var (
-	mig *migration.Info
+	db *sqlx.DB
 )
 
 // TestMain runs setup, tests, and then teardown.
@@ -26,12 +26,15 @@ func TestMain(m *testing.M) {
 
 // setup handles any start up tasks.
 func setup() {
-	mysql.SetUp("../../env.json", "database_test")
+	_, conf := mysql.SetUp("../../env.json", "database_test")
+
+	// Connect to the database
+	db, _ = conf.Connect(true)
 }
 
 // teardown handles any clean up tasks.
 func teardown() {
-	mysql.TearDown()
+	mysql.TearDown(db, "database_test")
 }
 
 // TestComplete
@@ -39,7 +42,15 @@ func TestComplete(t *testing.T) {
 	data := "Test data."
 	dataNew := "New test data."
 
-	result, err := user.Shared().Create("John", "Doe", "jdoe@domain.com", "p@$$W0rD")
+	userCon := user.Connection{
+		DB: db,
+	}
+
+	noteCon := note.Connection{
+		DB: db,
+	}
+
+	result, err := userCon.Create("John", "Doe", "jdoe@domain.com", "p@$$W0rD")
 	if err != nil {
 		t.Error("could not create user:", err)
 	}
@@ -53,7 +64,7 @@ func TestComplete(t *testing.T) {
 	userID := fmt.Sprintf("%v", uID)
 
 	// Create a record
-	result, err = note.Shared().Create(data, userID)
+	result, err = noteCon.Create(data, userID)
 	if err != nil {
 		t.Error("could not create record:", err)
 	}
@@ -68,7 +79,7 @@ func TestComplete(t *testing.T) {
 	lastID := fmt.Sprintf("%v", ID)
 
 	// Select a record
-	record, err := note.Shared().ByID(lastID, userID)
+	record, err := noteCon.ByID(lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != data {
@@ -76,13 +87,13 @@ func TestComplete(t *testing.T) {
 	}
 
 	// Update a record
-	result, err = note.Shared().Update(dataNew, lastID, userID)
+	result, err = noteCon.Update(dataNew, lastID, userID)
 	if err != nil {
 		t.Error("could not update record:", err)
 	}
 
 	// Select a record
-	record, err = note.Shared().ByID(lastID, userID)
+	record, err = noteCon.ByID(lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != dataNew {
@@ -90,7 +101,7 @@ func TestComplete(t *testing.T) {
 	}
 
 	// Delete a record by ID
-	result, err = note.Shared().DeleteSoft(lastID, userID)
+	result, err = noteCon.DeleteSoft(lastID, userID)
 	if err != nil {
 		t.Error("could not delete record:", err)
 	}
