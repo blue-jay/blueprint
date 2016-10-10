@@ -25,7 +25,7 @@ func Load() {
 
 // Index displays the register page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	v := view.New("register/index")
+	v := view.Shared().New("register/index")
 	form.Repopulate(r.Form, v.Vars, "first_name", "last_name", "email")
 	v.Render(w, r)
 }

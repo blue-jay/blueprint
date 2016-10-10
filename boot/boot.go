@@ -100,7 +100,7 @@ func RegisterServices(config *Info) {
 
 	// Connect to the MySQL database
 	mysql.SetConfig(config.MySQL)
-	mysql.Connect(true)
+	mysql.Shared().Connect(true)
 
 	// Connect to the PostgreSQL database
 	/*postgresql.SetConfig(config.PostgreSQL)
@@ -121,7 +121,7 @@ func RegisterServices(config *Info) {
 
 	// Set up the functions for the views
 	view.SetFuncMaps(
-		asset.Map(config.View.BaseURI),
+		asset.Shared().Map(config.View.BaseURI),
 		link.Map(config.View.BaseURI),
 		noescape.Map(),
 		prettytime.Map(),

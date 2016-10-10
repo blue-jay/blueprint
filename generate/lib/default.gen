@@ -34,3 +34,15 @@ func Config() Info {
 	defer infoMutex.RUnlock()
 	return info
 }
+
+// Configuration defines the shared configuration interface.
+type Configuration struct {
+	Info
+}
+
+// Shared returns the global configuration information.
+func Shared() Configuration {
+	return Configuration{
+		Config(),
+	}
+}

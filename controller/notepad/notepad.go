@@ -38,7 +38,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		items = []note.Item{}
 	}
 
-	v := view.New("note/index")
+	v := view.Shared().New("note/index")
 	v.Vars["items"] = items
 	v.Render(w, r)
 }
@@ -47,7 +47,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func Create(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	v := view.New("note/create")
+	v := view.Shared().New("note/create")
 	c.Repopulate(v.Vars, "name")
 	v.Render(w, r)
 }
@@ -83,7 +83,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	v := view.New("note/show")
+	v := view.Shared().New("note/show")
 	v.Vars["item"] = item
 	v.Render(w, r)
 }
@@ -99,7 +99,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	v := view.New("note/edit")
+	v := view.Shared().New("note/edit")
 	c.Repopulate(v.Vars, "name")
 	v.Vars["item"] = item
 	v.Render(w, r)

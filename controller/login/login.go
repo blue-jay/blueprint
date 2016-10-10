@@ -26,7 +26,7 @@ func Load() {
 
 // Index displays the login page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	v := view.New("login/index")
+	v := view.Shared().New("login/index")
 	form.Repopulate(r.Form, v.Vars, "email")
 	v.Render(w, r)
 }
