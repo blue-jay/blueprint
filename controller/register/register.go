@@ -2,19 +2,16 @@
 package register
 
 import (
-	"log"
+	"errors"
 	"net/http"
 
+	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model"
-	"github.com/blue-jay/blueprint/model/user"
 
-	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
 	"github.com/blue-jay/core/router"
-	"github.com/blue-jay/core/session"
-	"github.com/blue-jay/core/view"
 )
 
 // Load the routes.
@@ -25,19 +22,19 @@ func Load() {
 
 // Index displays the register page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	v := view.Config().New("register/index")
+	c := flight.Context(w, r)
+	v := c.View.New("register/index")
 	form.Repopulate(r.Form, v.Vars, "first_name", "last_name", "email")
 	v.Render(w, r)
 }
 
 // Store handles the registration form submission.
 func Store(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
+	c := flight.Context(w, r)
 
 	// Validate with required fields
 	if valid, missingField := form.Required(r, "first_name", "last_name", "email", "password", "password_verify"); !valid {
-		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Error})
-		sess.Save(r, w)
+		c.FlashError(errors.New("Field missing: " + missingField))
 		Index(w, r)
 		return
 	}
@@ -49,8 +46,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 
 	// Validate passwords
 	if r.FormValue("password") != r.FormValue("password_verify") {
-		sess.AddFlash(flash.Info{"Passwords do not match.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(errors.New("Passwords do not match."))
 		Index(w, r)
 		return
 	}
@@ -60,36 +56,28 @@ func Store(w http.ResponseWriter, r *http.Request) {
 
 	// If password hashing failed
 	if errp != nil {
-		log.Println(errp)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(errp)
 		http.Redirect(w, r, "/register", http.StatusFound)
 		return
 	}
 
 	// Get database result
-	_, err := user.Config().ByEmail(email)
+	_, noRows, err := model.User.ByEmail(email)
 
-	if err == model.ErrNoResult { // If success (no user exists with that email)
-		_, err = user.Config().Create(firstName, lastName, email, password)
+	if noRows { // If success (no user exists with that email)
+		_, err = model.User.Create(firstName, lastName, email, password)
 		// Will only error if there is a problem with the query
 		if err != nil {
-			log.Println(err)
-			sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-			sess.Save(r, w)
+			c.FlashError(err)
 		} else {
-			sess.AddFlash(flash.Info{"Account created successfully for: " + email, flash.Success})
-			sess.Save(r, w)
+			c.FlashSuccess("Account created successfully for: " + email)
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 	} else if err != nil { // Catch all other errors
-		log.Println(err)
-		sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(err)
 	} else { // Else the user already exists
-		sess.AddFlash(flash.Info{"Account already exists for: " + email, flash.Error})
-		sess.Save(r, w)
+		c.FlashError(errors.New("Account already exists for: " + email))
 	}
 
 	// Display the page

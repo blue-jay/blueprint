@@ -1,21 +1,19 @@
-// Package model provides error standardization for the models.
+// Package model handles the loading of models.
 package model
 
 import (
-	"database/sql"
-	"errors"
+	"github.com/blue-jay/blueprint/model/note"
+	"github.com/blue-jay/blueprint/model/user"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
-	// ErrNoResult is when no results are found.
-	ErrNoResult = errors.New("Result not found.")
+	Note note.Service // Note model
+	User user.Service // User model
 )
 
-// StandardError returns a model defined error.
-func StandardError(err error) error {
-	if err == sql.ErrNoRows {
-		return ErrNoResult
-	}
-
-	return err
+// Load injects the dependencies for the models
+func Load(db *sqlx.DB) {
+	Note = note.Service{db}
+	User = user.Service{db}
 }

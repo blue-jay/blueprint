@@ -4,9 +4,9 @@ package home
 import (
 	"net/http"
 
+	"github.com/blue-jay/blueprint/lib/flight"
+
 	"github.com/blue-jay/core/router"
-	"github.com/blue-jay/core/session"
-	"github.com/blue-jay/core/view"
 )
 
 // Load the routes.
@@ -16,11 +16,11 @@ func Load() {
 
 // Index displays the home page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	session := session.Instance(r)
+	c := flight.Context(w, r)
 
-	v := view.Config().New("home/index")
-	if session.Values["id"] != nil {
-		v.Vars["first_name"] = session.Values["first_name"]
+	v := c.View.New("home/index")
+	if c.Sess.Values["id"] != nil {
+		v.Vars["first_name"] = c.Sess.Values["first_name"]
 	}
 	v.Render(w, r)
 }

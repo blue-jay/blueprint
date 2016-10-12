@@ -10,8 +10,10 @@ import (
 
 	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/controller/status"
+	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/logrequest"
 	"github.com/blue-jay/blueprint/middleware/rest"
+	"github.com/blue-jay/blueprint/model"
 	"github.com/blue-jay/blueprint/viewfunc/link"
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
@@ -99,13 +101,13 @@ func RegisterServices(config *Info) {
 	})
 
 	// Connect to the MySQL database
-	mysql.SetConfig(config.MySQL)
-	db, _ := mysql.Config().Connect(true)
-	mysql.SQL = db
+	mysqlDB, _ := config.MySQL.Connect(true)
 
 	// Connect to the PostgreSQL database
-	/*postgresql.SetConfig(config.PostgreSQL)
-	postgresql.Connect(true)*/
+	//postgresqldb, _ := config.PostgreSQL.Connect(true)
+
+	// Load the models
+	model.Load(mysqlDB)
 
 	// Configure form handling
 	form.SetConfig(config.Form)
@@ -117,11 +119,10 @@ func RegisterServices(config *Info) {
 	asset.SetConfig(config.Asset)
 
 	// Set up the views
-	view.SetConfig(config.View)
-	view.SetTemplates(config.Template.Root, config.Template.Children)
+	config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Set up the functions for the views
-	view.SetFuncMaps(
+	config.View.SetFuncMaps(
 		asset.Config().Map(config.View.BaseURI),
 		link.Map(config.View.BaseURI),
 		noescape.Map(),
@@ -130,12 +131,15 @@ func RegisterServices(config *Info) {
 	)
 
 	// Set up the variables and modifiers for the views
-	view.SetModifiers(
+	config.View.SetModifiers(
 		authlevel.Modify,
 		uri.Modify,
 		xsrf.Token,
 		flash.Modify,
 	)
+
+	// Store the view information to flight
+	flight.SetView(&config.View)
 }
 
 // *****************************************************************************
