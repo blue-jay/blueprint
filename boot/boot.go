@@ -109,21 +109,24 @@ func RegisterServices(config *Info) {
 	// Load the models
 	model.Load(mysqlDB)
 
-	// Configure form handling
-	form.SetConfig(config.Form)
-
 	// Load the controller routes
 	controller.LoadRoutes()
 
 	// Set up the assets
-	asset.SetConfig(config.Asset)
+	flight.SetAsset(&config.Asset)
+
+	// Configure form handling
+	flight.SetForm(&config.Form)
+
+	// Store the view information to flight (context)
+	flight.SetView(&config.View)
 
 	// Set up the views
 	config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Set up the functions for the views
 	config.View.SetFuncMaps(
-		asset.Config().Map(config.View.BaseURI),
+		config.Asset.Map(config.View.BaseURI),
 		link.Map(config.View.BaseURI),
 		noescape.Map(),
 		prettytime.Map(),
@@ -137,9 +140,6 @@ func RegisterServices(config *Info) {
 		xsrf.Token,
 		flash.Modify,
 	)
-
-	// Store the view information to flight
-	flight.SetView(&config.View)
 }
 
 // *****************************************************************************

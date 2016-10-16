@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 
+	"github.com/blue-jay/core/asset"
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/router"
@@ -16,16 +18,41 @@ import (
 )
 
 var (
-	vinfo *view.Info
+	assetInfo      *asset.Info
+	assetInfoMutex sync.RWMutex
+
+	formInfo      *form.Info
+	formInfoMutex sync.RWMutex
+
+	viewInfo      *view.Info
+	viewInfoMutex sync.RWMutex
 )
 
-func SetView(v *view.Info) {
-	vinfo = v
+// SetAsset sets the asset configuration.
+func SetAsset(i *asset.Info) {
+	assetInfoMutex.Lock()
+	assetInfo = i
+	assetInfoMutex.Unlock()
+}
 
+// SetForm sets the form configuration.
+func SetForm(i *form.Info) {
+	formInfoMutex.Lock()
+	formInfo = i
+	formInfoMutex.Unlock()
+}
+
+// SetView sets the view configuration.
+func SetView(i *view.Info) {
+	viewInfoMutex.Lock()
+	viewInfo = i
+	viewInfoMutex.Unlock()
 }
 
 // Info holds the commonly used information.
 type Info struct {
+	Asset  *asset.Info
+	Form   *form.Info
 	Sess   *sessions.Session
 	UserID string
 	W      http.ResponseWriter
@@ -35,14 +62,36 @@ type Info struct {
 
 // Context returns commonly used information.
 func Context(w http.ResponseWriter, r *http.Request) *Info {
-	sess := session.Instance(r)
+	sess, err := session.Instance(r)
+	if err != nil {
+		// Session probably wasn't configured properly
+		// This is fatal because the web application will not work properly
+		log.Fatal(err)
+	}
+
+	// Safely retrieve the view config
+	assetInfoMutex.RLock()
+	i := assetInfo
+	assetInfoMutex.RUnlock()
+
+	// Safely retrieve the form config
+	formInfoMutex.RLock()
+	f := formInfo
+	formInfoMutex.RUnlock()
+
+	// Safely retrieve the view config
+	viewInfoMutex.RLock()
+	v := viewInfo
+	viewInfoMutex.RUnlock()
 
 	return &Info{
+		Asset:  i,
+		Form:   f,
 		Sess:   sess,
 		UserID: fmt.Sprintf("%v", sess.Values["id"]),
 		W:      w,
 		R:      r,
-		View:   vinfo,
+		View:   v,
 	}
 }
 

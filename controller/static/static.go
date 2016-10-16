@@ -7,8 +7,8 @@ import (
 	"path"
 
 	"github.com/blue-jay/blueprint/controller/status"
+	"github.com/blue-jay/blueprint/lib/flight"
 
-	"github.com/blue-jay/core/asset"
 	"github.com/blue-jay/core/router"
 )
 
@@ -20,8 +20,10 @@ func Load() {
 
 // Index maps static files.
 func Index(w http.ResponseWriter, r *http.Request) {
+	c := flight.Context(w, r)
+
 	// File path
-	path := path.Join(asset.Config().Folder, r.URL.Path[1:])
+	path := path.Join(c.Asset.Folder, r.URL.Path[1:])
 
 	// Only serve files
 	if fi, err := os.Stat(path); err == nil && !fi.IsDir() {
