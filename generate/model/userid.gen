@@ -35,50 +35,82 @@ type Connection interface {
 	Select(dest interface{}, query string, args ...interface{}) error
 }
 
-// ByID gets item by ID.
+// ByID gets an item by ID.
 func (s Service) ByID(ID string, userID string) (Item, error) {
-	var result Item
-	var err error
-	log.Println("Not Implemented")
+	result := Item{}
+	err := s.DB.Get(&result, fmt.Sprintf(`
+		SELECT id, name, user_id, created_at, updated_at, deleted_at
+		FROM %v
+		WHERE id = ?
+			AND user_id = ?
+			AND deleted_at IS NULL
+		LIMIT 1
+		`, table),
+		ID, userID)
 	return result, model.StandardError(err)
 }
 
-// ByUserID gets all items for a user.
+// ByUserID gets all entities for a user.
 func (s Service) ByUserID(userID string) ([]Item, error) {
 	var result []Item
-	var err error
-	log.Println("Not Implemented")
+	err := s.DB.Select(&result, fmt.Sprintf(`
+		SELECT id, name, user_id, created_at, updated_at, deleted_at
+		FROM %v
+		WHERE user_id = ?
+			AND deleted_at IS NULL
+		`, table),
+		userID)
 	return result, model.StandardError(err)
 }
 
 // Create adds an item.
 func (s Service) Create(name string, userID string) (sql.Result, error) {
-	var result sql.Result
-	var err error
-	log.Println("Not Implemented")
+	result, err := s.DB.Exec(fmt.Sprintf(`
+		INSERT INTO %v
+		(name, user_id)
+		VALUES
+		(?,?)
+		`, table),
+		name, userID)
 	return result, model.StandardError(err)
 }
 
 // Update makes changes to an existing item.
 func (s Service) Update(name string, ID string, userID string) (sql.Result, error) {
-	var result sql.Result
-	var err error
-	log.Println("Not Implemented")
+	result, err := s.DB.Exec(fmt.Sprintf(`
+		UPDATE %v
+		SET name = ?
+		WHERE id = ?
+			AND user_id = ?
+			AND deleted_at IS NULL
+		LIMIT 1
+		`, table),
+		name, ID, userID)
 	return result, model.StandardError(err)
 }
 
 // DeleteHard removes an item.
 func (s Service) DeleteHard(ID string, userID string) (sql.Result, error) {
-	var result sql.Result
-	var err error
-	log.Println("Not Implemented")
+	result, err := s.DB.Exec(fmt.Sprintf(`
+		DELETE FROM %v
+		WHERE id = ?
+			AND user_id = ?
+			AND deleted_at IS NULL
+		`, table),
+		ID, userID)
 	return result, model.StandardError(err)
 }
 
 // DeleteSoft marks an item as removed.
 func (s Service) DeleteSoft(ID string, userID string) (sql.Result, error) {
-	var result sql.Result
-	var err error
-	log.Println("Not Implemented")
+	result, err := s.DB.Exec(fmt.Sprintf(`
+		UPDATE %v
+		SET deleted_at = NOW()
+		WHERE id = ?
+			AND user_id = ?
+			AND deleted_at IS NULL
+		LIMIT 1
+		`, table),
+		ID, userID)
 	return result, model.StandardError(err)
 }

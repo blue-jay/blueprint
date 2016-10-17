@@ -2,13 +2,13 @@
 	"config.type": "collection",
 	"config.collection": [
 		{
-			"model/default": {
+			"model/nameonly": {
 				"package": "{{.model}}",
 				"table": "{{.model}}"
 			}
 		},
 		{
-			"controller/default": {
+			"controller/nameonly": {
 				"package": "{{.controller}}",
 				"url": "{{.controller}}",
 				"model": "{{.model}}",

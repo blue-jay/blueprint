@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 )
 
 var (
@@ -29,7 +28,14 @@ type Item struct {
 
 // Service defines the database connection.
 type Service struct {
-	DB *sqlx.DB
+	DB Connection
+}
+
+// Connection is an interface for making queries.
+type Connection interface {
+	Exec(query string, args ...interface{}) (sql.Result, error)
+	Get(dest interface{}, query string, args ...interface{}) error
+	Select(dest interface{}, query string, args ...interface{}) error
 }
 
 // ByEmail gets user information from email.
