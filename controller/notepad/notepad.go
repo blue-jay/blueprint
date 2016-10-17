@@ -32,8 +32,7 @@ func Load() {
 func Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	// On the template generation, Note needs to be capitalized
-	//items, _, err := model.Note.ByUserID(c.UserID)
+	items, _, err := model.Note.ByUserID(c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		items = []note.Item{}
