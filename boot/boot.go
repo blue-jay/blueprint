@@ -10,8 +10,10 @@ import (
 
 	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/controller/status"
+	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/logrequest"
 	"github.com/blue-jay/blueprint/middleware/rest"
+	"github.com/blue-jay/blueprint/model"
 	"github.com/blue-jay/blueprint/viewfunc/link"
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
@@ -93,36 +95,38 @@ func RegisterServices(config *Info) {
 	session.SetConfig(config.Session)
 
 	// Set up CSRF protection
-	xsrf.SetConfig(xsrf.Info{
+	flight.SetXsrf(&xsrf.Info{
 		AuthKey: config.Session.CSRFKey,
 		Secure:  config.Session.Options.Secure,
 	})
 
 	// Connect to the MySQL database
-	mysql.SetConfig(config.MySQL)
-	db, _ := mysql.Config().Connect(true)
-	mysql.SQL = db
+	mysqlDB, _ := config.MySQL.Connect(true)
 
 	// Connect to the PostgreSQL database
-	/*postgresql.SetConfig(config.PostgreSQL)
-	postgresql.Connect(true)*/
+	//postgresqldb, _ := config.PostgreSQL.Connect(true)
 
-	// Configure form handling
-	form.SetConfig(config.Form)
+	// Load the models
+	model.Load(mysqlDB)
 
 	// Load the controller routes
 	controller.LoadRoutes()
 
 	// Set up the assets
-	asset.SetConfig(config.Asset)
+	flight.SetAsset(&config.Asset)
+
+	// Configure form handling
+	flight.SetForm(&config.Form)
+
+	// Store the view information to flight (context)
+	flight.SetView(&config.View)
 
 	// Set up the views
-	view.SetConfig(config.View)
-	view.SetTemplates(config.Template.Root, config.Template.Children)
+	config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Set up the functions for the views
-	view.SetFuncMaps(
-		asset.Config().Map(config.View.BaseURI),
+	config.View.SetFuncMaps(
+		config.Asset.Map(config.View.BaseURI),
 		link.Map(config.View.BaseURI),
 		noescape.Map(),
 		prettytime.Map(),
@@ -130,7 +134,7 @@ func RegisterServices(config *Info) {
 	)
 
 	// Set up the variables and modifiers for the views
-	view.SetModifiers(
+	config.View.SetModifiers(
 		authlevel.Modify,
 		uri.Modify,
 		xsrf.Token,
@@ -155,8 +159,10 @@ func SetUpMiddleware(h http.Handler) http.Handler {
 
 // setUpCSRF sets up the CSRF protection
 func setUpCSRF(h http.Handler) http.Handler {
+	x := flight.Xsrf()
+
 	// Decode the string
-	key, err := base64.StdEncoding.DecodeString(xsrf.Config().AuthKey)
+	key, err := base64.StdEncoding.DecodeString(x.AuthKey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -165,7 +171,7 @@ func setUpCSRF(h http.Handler) http.Handler {
 	cs := csrf.Protect([]byte(key),
 		csrf.ErrorHandler(http.HandlerFunc(status.InvalidToken)),
 		csrf.FieldName("_token"),
-		csrf.Secure(xsrf.Config().Secure),
+		csrf.Secure(x.Secure),
 	)(h)
 	return cs
 }

@@ -5,14 +5,12 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/blue-jay/blueprint/model"
-	"github.com/jmoiron/sqlx"
-
-	database "github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
+	// table is the table name.
 	table = "user"
 )
 
@@ -29,20 +27,13 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Configuration defines the shared configuration interface.
-type Configuration struct {
+// Service defines the database connection.
+type Service struct {
 	DB *sqlx.DB
 }
 
-// Config returns the global connection information.
-func Config() Configuration {
-	return Configuration{
-		DB: database.SQL,
-	}
-}
-
 // ByEmail gets user information from email.
-func (c Configuration) ByEmail(email string) (Item, error) {
+func (c Service) ByEmail(email string) (Item, bool, error) {
 	result := Item{}
 	err := c.DB.Get(&result, fmt.Sprintf(`
 		SELECT id, password, status_id, first_name
@@ -52,11 +43,11 @@ func (c Configuration) ByEmail(email string) (Item, error) {
 		LIMIT 1
 		`, table),
 		email)
-	return result, model.StandardError(err)
+	return result, err == sql.ErrNoRows, err
 }
 
 // Create creates user.
-func (c Configuration) Create(firstName, lastName, email, password string) (sql.Result, error) {
+func (c Service) Create(firstName, lastName, email, password string) (sql.Result, error) {
 	result, err := c.DB.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(first_name, last_name, email, password)
@@ -64,5 +55,5 @@ func (c Configuration) Create(firstName, lastName, email, password string) (sql.
 		(?,?,?,?)
 		`, table),
 		firstName, lastName, email, password)
-	return result, model.StandardError(err)
+	return result, err
 }

@@ -42,11 +42,11 @@ func TestComplete(t *testing.T) {
 	data := "Test data."
 	dataNew := "New test data."
 
-	userCon := user.Connection{
+	userCon := user.Service{
 		DB: db,
 	}
 
-	noteCon := note.Connection{
+	noteCon := note.Service{
 		DB: db,
 	}
 
@@ -79,7 +79,7 @@ func TestComplete(t *testing.T) {
 	lastID := fmt.Sprintf("%v", ID)
 
 	// Select a record
-	record, err := noteCon.ByID(lastID, userID)
+	record, _, err := noteCon.ByID(lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != data {
@@ -93,7 +93,7 @@ func TestComplete(t *testing.T) {
 	}
 
 	// Select a record
-	record, err = noteCon.ByID(lastID, userID)
+	record, _, err = noteCon.ByID(lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != dataNew {

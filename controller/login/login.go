@@ -2,19 +2,18 @@
 package login
 
 import (
-	"log"
+	"errors"
 	"net/http"
 
+	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model"
-	"github.com/blue-jay/blueprint/model/user"
 
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/session"
-	"github.com/blue-jay/core/view"
 )
 
 // Load the routes.
@@ -26,19 +25,20 @@ func Load() {
 
 // Index displays the login page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	v := view.Config().New("login/index")
+	c := flight.Context(w, r)
+
+	v := c.View.New("login/index")
 	form.Repopulate(r.Form, v.Vars, "email")
 	v.Render(w, r)
 }
 
 // Store handles the login form submission.
 func Store(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
+	c := flight.Context(w, r)
 
 	// Validate with required fields
 	if valid, missingField := form.Required(r, "email", "password"); !valid {
-		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Error})
-		sess.Save(r, w)
+		c.FlashError(errors.New("Field missing: " + missingField))
 		Index(w, r)
 		return
 	}
@@ -48,36 +48,31 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// Get database result
-	result, err := user.Config().ByEmail(email)
+	result, noRows, err := model.User.ByEmail(email)
 
 	// Determine if user exists
-	if err == model.ErrNoResult {
-		sess.AddFlash(flash.Info{"Password is incorrect", flash.Warning})
-		sess.Save(r, w)
+	if noRows {
+		c.FlashWarning("Password is incorrect")
 	} else if err != nil {
 		// Display error message
-		log.Println(err)
-		sess.AddFlash(flash.Info{"There was an error. Please try again later.", flash.Error})
-		sess.Save(r, w)
+		c.FlashError(err)
 	} else if passhash.MatchString(result.Password, password) {
 		if result.StatusID != 1 {
 			// User inactive and display inactive message
-			sess.AddFlash(flash.Info{"Account is inactive so login is disabled.", flash.Notice})
-			sess.Save(r, w)
+			c.FlashNotice("Account is inactive so login is disabled.")
 		} else {
 			// Login successfully
-			session.Empty(sess)
-			sess.AddFlash(flash.Info{"Login successful!", flash.Success})
-			sess.Values["id"] = result.ID
-			sess.Values["email"] = email
-			sess.Values["first_name"] = result.FirstName
-			sess.Save(r, w)
+			session.Empty(c.Sess)
+			c.Sess.AddFlash(flash.Info{"Login successful!", flash.Success})
+			c.Sess.Values["id"] = result.ID
+			c.Sess.Values["email"] = email
+			c.Sess.Values["first_name"] = result.FirstName
+			c.Sess.Save(r, w)
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}
 	} else {
-		sess.AddFlash(flash.Info{"Password is incorrect", flash.Warning})
-		sess.Save(r, w)
+		c.FlashWarning("Password is incorrect")
 	}
 
 	// Show the login page again
@@ -86,13 +81,12 @@ func Store(w http.ResponseWriter, r *http.Request) {
 
 // Logout clears the session and logs the user out.
 func Logout(w http.ResponseWriter, r *http.Request) {
-	sess := session.Instance(r)
+	c := flight.Context(w, r)
 
 	// If user is authenticated
-	if sess.Values["id"] != nil {
-		session.Empty(sess)
-		sess.AddFlash(flash.Info{"Goodbye!", flash.Notice})
-		sess.Save(r, w)
+	if c.Sess.Values["id"] != nil {
+		session.Empty(c.Sess)
+		c.FlashNotice("Goodbye!")
 	}
 
 	http.Redirect(w, r, "/", http.StatusFound)

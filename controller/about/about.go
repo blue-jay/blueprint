@@ -4,8 +4,9 @@ package about
 import (
 	"net/http"
 
+	"github.com/blue-jay/blueprint/lib/flight"
+
 	"github.com/blue-jay/core/router"
-	"github.com/blue-jay/core/view"
 )
 
 // Load the routes.
@@ -15,5 +16,7 @@ func Load() {
 
 // Index displays the About page.
 func Index(w http.ResponseWriter, r *http.Request) {
-	view.Config().New("about/index").Render(w, r)
+	c := flight.Context(w, r)
+
+	c.View.New("about/index").Render(w, r)
 }
