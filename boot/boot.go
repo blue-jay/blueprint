@@ -95,7 +95,7 @@ func RegisterServices(config *Info) {
 	session.SetConfig(config.Session)
 
 	// Set up CSRF protection
-	xsrf.SetConfig(xsrf.Info{
+	flight.SetXsrf(&xsrf.Info{
 		AuthKey: config.Session.CSRFKey,
 		Secure:  config.Session.Options.Secure,
 	})
@@ -159,8 +159,10 @@ func SetUpMiddleware(h http.Handler) http.Handler {
 
 // setUpCSRF sets up the CSRF protection
 func setUpCSRF(h http.Handler) http.Handler {
+	x := flight.Xsrf()
+
 	// Decode the string
-	key, err := base64.StdEncoding.DecodeString(xsrf.Config().AuthKey)
+	key, err := base64.StdEncoding.DecodeString(x.AuthKey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -169,7 +171,7 @@ func setUpCSRF(h http.Handler) http.Handler {
 	cs := csrf.Protect([]byte(key),
 		csrf.ErrorHandler(http.HandlerFunc(status.InvalidToken)),
 		csrf.FieldName("_token"),
-		csrf.Secure(xsrf.Config().Secure),
+		csrf.Secure(x.Secure),
 	)(h)
 	return cs
 }

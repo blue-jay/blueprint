@@ -5,16 +5,16 @@ package acl
 import (
 	"net/http"
 
-	"github.com/blue-jay/core/session"
+	"github.com/blue-jay/blueprint/lib/flight"
 )
 
 // DisallowAuth does not allow authenticated users to access the page.
 func DisallowAuth(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sess, _ := session.Instance(r)
+		c := flight.Context(w, r)
 
 		// If user is authenticated, don't allow them to access the page
-		if sess.Values["id"] != nil {
+		if c.Sess.Values["id"] != nil {
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}
@@ -26,10 +26,10 @@ func DisallowAuth(h http.Handler) http.Handler {
 // DisallowAnon does not allow anonymous users to access the page.
 func DisallowAnon(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sess, _ := session.Instance(r)
+		c := flight.Context(w, r)
 
 		// If user is not authenticated, don't allow them to access the page
-		if sess.Values["id"] == nil {
+		if c.Sess.Values["id"] == nil {
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}

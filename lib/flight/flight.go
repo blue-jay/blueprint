@@ -13,6 +13,7 @@ import (
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/session"
 	"github.com/blue-jay/core/view"
+	"github.com/blue-jay/core/xsrf"
 
 	"github.com/gorilla/sessions"
 )
@@ -26,6 +27,9 @@ var (
 
 	viewInfo      *view.Info
 	viewInfoMutex sync.RWMutex
+
+	xsrfInfo      *xsrf.Info
+	xsrfInfoMutex sync.RWMutex
 )
 
 // SetAsset sets the asset configuration.
@@ -47,6 +51,21 @@ func SetView(i *view.Info) {
 	viewInfoMutex.Lock()
 	viewInfo = i
 	viewInfoMutex.Unlock()
+}
+
+// SetXsrf sets the xsrf configuration.
+func SetXsrf(i *xsrf.Info) {
+	xsrfInfoMutex.Lock()
+	xsrfInfo = i
+	xsrfInfoMutex.Unlock()
+}
+
+// Xsrf returns the xsrf configuration.
+func Xsrf() *xsrf.Info {
+	xsrfInfoMutex.RLock()
+	x := xsrfInfo
+	xsrfInfoMutex.RUnlock()
+	return x
 }
 
 // Info holds the commonly used information.
