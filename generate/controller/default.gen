@@ -1,4 +1,4 @@
-// Package {{.package}}.
+// Package {{.package}}
 package {{.package}}
 
 import (
