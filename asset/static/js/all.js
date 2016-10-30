@@ -19,9 +19,9 @@ function showFlash(obj)
     $(obj).each(function(i, v) {
         var rnum = _.random(0, 100000);
 		var message = '<div id="flash-message" class="alert-box-fixed'
-		+ rnum + ' alert-box-fixed alert alert-dismissible '+v.cssclass+'">'
+		+ rnum + ' alert-box-fixed alert alert-dismissible '+v.Class+'">'
 		+ '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-		+ v.message + '</div>';
+		+ v.Message + '</div>';
         $('#flash-container').prepend(message);
         hideFlash(rnum);
     });
