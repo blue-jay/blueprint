@@ -1,9 +1,13 @@
 // Package user_status provides access to the user_status table in the MySQL database.
 package user_status
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 var (
+	// table is the table name.
 	table = "user_status"
 )
 
@@ -14,4 +18,16 @@ type Item struct {
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 	DeletedAt time.Time `db:"deleted_at"`
+}
+
+// Service defines the database connection.
+type Service struct {
+	DB Connection
+}
+
+// Connection is an interface for making queries.
+type Connection interface {
+	Exec(query string, args ...interface{}) (sql.Result, error)
+	Get(dest interface{}, query string, args ...interface{}) error
+	Select(dest interface{}, query string, args ...interface{}) error
 }
