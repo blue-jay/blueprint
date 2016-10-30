@@ -35,12 +35,12 @@ type Connection interface {
 	Select(dest interface{}, query string, args ...interface{}) error
 }
 
-// ByID gets item by ID.
+// ByID gets an item by ID.
 func (s Service) ByID(ID string, userID string) (Item, error) {
 	var result Item
 	var err error
 	log.Println("Not Implemented")
-	return result, model.StandardError(err)
+	return result, err == sql.ErrNoRows, err
 }
 
 // ByUserID gets all items for a user.
@@ -48,7 +48,7 @@ func (s Service) ByUserID(userID string) ([]Item, error) {
 	var result []Item
 	var err error
 	log.Println("Not Implemented")
-	return result, model.StandardError(err)
+	return result, err == sql.ErrNoRows, err
 }
 
 // Create adds an item.
@@ -56,7 +56,7 @@ func (s Service) Create(name string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
-	return result, model.StandardError(err)
+	return result, err
 }
 
 // Update makes changes to an existing item.
@@ -64,7 +64,7 @@ func (s Service) Update(name string, ID string, userID string) (sql.Result, erro
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
-	return result, model.StandardError(err)
+	return result, err
 }
 
 // DeleteHard removes an item.
@@ -72,7 +72,7 @@ func (s Service) DeleteHard(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
-	return result, model.StandardError(err)
+	return result, err
 }
 
 // DeleteSoft marks an item as removed.
@@ -80,5 +80,5 @@ func (s Service) DeleteSoft(ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
-	return result, model.StandardError(err)
+	return result, err
 }

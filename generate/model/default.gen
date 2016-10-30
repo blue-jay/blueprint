@@ -35,7 +35,7 @@ type Connection interface {
 }
 
 // ByID gets an item by ID.
-func (s Service) ByID(ID string) (Item, error) {
+func (s Service) ByID(ID string) (Item, bool, error) {
 	result := Item{}
 	err := s.DB.Get(&result, fmt.Sprintf(`
 		SELECT id, name, created_at, updated_at, deleted_at
@@ -45,18 +45,18 @@ func (s Service) ByID(ID string) (Item, error) {
 		LIMIT 1
 		`, table),
 		ID)
-	return result, model.StandardError(err)
+	return result, err == sql.ErrNoRows, err
 }
 
 // All gets all items.
-func (s Service) All() ([]Item, error) {
+func (s Service) All() ([]Item, bool, error) {
 	var result []Item
 	err := s.DB.Select(&result, fmt.Sprintf(`
 		SELECT id, name, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE deleted_at IS NULL
 		`, table))
-	return result, model.StandardError(err)
+	return result, err == sql.ErrNoRows, err
 }
 
 // Create adds an item.
@@ -68,7 +68,7 @@ func (s Service) Create(name string) (sql.Result, error) {
 		(?)
 		`, table),
 		name)
-	return result, model.StandardError(err)
+	return result, err
 }
 
 // Update makes changes to an existing item.
@@ -81,7 +81,7 @@ func (s Service) Update(name string, ID string) (sql.Result, error) {
 		LIMIT 1
 		`, table),
 		name, ID)
-	return result, model.StandardError(err)
+	return result, err
 }
 
 // DeleteHard removes an item.
@@ -92,7 +92,7 @@ func (s Service) DeleteHard(ID string) (sql.Result, error) {
 			AND deleted_at IS NULL
 		`, table),
 		ID)
-	return result, model.StandardError(err)
+	return result, err
 }
 
 // Delete marks an item as removed.
@@ -105,5 +105,5 @@ func (s Service) Delete(ID string) (sql.Result, error) {
 		LIMIT 1
 		`, table),
 		ID)
-	return result, model.StandardError(err)
+	return result, err
 }

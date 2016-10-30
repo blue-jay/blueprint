@@ -50,7 +50,7 @@ func (s Service) ByID(ID string, userID string) (Item, bool, error) {
 	return result, err == sql.ErrNoRows, err
 }
 
-// ByUserID gets all entities for a user.
+// ByUserID gets all items for a user.
 func (s Service) ByUserID(userID string) ([]Item, bool, error) {
 	var result []Item
 	err := s.DB.Select(&result, fmt.Sprintf(`
