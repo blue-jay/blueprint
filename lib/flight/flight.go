@@ -81,12 +81,7 @@ type Info struct {
 
 // Context returns commonly used information.
 func Context(w http.ResponseWriter, r *http.Request) *Info {
-	sess, err := session.Instance(r)
-	if err != nil {
-		// Session probably wasn't configured properly
-		// This is fatal because the web application will not work properly
-		log.Fatal(err)
-	}
+	sess, _ := session.Instance(r)
 
 	// Safely retrieve the view config
 	assetInfoMutex.RLock()
