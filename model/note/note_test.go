@@ -42,15 +42,7 @@ func TestComplete(t *testing.T) {
 	data := "Test data."
 	dataNew := "New test data."
 
-	userCon := user.Service{
-		DB: db,
-	}
-
-	noteCon := note.Service{
-		DB: db,
-	}
-
-	result, err := userCon.Create("John", "Doe", "jdoe@domain.com", "p@$$W0rD")
+	result, err := user.Create(db, "John", "Doe", "jdoe@domain.com", "p@$$W0rD")
 	if err != nil {
 		t.Error("could not create user:", err)
 	}
@@ -64,7 +56,7 @@ func TestComplete(t *testing.T) {
 	userID := fmt.Sprintf("%v", uID)
 
 	// Create a record
-	result, err = noteCon.Create(data, userID)
+	result, err = note.Create(db, data, userID)
 	if err != nil {
 		t.Error("could not create record:", err)
 	}
@@ -79,7 +71,7 @@ func TestComplete(t *testing.T) {
 	lastID := fmt.Sprintf("%v", ID)
 
 	// Select a record
-	record, _, err := noteCon.ByID(lastID, userID)
+	record, _, err := note.ByID(db, lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != data {
@@ -87,13 +79,13 @@ func TestComplete(t *testing.T) {
 	}
 
 	// Update a record
-	result, err = noteCon.Update(dataNew, lastID, userID)
+	result, err = note.Update(db, dataNew, lastID, userID)
 	if err != nil {
 		t.Error("could not update record:", err)
 	}
 
 	// Select a record
-	record, _, err = noteCon.ByID(lastID, userID)
+	record, _, err = note.ByID(db, lastID, userID)
 	if err != nil {
 		t.Error("could not retrieve record:", err)
 	} else if record.Name != dataNew {
@@ -101,7 +93,7 @@ func TestComplete(t *testing.T) {
 	}
 
 	// Delete a record by ID
-	result, err = noteCon.DeleteSoft(lastID, userID)
+	result, err = note.DeleteSoft(db, lastID, userID)
 	if err != nil {
 		t.Error("could not delete record:", err)
 	}

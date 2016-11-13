@@ -6,7 +6,6 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model"
 	"github.com/blue-jay/blueprint/model/note"
 
 	"github.com/blue-jay/core/router"
@@ -32,7 +31,7 @@ func Load() {
 func Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	items, _, err := model.Note.ByUserID(c.UserID)
+	items, _, err := note.ByUserID(c.DB, c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		items = []note.Item{}
@@ -61,7 +60,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := model.Note.Create(r.FormValue("name"), c.UserID)
+	_, err := note.Create(c.DB, r.FormValue("name"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		Create(w, r)
@@ -76,7 +75,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 func Show(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	item, _, err := model.Note.ByID(c.Param("id"), c.UserID)
+	item, _, err := note.ByID(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		c.Redirect(uri)
@@ -92,7 +91,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 func Edit(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	item, _, err := model.Note.ByID(c.Param("id"), c.UserID)
+	item, _, err := note.ByID(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		c.Redirect(uri)
@@ -114,7 +113,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := model.Note.Update(r.FormValue("name"), c.Param("id"), c.UserID)
+	_, err := note.Update(c.DB, r.FormValue("name"), c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 		Edit(w, r)
@@ -129,7 +128,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 func Destroy(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
-	_, err := model.Note.DeleteSoft(c.Param("id"), c.UserID)
+	_, err := note.DeleteSoft(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashError(err)
 	} else {

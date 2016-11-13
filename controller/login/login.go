@@ -7,7 +7,7 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model"
+	"github.com/blue-jay/blueprint/model/user"
 
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
@@ -48,7 +48,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// Get database result
-	result, noRows, err := model.User.ByEmail(email)
+	result, noRows, err := user.ByEmail(c.DB, email)
 
 	// Determine if user exists
 	if noRows {

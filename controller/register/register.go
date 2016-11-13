@@ -7,7 +7,7 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model"
+	"github.com/blue-jay/blueprint/model/user"
 
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
@@ -62,10 +62,10 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get database result
-	_, noRows, err := model.User.ByEmail(email)
+	_, noRows, err := user.ByEmail(c.DB, email)
 
 	if noRows { // If success (no user exists with that email)
-		_, err = model.User.Create(firstName, lastName, email, password)
+		_, err = user.Create(c.DB, firstName, lastName, email, password)
 		// Will only error if there is a problem with the query
 		if err != nil {
 			c.FlashError(err)

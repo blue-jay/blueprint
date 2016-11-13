@@ -20,11 +20,6 @@ type Item struct {
 	DeletedAt time.Time `db:"deleted_at"`
 }
 
-// Service defines the database connection.
-type Service struct {
-	DB Connection
-}
-
 // Connection is an interface for making queries.
 type Connection interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)

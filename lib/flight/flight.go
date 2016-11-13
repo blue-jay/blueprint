@@ -14,57 +14,43 @@ import (
 	"github.com/blue-jay/core/session"
 	"github.com/blue-jay/core/view"
 	"github.com/blue-jay/core/xsrf"
+	"github.com/jmoiron/sqlx"
 
 	"github.com/gorilla/sessions"
 )
 
 var (
-	assetInfo      *asset.Info
-	assetInfoMutex sync.RWMutex
+	assetInfo *asset.Info
+	formInfo  *form.Info
+	viewInfo  *view.Info
+	xsrfInfo  *xsrf.Info
+	dbInfo    *sqlx.DB
 
-	formInfo      *form.Info
-	formInfoMutex sync.RWMutex
-
-	viewInfo      *view.Info
-	viewInfoMutex sync.RWMutex
-
-	xsrfInfo      *xsrf.Info
-	xsrfInfoMutex sync.RWMutex
+	mutex sync.RWMutex
 )
 
-// SetAsset sets the asset configuration.
-func SetAsset(i *asset.Info) {
-	assetInfoMutex.Lock()
-	assetInfo = i
-	assetInfoMutex.Unlock()
-}
+// StoreConfig safely stores the variables.
+func StoreConfig(ai *asset.Info,
+	fi *form.Info,
+	vi *view.Info,
+	xi *xsrf.Info,
+	db *sqlx.DB) {
+	mutex.Lock()
 
-// SetForm sets the form configuration.
-func SetForm(i *form.Info) {
-	formInfoMutex.Lock()
-	formInfo = i
-	formInfoMutex.Unlock()
-}
+	assetInfo = ai
+	formInfo = fi
+	viewInfo = vi
+	xsrfInfo = xi
+	dbInfo = db
 
-// SetView sets the view configuration.
-func SetView(i *view.Info) {
-	viewInfoMutex.Lock()
-	viewInfo = i
-	viewInfoMutex.Unlock()
-}
-
-// SetXsrf sets the xsrf configuration.
-func SetXsrf(i *xsrf.Info) {
-	xsrfInfoMutex.Lock()
-	xsrfInfo = i
-	xsrfInfoMutex.Unlock()
+	mutex.Unlock()
 }
 
 // Xsrf returns the xsrf configuration.
 func Xsrf() *xsrf.Info {
-	xsrfInfoMutex.RLock()
+	mutex.RLock()
 	x := xsrfInfo
-	xsrfInfoMutex.RUnlock()
+	mutex.RUnlock()
 	return x
 }
 
@@ -77,36 +63,27 @@ type Info struct {
 	W      http.ResponseWriter
 	R      *http.Request
 	View   *view.Info
+	DB     *sqlx.DB
 }
 
 // Context returns commonly used information.
 func Context(w http.ResponseWriter, r *http.Request) *Info {
 	sess, _ := session.Instance(r)
 
-	// Safely retrieve the view config
-	assetInfoMutex.RLock()
-	i := assetInfo
-	assetInfoMutex.RUnlock()
-
-	// Safely retrieve the form config
-	formInfoMutex.RLock()
-	f := formInfo
-	formInfoMutex.RUnlock()
-
-	// Safely retrieve the view config
-	viewInfoMutex.RLock()
-	v := viewInfo
-	viewInfoMutex.RUnlock()
-
-	return &Info{
-		Asset:  i,
-		Form:   f,
+	mutex.RLock()
+	i := &Info{
+		Asset:  assetInfo,
+		Form:   formInfo,
 		Sess:   sess,
 		UserID: fmt.Sprintf("%v", sess.Values["id"]),
 		W:      w,
 		R:      r,
-		View:   v,
+		View:   viewInfo,
+		DB:     dbInfo,
 	}
+	mutex.RUnlock()
+
+	return i
 }
 
 // Param gets the URL parameter.

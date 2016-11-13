@@ -23,11 +23,6 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Service defines the database connection.
-type Service struct {
-	DB Connection
-}
-
 // Connection is an interface for making queries.
 type Connection interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
@@ -36,7 +31,7 @@ type Connection interface {
 }
 
 // ByID gets an item by ID.
-func (s Service) ByID(ID string, userID string) (Item, error) {
+func ByID(db Connection, ID string, userID string) (Item, error) {
 	var result Item
 	var err error
 	log.Println("Not Implemented")
@@ -44,7 +39,7 @@ func (s Service) ByID(ID string, userID string) (Item, error) {
 }
 
 // ByUserID gets all items for a user.
-func (s Service) ByUserID(userID string) ([]Item, error) {
+func ByUserID(db Connection, userID string) ([]Item, error) {
 	var result []Item
 	var err error
 	log.Println("Not Implemented")
@@ -52,7 +47,7 @@ func (s Service) ByUserID(userID string) ([]Item, error) {
 }
 
 // Create adds an item.
-func (s Service) Create(name string, userID string) (sql.Result, error) {
+func Create(db Connection, name string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -60,7 +55,7 @@ func (s Service) Create(name string, userID string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func (s Service) Update(name string, ID string, userID string) (sql.Result, error) {
+func Update(db Connection, name string, ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -68,7 +63,7 @@ func (s Service) Update(name string, ID string, userID string) (sql.Result, erro
 }
 
 // DeleteHard removes an item.
-func (s Service) DeleteHard(ID string, userID string) (sql.Result, error) {
+func DeleteHard(db Connection, ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")
@@ -76,7 +71,7 @@ func (s Service) DeleteHard(ID string, userID string) (sql.Result, error) {
 }
 
 // DeleteSoft marks an item as removed.
-func (s Service) DeleteSoft(ID string, userID string) (sql.Result, error) {
+func DeleteSoft(db Connection, ID string, userID string) (sql.Result, error) {
 	var result sql.Result
 	var err error
 	log.Println("Not Implemented")

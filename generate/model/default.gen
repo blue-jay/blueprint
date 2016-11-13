@@ -22,11 +22,6 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Service defines the database connection.
-type Service struct {
-	DB Connection
-}
-
 // Connection is an interface for making queries.
 type Connection interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
@@ -35,9 +30,9 @@ type Connection interface {
 }
 
 // ByID gets an item by ID.
-func (s Service) ByID(ID string) (Item, bool, error) {
+func ByID(db Connection, ID string) (Item, bool, error) {
 	result := Item{}
-	err := s.DB.Get(&result, fmt.Sprintf(`
+	err := db.Get(&result, fmt.Sprintf(`
 		SELECT id, name, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE id = ?
@@ -49,9 +44,9 @@ func (s Service) ByID(ID string) (Item, bool, error) {
 }
 
 // All gets all items.
-func (s Service) All() ([]Item, bool, error) {
+func All(db Connection) ([]Item, bool, error) {
 	var result []Item
-	err := s.DB.Select(&result, fmt.Sprintf(`
+	err := db.Select(&result, fmt.Sprintf(`
 		SELECT id, name, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE deleted_at IS NULL
@@ -60,8 +55,8 @@ func (s Service) All() ([]Item, bool, error) {
 }
 
 // Create adds an item.
-func (s Service) Create(name string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func Create(db Connection, name string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(name)
 		VALUES
@@ -72,8 +67,8 @@ func (s Service) Create(name string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func (s Service) Update(name string, ID string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func Update(db Connection, name string, ID string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET name = ?
 		WHERE id = ?
@@ -85,8 +80,8 @@ func (s Service) Update(name string, ID string) (sql.Result, error) {
 }
 
 // DeleteHard removes an item.
-func (s Service) DeleteHard(ID string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func DeleteHard(db Connection, ID string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		DELETE FROM %v
 		WHERE id = ?
 			AND deleted_at IS NULL
@@ -96,8 +91,8 @@ func (s Service) DeleteHard(ID string) (sql.Result, error) {
 }
 
 // Delete marks an item as removed.
-func (s Service) Delete(ID string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func Delete(db Connection, ID string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET deleted_at = NOW()
 		WHERE id = ?

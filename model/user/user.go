@@ -26,11 +26,6 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Service defines the database connection.
-type Service struct {
-	DB Connection
-}
-
 // Connection is an interface for making queries.
 type Connection interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
@@ -39,9 +34,9 @@ type Connection interface {
 }
 
 // ByEmail gets user information from email.
-func (c Service) ByEmail(email string) (Item, bool, error) {
+func ByEmail(db Connection, email string) (Item, bool, error) {
 	result := Item{}
-	err := c.DB.Get(&result, fmt.Sprintf(`
+	err := db.Get(&result, fmt.Sprintf(`
 		SELECT id, password, status_id, first_name
 		FROM %v
 		WHERE email = ?
@@ -53,8 +48,8 @@ func (c Service) ByEmail(email string) (Item, bool, error) {
 }
 
 // Create creates user.
-func (c Service) Create(firstName, lastName, email, password string) (sql.Result, error) {
-	result, err := c.DB.Exec(fmt.Sprintf(`
+func Create(db Connection, firstName, lastName, email, password string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(first_name, last_name, email, password)
 		VALUES

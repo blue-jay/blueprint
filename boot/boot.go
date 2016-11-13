@@ -13,7 +13,6 @@ import (
 	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/logrequest"
 	"github.com/blue-jay/blueprint/middleware/rest"
-	"github.com/blue-jay/blueprint/model"
 	"github.com/blue-jay/blueprint/viewfunc/link"
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
@@ -94,32 +93,14 @@ func RegisterServices(config *Info) {
 	// Set up the session cookie store
 	session.SetConfig(config.Session)
 
-	// Set up CSRF protection
-	flight.SetXsrf(&xsrf.Info{
-		AuthKey: config.Session.CSRFKey,
-		Secure:  config.Session.Options.Secure,
-	})
-
 	// Connect to the MySQL database
 	mysqlDB, _ := config.MySQL.Connect(true)
 
 	// Connect to the PostgreSQL database
 	//postgresqldb, _ := config.PostgreSQL.Connect(true)
 
-	// Load the models
-	model.Load(mysqlDB)
-
 	// Load the controller routes
 	controller.LoadRoutes()
-
-	// Set up the assets
-	flight.SetAsset(&config.Asset)
-
-	// Configure form handling
-	flight.SetForm(&config.Form)
-
-	// Store the view information to flight (context)
-	flight.SetView(&config.View)
 
 	// Set up the views
 	config.View.SetTemplates(config.Template.Root, config.Template.Children)
@@ -140,6 +121,16 @@ func RegisterServices(config *Info) {
 		xsrf.Token,
 		flash.Modify,
 	)
+
+	// Store the variables in flight
+	flight.StoreConfig(&config.Asset,
+		&config.Form,
+		&config.View,
+		&xsrf.Info{
+			AuthKey: config.Session.CSRFKey,
+			Secure:  config.Session.Options.Secure,
+		},
+		mysqlDB)
 }
 
 // *****************************************************************************

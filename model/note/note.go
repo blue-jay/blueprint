@@ -23,11 +23,6 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Service defines the database connection.
-type Service struct {
-	DB Connection
-}
-
 // Connection is an interface for making queries.
 type Connection interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
@@ -36,9 +31,9 @@ type Connection interface {
 }
 
 // ByID gets an item by ID.
-func (s Service) ByID(ID string, userID string) (Item, bool, error) {
+func ByID(db Connection, ID string, userID string) (Item, bool, error) {
 	result := Item{}
-	err := s.DB.Get(&result, fmt.Sprintf(`
+	err := db.Get(&result, fmt.Sprintf(`
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE id = ?
@@ -51,9 +46,9 @@ func (s Service) ByID(ID string, userID string) (Item, bool, error) {
 }
 
 // ByUserID gets all items for a user.
-func (s Service) ByUserID(userID string) ([]Item, bool, error) {
+func ByUserID(db Connection, userID string) ([]Item, bool, error) {
 	var result []Item
-	err := s.DB.Select(&result, fmt.Sprintf(`
+	err := db.Select(&result, fmt.Sprintf(`
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
 		FROM %v
 		WHERE user_id = ?
@@ -64,8 +59,8 @@ func (s Service) ByUserID(userID string) ([]Item, bool, error) {
 }
 
 // Create adds an item.
-func (s Service) Create(name string, userID string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func Create(db Connection, name string, userID string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		INSERT INTO %v
 		(name, user_id)
 		VALUES
@@ -76,8 +71,8 @@ func (s Service) Create(name string, userID string) (sql.Result, error) {
 }
 
 // Update makes changes to an existing item.
-func (s Service) Update(name string, ID string, userID string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func Update(db Connection, name string, ID string, userID string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET name = ?
 		WHERE id = ?
@@ -90,8 +85,8 @@ func (s Service) Update(name string, ID string, userID string) (sql.Result, erro
 }
 
 // DeleteHard removes an item.
-func (s Service) DeleteHard(ID string, userID string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func DeleteHard(db Connection, ID string, userID string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		DELETE FROM %v
 		WHERE id = ?
 			AND user_id = ?
@@ -102,8 +97,8 @@ func (s Service) DeleteHard(ID string, userID string) (sql.Result, error) {
 }
 
 // DeleteSoft marks an item as removed.
-func (s Service) DeleteSoft(ID string, userID string) (sql.Result, error) {
-	result, err := s.DB.Exec(fmt.Sprintf(`
+func DeleteSoft(db Connection, ID string, userID string) (sql.Result, error) {
+	result, err := db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET deleted_at = NOW()
 		WHERE id = ?
