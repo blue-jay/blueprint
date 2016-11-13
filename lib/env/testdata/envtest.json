@@ -1,0 +1,11 @@
+{
+  "Asset":{
+    "Folder":"asset"
+  },
+  "Form":{
+    "FileStorageFolder":"filestorage"
+  },
+  "Generation":{
+    "TemplateFolder":"generate"
+  }
+}

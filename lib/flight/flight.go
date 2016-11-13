@@ -1,4 +1,4 @@
-// Package flight provides an abstraction around commonly used features.
+// Package flight provides access to the application settings safely.
 package flight
 
 import (
@@ -7,51 +7,43 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/blue-jay/blueprint/lib/env"
+
 	"github.com/blue-jay/core/asset"
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/session"
 	"github.com/blue-jay/core/view"
-	"github.com/blue-jay/core/xsrf"
-	"github.com/jmoiron/sqlx"
 
 	"github.com/gorilla/sessions"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
-	assetInfo asset.Info
-	formInfo  form.Info
-	viewInfo  view.Info
-	xsrfInfo  xsrf.Info
-	dbInfo    *sqlx.DB
+	configInfo env.Info
+	dbInfo     *sqlx.DB
 
 	mutex sync.RWMutex
 )
 
-// StoreConfig safely stores the variables.
-func StoreConfig(ai asset.Info, fi form.Info, vi view.Info, xi xsrf.Info,
-	db *sqlx.DB) {
+// StoreConfig stores the application settings so controller functions can
+//access them safely.
+func StoreConfig(ci env.Info) {
 	mutex.Lock()
-
-	assetInfo = ai
-	formInfo = fi
-	viewInfo = vi
-	xsrfInfo = xi
-	dbInfo = db
-
+	configInfo = ci
 	mutex.Unlock()
 }
 
-// Xsrf returns the xsrf configuration.
-func Xsrf() xsrf.Info {
-	mutex.RLock()
-	x := xsrfInfo
-	mutex.RUnlock()
-	return x
+// StoreDB stores the database connection settings so controller functions can
+// access them safely.
+func StoreDB(db *sqlx.DB) {
+	mutex.Lock()
+	dbInfo = db
+	mutex.Unlock()
 }
 
-// Info holds the commonly used information.
+// Info structures the application settings.
 type Info struct {
 	Asset  asset.Info
 	Form   form.Info
@@ -63,19 +55,19 @@ type Info struct {
 	DB     *sqlx.DB
 }
 
-// Context returns commonly used information.
+// Context returns the application settings.
 func Context(w http.ResponseWriter, r *http.Request) Info {
 	sess, _ := session.Instance(r)
 
 	mutex.RLock()
 	i := Info{
-		Asset:  assetInfo,
-		Form:   formInfo,
+		Asset:  configInfo.Asset,
+		Form:   configInfo.Form,
 		Sess:   sess,
 		UserID: fmt.Sprintf("%v", sess.Values["id"]),
 		W:      w,
 		R:      r,
-		View:   viewInfo,
+		View:   configInfo.View,
 		DB:     dbInfo,
 	}
 	mutex.RUnlock()
