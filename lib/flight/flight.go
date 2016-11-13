@@ -20,34 +20,33 @@ import (
 )
 
 var (
-	assetInfo *asset.Info
-	formInfo  *form.Info
-	viewInfo  *view.Info
-	xsrfInfo  *xsrf.Info
+	assetInfo asset.Info
+	formInfo  form.Info
+	viewInfo  view.Info
+	xsrfInfo  xsrf.Info
 	dbInfo    *sqlx.DB
 
 	mutex sync.RWMutex
 )
 
 // StoreConfig safely stores the variables.
-func StoreConfig(ai *asset.Info,
-	fi *form.Info,
-	vi *view.Info,
-	xi *xsrf.Info,
+func StoreConfig(
+	ai asset.Info,
+	fi form.Info,
+	vi view.Info,
+	xi xsrf.Info,
 	db *sqlx.DB) {
 	mutex.Lock()
-
 	assetInfo = ai
 	formInfo = fi
 	viewInfo = vi
 	xsrfInfo = xi
 	dbInfo = db
-
 	mutex.Unlock()
 }
 
 // Xsrf returns the xsrf configuration.
-func Xsrf() *xsrf.Info {
+func Xsrf() xsrf.Info {
 	mutex.RLock()
 	x := xsrfInfo
 	mutex.RUnlock()
@@ -56,22 +55,22 @@ func Xsrf() *xsrf.Info {
 
 // Info holds the commonly used information.
 type Info struct {
-	Asset  *asset.Info
-	Form   *form.Info
+	Asset  asset.Info
+	Form   form.Info
 	Sess   *sessions.Session
 	UserID string
 	W      http.ResponseWriter
 	R      *http.Request
-	View   *view.Info
+	View   view.Info
 	DB     *sqlx.DB
 }
 
 // Context returns commonly used information.
-func Context(w http.ResponseWriter, r *http.Request) *Info {
+func Context(w http.ResponseWriter, r *http.Request) Info {
 	sess, _ := session.Instance(r)
 
 	mutex.RLock()
-	i := &Info{
+	i := Info{
 		Asset:  assetInfo,
 		Form:   formInfo,
 		Sess:   sess,

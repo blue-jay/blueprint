@@ -123,10 +123,11 @@ func RegisterServices(config *Info) {
 	)
 
 	// Store the variables in flight
-	flight.StoreConfig(&config.Asset,
-		&config.Form,
-		&config.View,
-		&xsrf.Info{
+	flight.StoreConfig(
+		config.Asset,
+		config.Form,
+		config.View,
+		xsrf.Info{
 			AuthKey: config.Session.CSRFKey,
 			Secure:  config.Session.Options.Secure,
 		},

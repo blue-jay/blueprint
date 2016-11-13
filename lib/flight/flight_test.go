@@ -3,13 +3,17 @@ package flight_test
 
 import (
 	"encoding/json"
+	"log"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/blue-jay/blueprint/lib/flight"
+	"github.com/blue-jay/core/asset"
+	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/jsonconfig"
 	"github.com/blue-jay/core/session"
 	"github.com/blue-jay/core/view"
+	"github.com/blue-jay/core/xsrf"
 )
 
 // Info contains the application settings.
@@ -44,12 +48,23 @@ func TestRace(t *testing.T) {
 			config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 			// Store the view in flight
-			flight.StoreConfig(nil, nil, &config.View, nil, nil)
+			flight.StoreConfig(
+				asset.Info{},
+				form.Info{},
+				config.View,
+				xsrf.Info{},
+				nil)
 
 			// Test the context retrieval
 			w := httptest.NewRecorder()
 			r := httptest.NewRequest("GET", "http://localhost/foo", nil)
-			flight.Context(w, r)
+			c := flight.Context(w, r)
+
+			c.Asset.Folder = "test"
+			log.Println(c.Asset.Folder)
+
+			c.View.BaseURI = "monkey"
+			log.Println(c.View.BaseURI)
 		}()
 	}
 }
