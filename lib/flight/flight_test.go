@@ -35,8 +35,8 @@ func TestRace(t *testing.T) {
 			r := httptest.NewRequest("GET", "http://localhost/foo", nil)
 			c := flight.Context(w, r)
 
-			c.Asset.Folder = "foo"
-			log.Println(c.Asset.Folder)
+			c.Config.Asset.Folder = "foo"
+			log.Println(c.Config.Asset.Folder)
 
 			c.View.BaseURI = "bar"
 			log.Println(c.View.BaseURI)

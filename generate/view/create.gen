@@ -1,7 +1,6 @@
 {{define "title"}}New{{end}}
 {{define "head"}}{{end}}
 {{define "content"}}
-<div class="container">
 	<div class="page-header">
 		<h1>{{template "title" .}}</h1>
 	</div>
@@ -24,6 +23,5 @@
 	</form>
 	
 	{{template "footer" .}}
-</div>
 {{end}}
 {{define "foot"}}{{end}}

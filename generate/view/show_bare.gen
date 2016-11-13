@@ -1,7 +1,6 @@
 {{define "title"}}{{end}}
 {{define "head"}}{{end}}
 {{define "content"}}
-<div class="container">
 	<div class="page-header">
 		<h1>{{template "title" .}}</h1>
 	</div>
@@ -9,6 +8,5 @@
 	<p>Not Implemented</p>
 	
 	{{template "footer" .}}
-</div>
 {{end}}
 {{define "foot"}}{{end}}

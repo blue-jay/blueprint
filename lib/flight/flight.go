@@ -9,7 +9,6 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/env"
 
-	"github.com/blue-jay/core/asset"
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/router"
@@ -45,8 +44,7 @@ func StoreDB(db *sqlx.DB) {
 
 // Info structures the application settings.
 type Info struct {
-	Asset  asset.Info
-	Form   form.Info
+	Config env.Info
 	Sess   *sessions.Session
 	UserID string
 	W      http.ResponseWriter
@@ -61,8 +59,7 @@ func Context(w http.ResponseWriter, r *http.Request) Info {
 
 	mutex.RLock()
 	i := Info{
-		Asset:  configInfo.Asset,
-		Form:   configInfo.Form,
+		Config: configInfo,
 		Sess:   sess,
 		UserID: fmt.Sprintf("%v", sess.Values["id"]),
 		W:      w,

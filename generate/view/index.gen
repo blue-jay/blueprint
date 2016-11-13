@@ -1,7 +1,6 @@
 {{define "title"}}Items{{end}}
 {{define "head"}}{{end}}
 {{define "content"}}
-<div class="container">
 	<div class="page-header">
 		<h1>Items</h1>
 	</div>
@@ -37,6 +36,5 @@
 	{{end}}
 	
 	{{template "footer" .}}
-</div>
 {{end}}
 {{define "foot"}}{{end}}

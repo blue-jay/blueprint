@@ -23,7 +23,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	// File path
-	path := path.Join(c.Asset.Folder, r.URL.Path[1:])
+	path := path.Join(c.Config.Asset.Folder, r.URL.Path[1:])
 
 	// Only serve files
 	if fi, err := os.Stat(path); err == nil && !fi.IsDir() {

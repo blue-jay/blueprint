@@ -1,7 +1,6 @@
 {{define "title"}}Create an Account{{end}}
 {{define "head"}}{{JS "//www.google.com/recaptcha/api.js"}}{{end}}
 {{define "content"}}
-<div class="container">
 	<div class="page-header">
 		<h1>{{template "title" .}}</h1>
 	</div>
@@ -39,6 +38,5 @@
 	</form>
 	
 	{{template "footer" .}}
-</div>
 {{end}}
 {{define "foot"}}{{end}}
