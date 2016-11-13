@@ -30,18 +30,16 @@ var (
 )
 
 // StoreConfig safely stores the variables.
-func StoreConfig(
-	ai asset.Info,
-	fi form.Info,
-	vi view.Info,
-	xi xsrf.Info,
+func StoreConfig(ai asset.Info, fi form.Info, vi view.Info, xi xsrf.Info,
 	db *sqlx.DB) {
 	mutex.Lock()
+
 	assetInfo = ai
 	formInfo = fi
 	viewInfo = vi
 	xsrfInfo = xi
 	dbInfo = db
+
 	mutex.Unlock()
 }
 
