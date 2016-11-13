@@ -42,7 +42,9 @@ func TestRace(t *testing.T) {
 
 			// Set up the views
 			config.View.SetTemplates(config.Template.Root, config.Template.Children)
-			flight.SetView(&config.View)
+
+			// Store the view in flight
+			flight.StoreConfig(nil, nil, &config.View, nil, nil)
 
 			// Test the context retrieval
 			w := httptest.NewRecorder()
