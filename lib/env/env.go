@@ -43,7 +43,7 @@ func (c *Info) ParseJSON(b []byte) error {
 	return json.Unmarshal(b, &c)
 }
 
-// Path returns a instance of the application settings.
+// New returns a instance of the application settings.
 func New(path string) *Info {
 	return &Info{
 		path: path,

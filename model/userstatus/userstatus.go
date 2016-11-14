@@ -1,5 +1,5 @@
-// Package user_status provides access to the user_status table in the MySQL database.
-package user_status
+// Package userstatus provides access to the user_status table in the MySQL database.
+package userstatus
 
 import (
 	"database/sql"
