@@ -71,6 +71,14 @@ func Context(w http.ResponseWriter, r *http.Request) Info {
 	return i
 }
 
+// Reset will delete all package globals
+func Reset() {
+	mutex.Lock()
+	configInfo = env.Info{}
+	dbInfo = &sqlx.DB{}
+	mutex.Unlock()
+}
+
 // Param gets the URL parameter.
 func (c *Info) Param(name string) string {
 	return router.Param(c.R, name)

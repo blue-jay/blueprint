@@ -8,7 +8,6 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/lib/flight"
-	"github.com/blue-jay/core/session"
 )
 
 // TestRace tests for race conditions.
@@ -22,7 +21,7 @@ func TestRace(t *testing.T) {
 			}
 
 			// Set up the session cookie store
-			session.SetConfig(config.Session)
+			config.Session.SetupConfig()
 
 			// Set up the views
 			config.View.SetTemplates(config.Template.Root, config.Template.Children)
