@@ -12,7 +12,6 @@ import (
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/router"
-	"github.com/blue-jay/core/session"
 	"github.com/blue-jay/core/view"
 
 	"github.com/gorilla/sessions"
@@ -55,7 +54,7 @@ type Info struct {
 
 // Context returns the application settings.
 func Context(w http.ResponseWriter, r *http.Request) Info {
-	sess, _ := session.Instance(r)
+	sess, _ := configInfo.Session.Instance(r)
 
 	mutex.RLock()
 	i := Info{

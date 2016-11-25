@@ -2,6 +2,8 @@
 package boot
 
 import (
+	"log"
+
 	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/lib/flight"
@@ -9,18 +11,20 @@ import (
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
 	"github.com/blue-jay/blueprint/viewmodify/authlevel"
+	"github.com/blue-jay/blueprint/viewmodify/flash"
 	"github.com/blue-jay/blueprint/viewmodify/uri"
 
-	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
-	"github.com/blue-jay/core/session"
 	"github.com/blue-jay/core/xsrf"
 )
 
 // RegisterServices sets up all the web components.
 func RegisterServices(config *env.Info) {
 	// Set up the session cookie store
-	session.SetConfig(config.Session)
+	err := config.Session.SetupConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Connect to the MySQL database
 	mysqlDB, _ := config.MySQL.Connect(true)
@@ -54,8 +58,8 @@ func RegisterServices(config *env.Info) {
 	// Store the database connection in flight
 	flight.StoreDB(mysqlDB)
 
-	// Set the csrf information
-	flight.SetXsrf(xsrf.Info{
+	// Store the csrf information
+	flight.StoreXsrf(xsrf.Info{
 		AuthKey: config.Session.CSRFKey,
 		Secure:  config.Session.Options.Secure,
 	})
