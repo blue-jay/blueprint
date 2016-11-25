@@ -15,7 +15,7 @@ func TestRace(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		go func() {
 			// Load the configuration file
-			config, err := env.LoadConfig("../../env.json")
+			config, err := env.LoadConfig("../../env.json.example")
 			if err != nil {
 				t.Fatal(err)
 			}
