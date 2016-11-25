@@ -26,7 +26,7 @@ func TestMain(m *testing.M) {
 
 // setup handles any start up tasks.
 func setup() {
-	_, conf := mysql.SetUp("../../env.json", "database_test")
+	_, conf := mysql.SetUp("../../env.json.example", "database_test")
 
 	// Connect to the database
 	db, _ = conf.Connect(true)
