@@ -5,7 +5,7 @@
 
 Blueprint for your next web application in Go.
 
-Documentation available here: http://blue-jay.github.io/
+Documentation available here: https://blue-jay.github.io/
 
 Blue Jay is a web toolkit for [Go](https://golang.org/). It's a collection of
 command-line tools and a web blueprint that allows you to easily structure
