@@ -90,8 +90,8 @@ func DeleteHard(db Connection, ID string) (sql.Result, error) {
 	return result, err
 }
 
-// Delete marks an item as removed.
-func Delete(db Connection, ID string) (sql.Result, error) {
+// DeleteSoft marks an item as removed.
+func DeleteSoft(db Connection, ID string) (sql.Result, error) {
 	result, err := db.Exec(fmt.Sprintf(`
 		UPDATE %v
 		SET deleted_at = NOW()
