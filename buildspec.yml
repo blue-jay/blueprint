@@ -6,13 +6,14 @@ phases:
       - apt-get update -y
   pre_build:
     commands:
-      - echo Nothing to do in the pre_build phase...
+      - go get
   build:
     commands:
       - echo Build started on `date`
       - go build
   post_build:
     commands:
+      - go test ./...
       - echo Build completed on `date`
 artifacts:
   type: zip
