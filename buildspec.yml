@@ -1,21 +1,29 @@
 version: 0.1
 
+environment_variables:
+  plaintext:
+    GOPATH: /workspace
+
 phases:
   install:
     commands:
       - apt-get update -y
   pre_build:
     commands:
+      - mkdir -p /workspace/src/github.com/blue-jay/blueprint
+      - cp -r $CODEBUILD_SRC_DIR/* /workspace/src/github.com/blue-jay/blueprint/
+      - cd /workspace/src/github.com/blue-jay/blueprint/
       - printenv
       - ls -la
+      - pwd
       - go get
+      - go test ./...
   build:
     commands:
       - echo Build started on `date`
       - go build
   post_build:
     commands:
-      - go test ./...
       - echo Build completed on `date`
 artifacts:
   type: zip
