@@ -6,6 +6,8 @@ phases:
       - apt-get update -y
   pre_build:
     commands:
+      - printenv
+      - ls -la
       - go get
   build:
     commands:
