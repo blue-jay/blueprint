@@ -54,13 +54,22 @@ type Info struct {
 
 // Context returns the application settings.
 func Context(w http.ResponseWriter, r *http.Request) Info {
-	sess, _ := configInfo.Session.Instance(r)
+	id := ""
+
+	// Get the session
+	sess, err := configInfo.Session.Instance(r)
+
+	// If the session is valid
+	if err == nil {
+		// Get the user id
+		id = fmt.Sprintf("%v", sess.Values["id"])
+	}
 
 	mutex.RLock()
 	i := Info{
 		Config: configInfo,
 		Sess:   sess,
-		UserID: fmt.Sprintf("%v", sess.Values["id"]),
+		UserID: id,
 		W:      w,
 		R:      r,
 		View:   configInfo.View,
