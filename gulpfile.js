@@ -14,17 +14,17 @@ var faviconData = folderAsset + '/dynamic/favicon/data.json';
 
 // SASS Task
 gulp.task('sass', function() {
-    var sass = require('gulp-sass');
+	var sass = require('gulp-sass');
 	var ext = require('gulp-ext-replace');
 	gulp.src(folderAsset + '/dynamic/sass/**/*.scss')
-        // Available for outputStyle: expanded, nested, compact, compressed
-        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
-        .pipe(gulp.dest(folderAsset + '/static/css/'));
-    return gulp.src(folderAsset + '/dynamic/sass/**/*.scss')
-        // Available for outputStyle: expanded, nested, compact, compressed
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+		// Available for outputStyle: expanded, nested, compact, compressed
+		.pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+		.pipe(gulp.dest(folderAsset + '/static/css/'));
+	return gulp.src(folderAsset + '/dynamic/sass/**/*.scss')
+		// Available for outputStyle: expanded, nested, compact, compressed
+		.pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
 		.pipe(ext('.min.css'))
-        .pipe(gulp.dest(folderAsset + '/static/css/'));
+		.pipe(gulp.dest(folderAsset + '/static/css/'));
 });
 
 // JavaScript Task
@@ -35,8 +35,8 @@ gulp.task('javascript', function() {
 		.pipe(concat('all.js'))
 		.pipe(minify({
 			ext:{
-			    src:'.js',
-			    min:'.min.js'
+				src:'.js',
+				min:'.min.js'
 			}
 		}))
 		.pipe(gulp.dest(folderAsset + '/static/js/'));
@@ -147,7 +147,7 @@ gulp.task('favicon-update', function(done) {
 
 // Watch
 gulp.task('watch', function() {
-    gulp.watch(folderAsset + '/dynamic/sass/**/*.scss', ['sass']);
+	gulp.watch(folderAsset + '/dynamic/sass/**/*.scss', ['sass']);
 	gulp.watch(folderAsset + '/dynamic/js/*.js', ['javascript']);
 });
 
