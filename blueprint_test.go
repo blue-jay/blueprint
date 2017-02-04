@@ -1,4 +1,4 @@
-// Package main_test is test package for the main package.
+// Package main_test is default test package for the main package.
 package main_test
 
 import "testing"
