@@ -3,6 +3,7 @@ package flight_test
 
 import (
 	"log"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -31,7 +32,11 @@ func TestRace(t *testing.T) {
 
 			// Test the context retrieval
 			w := httptest.NewRecorder()
-			r := httptest.NewRequest("GET", "http://localhost/foo", nil)
+			r, err := http.NewRequest("GET", "http://localhost/foo", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
 			c := flight.Context(w, r)
 
 			c.Config.Asset.Folder = "foo"
