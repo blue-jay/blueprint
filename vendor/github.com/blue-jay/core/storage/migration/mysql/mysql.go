@@ -275,8 +275,15 @@ func SetUp(envPath string, dbName string) (*migration.Info, Configuration) {
 	}
 
 	// Refresh the data
-	mig.DownAll()
-	mig.UpAll()
+	err = mig.DownAll()
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = mig.UpAll()
+	if err != nil {
+		log.Println(err)
+	}
 
 	return mig, conf
 }

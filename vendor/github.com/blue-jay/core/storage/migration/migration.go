@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"path/filepath"
 	"strings"
 	"time"
@@ -241,6 +242,8 @@ func (info *Info) UpOne() error {
 
 // UpAll applies all migrations that have not been applied.
 func (info *Info) UpAll() error {
+	log.Println(info.List)
+
 	// If migration is current
 	if info.Position() >= len(info.List) {
 		return ErrCurrent
