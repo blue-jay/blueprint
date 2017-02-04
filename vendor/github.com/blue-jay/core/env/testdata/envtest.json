@@ -1,0 +1,15 @@
+{
+  "Session":{
+    "AuthKey":"PzCh6FNAB7/jhmlUQ0+25sjJ+WgcJeKR2bAOtnh9UnfVN+WJSBvY/YC80Rs+rbMtwfmSP4FUSxKPtpYKzKFqFA==",
+    "EncryptKey":"3oTKCcKjDHMUlV+qur2Ve664SPpSuviyGQ/UqnroUD8=",
+	"CSRFKey":"xULAGF5FcWvqHsXaovNFJYfgCt6pedRPROqNvsZjU18=",
+    "Name":"sess",
+    "Options":{  
+      "Path":"/",
+      "Domain":"",
+      "MaxAge":28800,
+      "Secure":false,
+      "HttpOnly":true
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+	"config.typez": "single",
+	"config.output": "model/{{.package}}/{{.package}}.go",
+	"package": "",
+	"table": ""
+}

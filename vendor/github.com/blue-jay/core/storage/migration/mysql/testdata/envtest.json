@@ -1,0 +1,17 @@
+{
+	"MySQL":{
+		"Username":"root",
+		"Password":"",
+		"Database":"blueprint",
+		"Charset":"utf8mb4",
+		"Collation":"utf8mb4_unicode_ci",
+		"Hostname":"127.0.0.1",
+		"Port":3306,
+		"Parameter":"parseTime=true",
+		"Migration":{
+			"Folder":"migration_files",
+			"Table":"migration",
+			"Extension":"sql"
+		}
+	}
+}

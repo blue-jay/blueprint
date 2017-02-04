@@ -1,0 +1,16 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"single/default": "bad format"
+		},
+		{
+			"single/noparse": {
+				"model": "{{.view}}"
+			}
+		}
+	],
+	"model": "",
+	"package": "",
+	"view": ""
+}

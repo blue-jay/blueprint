@@ -1,0 +1,15 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"collection/default": {
+				"model": "{{.model}}",
+				"package": "{{.package}}",
+				"view": "{{.view}}"
+			}
+		}
+	],
+	"model": "",
+	"package": "",
+	"view": ""
+}

@@ -1,0 +1,19 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"single/default": {
+				"package": "{{.package}}",
+				"table": "{{.model}}"
+			}
+		},
+		{
+			"single/noparse": {
+				"model": "{{.view}}"
+			}
+		}
+	],
+	"model": "",
+	"package": "",
+	"view": ""
+}

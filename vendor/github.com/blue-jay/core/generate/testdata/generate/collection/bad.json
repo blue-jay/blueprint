@@ -1,0 +1,12 @@
+{
+	"config.type": "collection",
+	"config.collection": [
+		{
+			"single/default": {
+				"package": "{{.package}}",
+				"table": "{{.model}}"
+			}
+		}
+	],
+	"model": ""
+}
