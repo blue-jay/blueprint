@@ -1,5 +1,5 @@
 # Folders
-#/vendor/
+/vendor/
 /node_modules/
 /filestorage/*
 
