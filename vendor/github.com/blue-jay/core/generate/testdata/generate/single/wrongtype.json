@@ -1,6 +1,0 @@
-{
-	"config.type": "random",
-	"config.output": "model/{{.package}}/{{.package}}.go",
-	"package": "",
-	"table": ""
-}

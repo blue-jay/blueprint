@@ -1,2 +1,0 @@
-TestFoo on line 1.
-TestFoo on line 2.
