@@ -1,7 +1,7 @@
 // Modules
 var gulp = require('gulp');
 var gulpgo = require("gulp-go");
-var go;
+var go; //global var to store the PID of the go process
 var favicon = require ('gulp-real-favicon');
 var fs = require('fs');
 var runSequence = require('run-sequence');	// Using until gulp v4 is released
@@ -159,20 +159,19 @@ gulp.task('init', ['sass', 'javascript', 'jquery', 'bootstrap', 'underscore', 'f
 // Default - only run the tasks that change often
 gulp.task('default', ['sass', 'javascript']);
 
-
-gulp.task("go-run", function() {
-  go = gulpgo.run("blueprint.go", ["--arg1", "value1"], {cwd: __dirname, stdio: 'inherit'});
+//Go-run - run the program and store the pid for future use
+gulp.task('go-run', function() {
+  go = gulpgo.run('blueprint.go', ['--arg1', 'value1'], {cwd: __dirname, stdio: 'inherit'});
 });
 
-gulp.task("go", ["go-run"], function() {
-
+//Go - First run the go process, watch for any changes to tmpl or go, if changes then rebuild/restart
+gulp.task('go', ['go-run'], function() {
   gulp.watch(folderAsset + '/dynamic/sass/**/*.scss', ['sass']);
   gulp.watch(folderAsset + '/dynamic/js/*.js', ['javascript']);
-
-  gulp.watch([__dirname+"/**/*.go", ]).on("change", function() {
+  gulp.watch([__dirname + '/**/*.go']).on('change', function() {
     go.restart();
   });
-  gulp.watch([__dirname+"/**/*.tmpl", ]).on("change", function() {
+  gulp.watch([__dirname + '/**/*.tmpl']).on('change', function() {
     go.restart();
   });
 });
