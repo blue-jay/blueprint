@@ -33,8 +33,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	// Validate with required fields
-	if valid, missingField := form.Required(r, "first_name", "last_name", "email", "password", "password_verify"); !valid {
-		c.FlashError(errors.New("Field missing: " + missingField))
+	if !c.FormValid("first_name", "last_name", "email", "password", "password_verify") {
 		Index(w, r)
 		return
 	}
@@ -56,7 +55,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 
 	// If password hashing failed
 	if errp != nil {
-		c.FlashError(errp)
+		c.FlashErrorGeneric(errp)
 		http.Redirect(w, r, "/register", http.StatusFound)
 		return
 	}
@@ -68,14 +67,14 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		_, err = user.Create(c.DB, firstName, lastName, email, password)
 		// Will only error if there is a problem with the query
 		if err != nil {
-			c.FlashError(err)
+			c.FlashErrorGeneric(err)
 		} else {
 			c.FlashSuccess("Account created successfully for: " + email)
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 	} else if err != nil { // Catch all other errors
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 	} else { // Else the user already exists
 		c.FlashError(errors.New("Account already exists for: " + email))
 	}

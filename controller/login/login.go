@@ -2,7 +2,6 @@
 package login
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/blue-jay/blueprint/lib/flight"
@@ -37,8 +36,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	// Validate with required fields
-	if valid, missingField := form.Required(r, "email", "password"); !valid {
-		c.FlashError(errors.New("Field missing: " + missingField))
+	if !c.FormValid("email", "password") {
 		Index(w, r)
 		return
 	}
@@ -55,7 +53,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 		c.FlashWarning("Password is incorrect")
 	} else if err != nil {
 		// Display error message
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 	} else if passhash.MatchString(result.Password, password) {
 		if result.StatusID != 1 {
 			// User inactive and display inactive message

@@ -33,7 +33,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	items, _, err := note.ByUserID(c.DB, c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 		items = []note.Item{}
 	}
 
@@ -62,7 +62,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 
 	_, err := note.Create(c.DB, r.FormValue("name"), c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 		Create(w, r)
 		return
 	}
@@ -77,7 +77,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 
 	item, _, err := note.ByID(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 		c.Redirect(uri)
 		return
 	}
@@ -93,7 +93,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 
 	item, _, err := note.ByID(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 		c.Redirect(uri)
 		return
 	}
@@ -115,7 +115,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	_, err := note.Update(c.DB, r.FormValue("name"), c.Param("id"), c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 		Edit(w, r)
 		return
 	}
@@ -130,7 +130,7 @@ func Destroy(w http.ResponseWriter, r *http.Request) {
 
 	_, err := note.DeleteSoft(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 	} else {
 		c.FlashNotice("Item deleted.")
 	}

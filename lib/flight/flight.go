@@ -136,6 +136,13 @@ func (c *Info) FlashWarning(message string) {
 // FlashError saves an error flash and logs the error.
 func (c *Info) FlashError(err error) {
 	log.Println(err)
+	c.Sess.AddFlash(flash.Info{err.Error(), flash.Error})
+	c.Sess.Save(c.R, c.W)
+}
+
+// FlashErrorGeneric saves a generic error flash and logs the error.
+func (c *Info) FlashErrorGeneric(err error) {
+	log.Println(err)
 	c.Sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
 	c.Sess.Save(c.R, c.W)
 }

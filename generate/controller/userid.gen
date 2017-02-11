@@ -33,7 +33,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 	items, _, err := {{.model}}.ByUserID(c.DB, c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashGenericError(err)
 		items = []{{.model}}.Item{}
 	}
 
@@ -62,7 +62,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 
 	_, err := {{.model}}.Create(c.DB, r.FormValue("name"), c.UserID)
 	if err != nil {
-		c.FlashError(err)
+		c.FlashErrorGeneric(err)
 		Create(w, r)
 		return
 	}
