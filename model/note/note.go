@@ -58,6 +58,33 @@ func ByUserID(db Connection, userID string) ([]Item, bool, error) {
 	return result, err == sql.ErrNoRows, err
 }
 
+// ByUserIDPaginate gets items for a user based on page and max variables.
+func ByUserIDPaginate(db Connection, userID string, max int, page int) ([]Item, bool, error) {
+	var result []Item
+	err := db.Select(&result, fmt.Sprintf(`
+		SELECT id, name, user_id, created_at, updated_at, deleted_at
+		FROM %v
+		WHERE user_id = ?
+			AND deleted_at IS NULL
+		LIMIT %v OFFSET %v
+		`, table, max, page),
+		userID)
+	return result, err == sql.ErrNoRows, err
+}
+
+// ByUserIDCount counts the number of items for a user.
+func ByUserIDCount(db Connection, userID string) (int, error) {
+	var result int
+	err := db.Get(&result, fmt.Sprintf(`
+		SELECT count(*)
+		FROM %v
+		WHERE user_id = ?
+			AND deleted_at IS NULL
+		`, table),
+		userID)
+	return result, err
+}
+
 // Create adds an item.
 func Create(db Connection, name string, userID string) (sql.Result, error) {
 	result, err := db.Exec(fmt.Sprintf(`

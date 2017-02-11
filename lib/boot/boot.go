@@ -15,6 +15,7 @@ import (
 	"github.com/blue-jay/blueprint/viewmodify/uri"
 
 	"github.com/blue-jay/core/form"
+	"github.com/blue-jay/core/pagination"
 	"github.com/blue-jay/core/xsrf"
 )
 
@@ -42,6 +43,7 @@ func RegisterServices(config *env.Info) {
 		noescape.Map(),
 		prettytime.Map(),
 		form.Map(),
+		pagination.Map(),
 	)
 
 	// Set up the variables and modifiers for the views
