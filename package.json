@@ -8,6 +8,7 @@
     "gulp-minify": "0.0.13",
     "gulp-real-favicon": "^0.2.1",
     "gulp-sass": "^2.3.2",
+    "gulp-go": "^1.1.0",
     "jquery": "1.9.1 - 2",
     "run-sequence": "^1.2.2",
     "underscore": "^1.8.3"
