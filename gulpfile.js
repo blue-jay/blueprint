@@ -2,16 +2,18 @@
 var gulp        = require('gulp');
 var favicon     = require('gulp-real-favicon');
 var fs          = require('fs');
-var runSequence = require('run-sequence');	// Using until gulp v4 is released
+var runSequence = require('run-sequence'); // Using until gulp v4 is released
 var reload      = require('gulp-livereload');
 var sync        = require('gulp-sync')(gulp).sync;
 var child       = require('child_process');
 var util        = require('gulp-util');
+var path        = require('path');
+var os          = require('os');
 
 // Enviroment variables
 var env = JSON.parse(fs.readFileSync('./env.json'))
 var folderAsset = env.Asset.Folder;
-var folderView = env.View.Folder; 
+var folderView = env.View.Folder;
 
 // Other variables
 var faviconData = folderAsset + '/dynamic/favicon/data.json';
@@ -197,8 +199,15 @@ gulp.task('server:spawn', function() {
 	if (server)
 		server.kill();
 	
+	// Get the application name based on the folder
+	var appname = path.basename(__dirname);
+
 	// Spawn application server
-	server = child.spawn('blueprint.exe');
+	if (os.platform() == 'win32') {
+		server = child.spawn(appname + '.exe');
+	} else {
+		server = child.spawn(appname);
+	}
 	
 	// Trigger reload upon server start
 	server.stdout.once('data', function() {
