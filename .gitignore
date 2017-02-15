@@ -12,3 +12,6 @@ thumbs.db
 env.json
 *.exe
 blueprint
+
+# JetBrains IDE metadata
+.idea
