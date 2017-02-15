@@ -206,7 +206,7 @@ gulp.task('server:spawn', function() {
 	if (os.platform() == 'win32') {
 		server = child.spawn(appname + '.exe');
 	} else {
-		server = child.spawn(appname);
+		server = child.spawn('./' + appname);
 	}
 	
 	// Trigger reload upon server start
