@@ -11,6 +11,7 @@ thumbs.db
 # Blue Jay Files
 env.json
 *.exe
+*.exe~
 blueprint
 
 # JetBrains IDE metadata
