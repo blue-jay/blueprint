@@ -2,13 +2,19 @@
   "private": true,
   "devDependencies": {
     "bootstrap": "^3.3.6",
+    "child_process": "^1.0.2",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-ext-replace": "^0.3.0",
+    "gulp-livereload": "^3.8.1",
     "gulp-minify": "0.0.13",
     "gulp-real-favicon": "^0.2.1",
     "gulp-sass": "^2.3.2",
+    "gulp-sync": "^0.1.4",
+    "gulp-util": "^3.0.8",
     "jquery": "1.9.1 - 2",
+    "os": "^0.1.1",
+    "path": "^0.12.7",
     "run-sequence": "^1.2.2",
     "underscore": "^1.8.3"
   }
