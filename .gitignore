@@ -13,3 +13,6 @@ env.json
 *.exe
 *.exe~
 blueprint
+
+# JetBrains IDE metadata
+.idea
