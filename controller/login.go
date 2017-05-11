@@ -1,5 +1,4 @@
-// Package login handles the user login.
-package login
+package controller
 
 import (
 	"net/http"
@@ -11,19 +10,39 @@ import (
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
-	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/session"
 )
 
+// Login represents the services required for this controller.
+type Login struct {
+	//User domain.IUserService
+	//View adapter.IViewService
+}
+
+// LoadLogin registers the Login handlers.
+func (s *Service) LoadLogin(r IRouterService) {
+	// Create handler.
+	h := new(Login)
+
+	// Assign services.
+	//h.User = s.User
+	//h.View = s.View
+
+	// Load routes.
+	r.Get("/login", h.Index, acl.DisallowAuth)
+	r.Post("/login", h.Store, acl.DisallowAuth)
+	r.Get("/logout", h.Logout)
+}
+
 // Load the routes.
-func Load() {
-	router.Get("/login", Index, acl.DisallowAuth)
-	router.Post("/login", Store, acl.DisallowAuth)
-	router.Get("/logout", Logout)
+func Loade() {
+	//router.Get("/login", Index, acl.DisallowAuth)
+	//router.Post("/login", Store, acl.DisallowAuth)
+	//router.Get("/logout", Logout)
 }
 
 // Index displays the login page.
-func Index(w http.ResponseWriter, r *http.Request) {
+func (h *Login) Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	v := c.View.New("login/index")
@@ -32,12 +51,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 // Store handles the login form submission.
-func Store(w http.ResponseWriter, r *http.Request) {
+func (h *Login) Store(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	// Validate with required fields
 	if !c.FormValid("email", "password") {
-		Index(w, r)
+		h.Index(w, r)
 		return
 	}
 
@@ -74,11 +93,11 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Show the login page again
-	Index(w, r)
+	h.Index(w, r)
 }
 
 // Logout clears the session and logs the user out.
-func Logout(w http.ResponseWriter, r *http.Request) {
+func (h *Login) Logout(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	// If user is authenticated

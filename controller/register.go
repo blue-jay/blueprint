@@ -1,5 +1,4 @@
-// Package register handles the user creation.
-package register
+package controller
 
 import (
 	"errors"
@@ -11,17 +10,36 @@ import (
 
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
-	"github.com/blue-jay/core/router"
 )
 
+// Register represents the services required for this controller.
+type Register struct {
+	//User domain.IUserService
+	//View adapter.IViewService
+}
+
+// LoadRegister registers the Register handlers.
+func (s *Service) LoadRegister(r IRouterService) {
+	// Create handler.
+	h := new(Register)
+
+	// Assign services.
+	//h.User = s.User
+	//h.View = s.View
+
+	// Load routes.
+	r.Get("/register", h.Index, acl.DisallowAuth)
+	r.Post("/register", h.Store, acl.DisallowAuth)
+}
+
 // Load the routes.
-func Load() {
-	router.Get("/register", Index, acl.DisallowAuth)
-	router.Post("/register", Store, acl.DisallowAuth)
+func Loadc() {
+	//router.Get("/register", Index, acl.DisallowAuth)
+	//router.Post("/register", Store, acl.DisallowAuth)
 }
 
 // Index displays the register page.
-func Index(w http.ResponseWriter, r *http.Request) {
+func (h *Register) Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 	v := c.View.New("register/index")
 	form.Repopulate(r.Form, v.Vars, "first_name", "last_name", "email")
@@ -29,12 +47,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 // Store handles the registration form submission.
-func Store(w http.ResponseWriter, r *http.Request) {
+func (h *Register) Store(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	// Validate with required fields
 	if !c.FormValid("first_name", "last_name", "email", "password", "password_verify") {
-		Index(w, r)
+		h.Index(w, r)
 		return
 	}
 
@@ -46,7 +64,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	// Validate passwords
 	if r.FormValue("password") != r.FormValue("password_verify") {
 		c.FlashError(errors.New("Passwords do not match."))
-		Index(w, r)
+		h.Index(w, r)
 		return
 	}
 
@@ -70,7 +88,7 @@ func Store(w http.ResponseWriter, r *http.Request) {
 			c.FlashErrorGeneric(err)
 		} else {
 			c.FlashSuccess("Account created successfully for: " + email)
-			http.Redirect(w, r, "/login", http.StatusFound)
+			http.Redirect(w, r, "/Register", http.StatusFound)
 			return
 		}
 	} else if err != nil { // Catch all other errors
@@ -80,5 +98,5 @@ func Store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Display the page
-	Index(w, r)
+	h.Index(w, r)
 }

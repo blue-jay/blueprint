@@ -4,18 +4,9 @@ package boot
 import (
 	"log"
 
-	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/lib/flight"
-	"github.com/blue-jay/blueprint/viewfunc/link"
-	"github.com/blue-jay/blueprint/viewfunc/noescape"
-	"github.com/blue-jay/blueprint/viewfunc/prettytime"
-	"github.com/blue-jay/blueprint/viewmodify/authlevel"
-	"github.com/blue-jay/blueprint/viewmodify/flash"
-	"github.com/blue-jay/blueprint/viewmodify/uri"
 
-	"github.com/blue-jay/core/form"
-	"github.com/blue-jay/core/pagination"
 	"github.com/blue-jay/core/xsrf"
 )
 
@@ -30,11 +21,8 @@ func RegisterServices(config *env.Info) {
 	// Connect to the MySQL database
 	mysqlDB, _ := config.MySQL.Connect(true)
 
-	// Load the controller routes
-	controller.LoadRoutes()
-
 	// Set up the views
-	config.View.SetTemplates(config.Template.Root, config.Template.Children)
+	/*config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Set up the functions for the views
 	config.View.SetFuncMaps(
@@ -52,10 +40,10 @@ func RegisterServices(config *env.Info) {
 		uri.Modify,
 		xsrf.Token,
 		flash.Modify,
-	)
+	)*/
 
 	// Store the variables in flight
-	flight.StoreConfig(*config)
+	//flight.StoreConfig(*config)
 
 	// Store the database connection in flight
 	flight.StoreDB(mysqlDB)

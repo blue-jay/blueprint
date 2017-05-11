@@ -8,10 +8,10 @@ import (
 	"sync"
 
 	"github.com/blue-jay/blueprint/lib/env"
+	"github.com/husobee/vestigo"
 
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
-	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/view"
 
 	"github.com/gorilla/sessions"
@@ -90,7 +90,7 @@ func Reset() {
 
 // Param gets the URL parameter.
 func (c *Info) Param(name string) string {
-	return router.Param(c.R, name)
+	return vestigo.Param(c.R, name)
 }
 
 // Redirect sends a temporary redirect.

@@ -1,5 +1,4 @@
-// Package notepad provides a simple CRUD application in a web page.
-package notepad
+package controller
 
 import (
 	"net/http"
@@ -12,24 +11,46 @@ import (
 	"github.com/blue-jay/core/router"
 )
 
-var (
-	uri = "/notepad"
-)
+// Notepad represents the services required for this controller.
+type Notepad struct {
+	//User domain.IUserService
+	//View adapter.IViewService
+}
+
+// LoadNotepad registers the Notepad handlers.
+func (s *Service) LoadNotepad(r IRouterService) {
+	// Create handler.
+	h := new(Notepad)
+
+	// Assign services.
+	//h.User = s.User
+	//h.View = s.View
+
+	// Load routes.
+	c := router.Chain(acl.DisallowAnon)
+	r.Get("/notepad", h.Index, c...)
+	r.Get("/notepad/create", h.Create, c...)
+	r.Post("/notepadcreate", h.Store, c...)
+	r.Get("/notepad/view/:id", h.Show, c...)
+	r.Get("/notepad/edit/:id", h.Edit, c...)
+	r.Patch("/notepad/edit/:id", h.Update, c...)
+	r.Delete("/notepad/:id", h.Destroy, c...)
+}
 
 // Load the routes.
-func Load() {
-	c := router.Chain(acl.DisallowAnon)
-	router.Get(uri, Index, c...)
-	router.Get(uri+"/create", Create, c...)
-	router.Post(uri+"/create", Store, c...)
-	router.Get(uri+"/view/:id", Show, c...)
-	router.Get(uri+"/edit/:id", Edit, c...)
-	router.Patch(uri+"/edit/:id", Update, c...)
-	router.Delete(uri+"/:id", Destroy, c...)
+func Loadd() {
+	// c := router.Chain(acl.DisallowAnon)
+	// router.Get(uri, Index, c...)
+	// router.Get(uri+"/create", Create, c...)
+	// router.Post(uri+"/create", Store, c...)
+	// router.Get(uri+"/view/:id", Show, c...)
+	// router.Get(uri+"/edit/:id", Edit, c...)
+	// router.Patch(uri+"/edit/:id", Update, c...)
+	// router.Delete(uri+"/:id", Destroy, c...)
 }
 
 // Index displays the items.
-func Index(w http.ResponseWriter, r *http.Request) {
+func (h *Notepad) Index(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	// Create a pagination instance with a max of 10 results.
@@ -56,7 +77,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 // Create displays the create form.
-func Create(w http.ResponseWriter, r *http.Request) {
+func (h *Notepad) Create(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	v := c.View.New("note/create")
@@ -65,33 +86,33 @@ func Create(w http.ResponseWriter, r *http.Request) {
 }
 
 // Store handles the create form submission.
-func Store(w http.ResponseWriter, r *http.Request) {
+func (h *Notepad) Store(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	if !c.FormValid("name") {
-		Create(w, r)
+		h.Create(w, r)
 		return
 	}
 
 	_, err := note.Create(c.DB, r.FormValue("name"), c.UserID)
 	if err != nil {
 		c.FlashErrorGeneric(err)
-		Create(w, r)
+		h.Create(w, r)
 		return
 	}
 
 	c.FlashSuccess("Item added.")
-	c.Redirect(uri)
+	c.Redirect("/notepad")
 }
 
 // Show displays a single item.
-func Show(w http.ResponseWriter, r *http.Request) {
+func (h *Notepad) Show(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	item, _, err := note.ByID(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashErrorGeneric(err)
-		c.Redirect(uri)
+		c.Redirect("/notepad")
 		return
 	}
 
@@ -101,13 +122,13 @@ func Show(w http.ResponseWriter, r *http.Request) {
 }
 
 // Edit displays the edit form.
-func Edit(w http.ResponseWriter, r *http.Request) {
+func (h *Notepad) Edit(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	item, _, err := note.ByID(c.DB, c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashErrorGeneric(err)
-		c.Redirect(uri)
+		c.Redirect("/notepad")
 		return
 	}
 
@@ -118,27 +139,27 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update handles the edit form submission.
-func Update(w http.ResponseWriter, r *http.Request) {
+func (h *Notepad) Update(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	if !c.FormValid("name") {
-		Edit(w, r)
+		h.Edit(w, r)
 		return
 	}
 
 	_, err := note.Update(c.DB, r.FormValue("name"), c.Param("id"), c.UserID)
 	if err != nil {
 		c.FlashErrorGeneric(err)
-		Edit(w, r)
+		h.Edit(w, r)
 		return
 	}
 
 	c.FlashSuccess("Item updated.")
-	c.Redirect(uri)
+	c.Redirect("/notepad")
 }
 
 // Destroy handles the delete form submission.
-func Destroy(w http.ResponseWriter, r *http.Request) {
+func (h *Notepad) Destroy(w http.ResponseWriter, r *http.Request) {
 	c := flight.Context(w, r)
 
 	_, err := note.DeleteSoft(c.DB, c.Param("id"), c.UserID)
@@ -148,5 +169,5 @@ func Destroy(w http.ResponseWriter, r *http.Request) {
 		c.FlashNotice("Item deleted.")
 	}
 
-	c.Redirect(uri)
+	c.Redirect("/notepad")
 }
