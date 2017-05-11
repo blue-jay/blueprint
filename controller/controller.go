@@ -54,18 +54,11 @@ type Service struct {
 func RegisterServices(config *env.Info) *Service {
 	s := new(Service)
 
-	//view := view.New("view", "tmpl")
-	//s.View = view
-
-	v := config.View
-
-	v.SetTemplates(config.Template.Root, config.Template.Children)
-
 	// Set up the views
-	v.SetTemplates(config.Template.Root, config.Template.Children)
+	config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Set up the functions for the views
-	v.SetFuncMaps(
+	config.View.SetFuncMaps(
 		config.Asset.Map(config.View.BaseURI),
 		link.Map(config.View.BaseURI),
 		noescape.Map(),
@@ -75,14 +68,14 @@ func RegisterServices(config *env.Info) *Service {
 	)
 
 	// Set up the variables and modifiers for the views
-	v.SetModifiers(
+	config.View.SetModifiers(
 		authlevel.Modify,
 		uri.Modify,
 		xsrf.Token,
 		flash.Modify,
 	)
 
-	s.View = v
+	s.View = config.View
 
 	return s
 }

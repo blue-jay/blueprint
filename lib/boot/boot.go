@@ -43,7 +43,7 @@ func RegisterServices(config *env.Info) {
 	)*/
 
 	// Store the variables in flight
-	//flight.StoreConfig(*config)
+	flight.StoreConfig(*config)
 
 	// Store the database connection in flight
 	flight.StoreDB(mysqlDB)
