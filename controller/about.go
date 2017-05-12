@@ -2,21 +2,23 @@ package controller
 
 import (
 	"net/http"
+
+	"github.com/blue-jay/blueprint/lib/env"
 )
 
 // About represents the services required for this controller.
 type About struct {
-	Service
+	env.Service
 }
 
 // LoadAbout registers the About handlers.
-func (s Service) LoadAbout(r IRouterService) {
+func LoadAbout(s env.Service) {
 	// Create handler.
 	h := new(About)
 	h.Service = s
 
 	// Load routes.
-	r.Get("/about", h.Index)
+	h.Router.Get("/about", h.Index)
 }
 
 // Index displays the About page.

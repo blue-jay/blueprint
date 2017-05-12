@@ -4,21 +4,23 @@ import (
 	"net/http"
 	"os"
 	"path"
+
+	"github.com/blue-jay/blueprint/lib/env"
 )
 
 // Static represents the services required for this controller.
 type Static struct {
-	Service
+	env.Service
 }
 
 // LoadStatic registers the Static handlers.
-func (s Service) LoadStatic(r IRouterService) {
+func LoadStatic(s env.Service) {
 	// Create handler.
 	h := new(Static)
 	h.Service = s
 
 	// Load routes.
-	r.Get("/static/*filepath", h.Index)
+	h.Router.Get("/static/*filepath", h.Index)
 }
 
 // Index maps static files.

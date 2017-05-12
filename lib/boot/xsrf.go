@@ -7,21 +7,19 @@ import (
 	"net/http"
 
 	"github.com/blue-jay/blueprint/controller"
-	"github.com/blue-jay/blueprint/lib/flight"
+	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/gorilla/csrf"
 )
 
 // CSRF represents the services required for this middleware.
 type CSRF struct {
-	controller.Service
+	env.Service
 }
 
 // Handler sets up the CSRF protection.
 func (s CSRF) Handler(h http.Handler) http.Handler {
-	x := flight.Xsrf()
-
 	// Decode the string.
-	key, err := base64.StdEncoding.DecodeString(x.AuthKey)
+	key, err := base64.StdEncoding.DecodeString(s.CSRF.AuthKey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +32,7 @@ func (s CSRF) Handler(h http.Handler) http.Handler {
 	cs := csrf.Protect([]byte(key),
 		csrf.ErrorHandler(http.HandlerFunc(hs.InvalidToken)),
 		csrf.FieldName("_token"),
-		csrf.Secure(x.Secure),
+		csrf.Secure(s.CSRF.Secure),
 	)(h)
 	return cs
 }

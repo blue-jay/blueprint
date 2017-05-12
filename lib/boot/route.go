@@ -4,22 +4,21 @@ import (
 	"net/http"
 
 	"github.com/blue-jay/blueprint/controller"
+	"github.com/blue-jay/blueprint/lib/env"
 )
 
 // LoadRoutes returns a handler with all the routes.
-func LoadRoutes(s *controller.Service) http.Handler {
-	h := s.Router
-
+func LoadRoutes(s env.Service) http.Handler {
 	// Register the pages.
-	s.LoadAbout(h)
-	s.LoadDebug(h)
-	s.LoadHome(h)
-	s.LoadLogin(h)
-	s.LoadNotepad(h)
-	s.LoadRegister(h)
-	s.LoadStatic(h)
-	s.LoadStatus(h)
+	controller.LoadAbout(s)
+	controller.LoadDebug(s)
+	controller.LoadHome(s)
+	controller.LoadLogin(s)
+	controller.LoadNotepad(s)
+	controller.LoadRegister(s)
+	controller.LoadStatic(s)
+	controller.LoadStatus(s)
 
 	// Return the handler.
-	return h.Router()
+	return s.Router.Router()
 }

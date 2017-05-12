@@ -2,22 +2,24 @@ package controller
 
 import (
 	"net/http"
+
+	"github.com/blue-jay/blueprint/lib/env"
 )
 
 // Status represents the services required for this controller.
 type Status struct {
-	Service
+	env.Service
 }
 
 // LoadStatus registers the Status handlers.
-func (s Service) LoadStatus(r IRouterService) {
+func LoadStatus(s env.Service) {
 	// Create handler.
 	h := new(Status)
 	h.Service = s
 
 	// Load routes.
-	r.SetMethodNotAllowed(h.Error405)
-	r.SetNotFound(h.Error404)
+	s.Router.SetMethodNotAllowed(h.Error405)
+	s.Router.SetNotFound(h.Error404)
 }
 
 // Error404 - Page Not Found.

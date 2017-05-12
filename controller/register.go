@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/user"
 
@@ -13,18 +14,18 @@ import (
 
 // Register represents the services required for this controller.
 type Register struct {
-	Service
+	env.Service
 }
 
 // LoadRegister registers the Register handlers.
-func (s Service) LoadRegister(r IRouterService) {
+func LoadRegister(s env.Service) {
 	// Create handler.
 	h := new(Register)
 	h.Service = s
 
 	// Load routes.
-	r.Get("/register", h.Index, acl.DisallowAuth)
-	r.Post("/register", h.Store, acl.DisallowAuth)
+	h.Router.Get("/register", h.Index, acl.DisallowAuth)
+	h.Router.Post("/register", h.Store, acl.DisallowAuth)
 }
 
 // Index displays the register page.

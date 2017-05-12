@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/user"
 
@@ -14,19 +15,19 @@ import (
 
 // Login represents the services required for this controller.
 type Login struct {
-	Service
+	env.Service
 }
 
 // LoadLogin registers the Login handlers.
-func (s Service) LoadLogin(r IRouterService) {
+func LoadLogin(s env.Service) {
 	// Create handler.
 	h := new(Login)
 	h.Service = s
 
 	// Load routes.
-	r.Get("/login", h.Index, acl.DisallowAuth)
-	r.Post("/login", h.Store, acl.DisallowAuth)
-	r.Get("/logout", h.Logout)
+	h.Router.Get("/login", h.Index, acl.DisallowAuth)
+	h.Router.Post("/login", h.Store, acl.DisallowAuth)
+	h.Router.Get("/logout", h.Logout)
 }
 
 // Index displays the login page.
@@ -71,6 +72,12 @@ func (h *Login) Store(w http.ResponseWriter, r *http.Request) {
 			sess.Values["email"] = email
 			sess.Values["first_name"] = result.FirstName
 			sess.Save(r, w)
+
+			ctx := r.Context()
+			u := new(env.User)
+			u.ID = string(result.ID)
+			r.WithContext(env.NewUserContext(ctx, u))
+
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}

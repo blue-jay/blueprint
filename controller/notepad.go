@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/note"
 
@@ -14,24 +15,24 @@ import (
 
 // Notepad represents the services required for this controller.
 type Notepad struct {
-	Service
+	env.Service
 }
 
 // LoadNotepad registers the Notepad handlers.
-func (s Service) LoadNotepad(r IRouterService) {
+func LoadNotepad(s env.Service) {
 	// Create handler.
 	h := new(Notepad)
 	h.Service = s
 
 	// Load routes.
 	c := router.Chain(acl.DisallowAnon)
-	r.Get("/notepad", h.Index, c...)
-	r.Get("/notepad/create", h.Create, c...)
-	r.Post("/notepad/create", h.Store, c...)
-	r.Get("/notepad/view/:id", h.Show, c...)
-	r.Get("/notepad/edit/:id", h.Edit, c...)
-	r.Patch("/notepad/edit/:id", h.Update, c...)
-	r.Delete("/notepad/:id", h.Destroy, c...)
+	h.Router.Get("/notepad", h.Index, c...)
+	h.Router.Get("/notepad/create", h.Create, c...)
+	h.Router.Post("/notepad/create", h.Store, c...)
+	h.Router.Get("/notepad/view/:id", h.Show, c...)
+	h.Router.Get("/notepad/edit/:id", h.Edit, c...)
+	h.Router.Patch("/notepad/edit/:id", h.Update, c...)
+	h.Router.Delete("/notepad/:id", h.Destroy, c...)
 }
 
 // Index displays the items.

@@ -2,21 +2,23 @@ package controller
 
 import (
 	"net/http"
+
+	"github.com/blue-jay/blueprint/lib/env"
 )
 
 // Home represents the services required for this controller.
 type Home struct {
-	Service
+	env.Service
 }
 
 // LoadHome registers the Home handlers.
-func (s Service) LoadHome(r IRouterService) {
+func LoadHome(s env.Service) {
 	// Create handler.
 	h := new(Home)
 	h.Service = s
 
 	// Load routes.
-	r.Get("/", h.Index)
+	h.Router.Get("/", h.Index)
 }
 
 // Index displays the home page.

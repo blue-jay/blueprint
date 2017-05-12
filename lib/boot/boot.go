@@ -3,7 +3,6 @@ package boot
 import (
 	"log"
 
-	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/viewfunc/link"
@@ -19,10 +18,20 @@ import (
 
 // RegisterServices sets up each service and returns the container for all
 // the services.
-func RegisterServices(config *env.Info) *controller.Service {
+func RegisterServices(config *env.Info) env.Service {
+	// Set up the session cookie store.
+	err := config.Session.SetupConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Create the service for the controllers.
-	s := &controller.Service{
-		Asset:      config.Asset,
+	s := env.Service{
+		Asset: config.Asset,
+		CSRF: xsrf.Info{
+			AuthKey: config.Session.CSRFKey,
+			Secure:  config.Session.Options.Secure,
+		},
 		Email:      config.Email,
 		Form:       config.Form,
 		Generation: config.Generation,
@@ -31,12 +40,6 @@ func RegisterServices(config *env.Info) *controller.Service {
 		Sess:       &config.Session,
 		Template:   config.Template,
 		View:       &config.View,
-	}
-
-	// Set up the session cookie store.
-	err := config.Session.SetupConfig()
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	// Connect to the MySQL database
@@ -65,12 +68,6 @@ func RegisterServices(config *env.Info) *controller.Service {
 
 	// Store the session in flight.
 	flight.StoreSession(&config.Session)
-
-	// Store the csrf information in flight.
-	flight.StoreXsrf(xsrf.Info{
-		AuthKey: config.Session.CSRFKey,
-		Secure:  config.Session.Options.Secure,
-	})
 
 	return s
 }

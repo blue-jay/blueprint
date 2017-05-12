@@ -4,23 +4,24 @@ import (
 	"net/http"
 	"net/http/pprof"
 
+	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
 )
 
 // Debug represents the services required for this controller.
 type Debug struct {
-	Service
+	env.Service
 }
 
 // LoadDebug registers the Debug handlers.
-func (s Service) LoadDebug(r IRouterService) {
+func LoadDebug(s env.Service) {
 	// Create handler.
 	h := new(Debug)
 	h.Service = s
 
 	// Load routes.
-	r.Get("/debug/pprof/", h.Index, acl.DisallowAnon)
-	r.Get("/debug/pprof/:pprof", h.Profile, acl.DisallowAnon)
+	h.Router.Get("/debug/pprof/", h.Index, acl.DisallowAnon)
+	h.Router.Get("/debug/pprof/:pprof", h.Profile, acl.DisallowAnon)
 }
 
 // Index shows the profile index.
