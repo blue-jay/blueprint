@@ -1,81 +1,29 @@
 package controller
 
 import (
-	"net/http"
-
-	"github.com/blue-jay/blueprint/lib/env"
-	"github.com/blue-jay/blueprint/viewfunc/link"
-	"github.com/blue-jay/blueprint/viewfunc/noescape"
-	"github.com/blue-jay/blueprint/viewfunc/prettytime"
-	"github.com/blue-jay/blueprint/viewmodify/authlevel"
-	"github.com/blue-jay/blueprint/viewmodify/flash"
-	"github.com/blue-jay/blueprint/viewmodify/uri"
+	"github.com/blue-jay/core/asset"
+	"github.com/blue-jay/core/email"
 	"github.com/blue-jay/core/form"
-	"github.com/blue-jay/core/pagination"
+	"github.com/blue-jay/core/generate"
+	"github.com/blue-jay/core/server"
+	"github.com/blue-jay/core/session"
+	"github.com/blue-jay/core/storage/driver/mysql"
 	"github.com/blue-jay/core/view"
-	"github.com/blue-jay/core/xsrf"
 
-	"github.com/husobee/vestigo"
-	"github.com/justinas/alice"
+	"github.com/jmoiron/sqlx"
 )
-
-// IRouterService is the interface for page routing.
-type IRouterService interface {
-	Delete(path string, fn http.HandlerFunc, c ...alice.Constructor)
-	Get(path string, fn http.HandlerFunc, c ...alice.Constructor)
-	Patch(path string, fn http.HandlerFunc, c ...alice.Constructor)
-	Post(path string, fn http.HandlerFunc, c ...alice.Constructor)
-	Put(path string, fn http.HandlerFunc, c ...alice.Constructor)
-	SetMethodNotAllowed(vestigo.MethodNotAllowedHandlerFunc)
-	SetNotFound(fn http.HandlerFunc)
-}
-
-// IViewService is the interface for HTML templates.
-type IViewService interface {
-	Render(w http.ResponseWriter, r *http.Request) error
-	SetFolder(relativeFolderPath string)
-	SetExtension(fileExtension string)
-	SetBaseTemplate(relativeFilePath string)
-	SetTemplate(relativeFilePath string)
-
-	AddVar(key string, value interface{})
-	DelVar(key string)
-	GetVar(key string) interface{}
-	SetVars(vars map[string]interface{})
-}
 
 // Service represents all the services that the application uses.
 type Service struct {
-	View view.Info
-}
-
-// RegisterServices sets up each service and returns the container for all
-// the services.
-func RegisterServices(config *env.Info) *Service {
-	s := new(Service)
-
-	// Set up the views
-	config.View.SetTemplates(config.Template.Root, config.Template.Children)
-
-	// Set up the functions for the views
-	config.View.SetFuncMaps(
-		config.Asset.Map(config.View.BaseURI),
-		link.Map(config.View.BaseURI),
-		noescape.Map(),
-		prettytime.Map(),
-		form.Map(),
-		pagination.Map(),
-	)
-
-	// Set up the variables and modifiers for the views
-	config.View.SetModifiers(
-		authlevel.Modify,
-		uri.Modify,
-		xsrf.Token,
-		flash.Modify,
-	)
-
-	s.View = config.View
-
-	return s
+	Asset      asset.Info
+	Email      email.Info
+	Form       form.Info
+	Generation generate.Info
+	MySQL      mysql.Info
+	Server     server.Info
+	DB         *sqlx.DB
+	Router     IRouterService
+	Sess       *session.Info
+	Template   view.Template
+	View       IViewService
 }

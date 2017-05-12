@@ -13,7 +13,7 @@ import (
 
 // Modify adds the flashes to the view.
 func Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
-	c := flight.Context(w, r)
+	c := flight.Session(w, r)
 
 	// Get the flashes for the template
 	if flashes := c.Sess.Flashes(); len(flashes) > 0 {

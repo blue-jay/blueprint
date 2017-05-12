@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/user"
 
@@ -14,44 +13,31 @@ import (
 
 // Register represents the services required for this controller.
 type Register struct {
-	//User domain.IUserService
-	//View adapter.IViewService
+	Service
 }
 
 // LoadRegister registers the Register handlers.
-func (s *Service) LoadRegister(r IRouterService) {
+func (s Service) LoadRegister(r IRouterService) {
 	// Create handler.
 	h := new(Register)
-
-	// Assign services.
-	//h.User = s.User
-	//h.View = s.View
+	h.Service = s
 
 	// Load routes.
 	r.Get("/register", h.Index, acl.DisallowAuth)
 	r.Post("/register", h.Store, acl.DisallowAuth)
 }
 
-// Load the routes.
-func Loadc() {
-	//router.Get("/register", Index, acl.DisallowAuth)
-	//router.Post("/register", Store, acl.DisallowAuth)
-}
-
 // Index displays the register page.
 func (h *Register) Index(w http.ResponseWriter, r *http.Request) {
-	c := flight.Context(w, r)
-	v := c.View.New("register/index")
+	v := h.View.New("register/index")
 	form.Repopulate(r.Form, v.Vars, "first_name", "last_name", "email")
 	v.Render(w, r)
 }
 
 // Store handles the registration form submission.
 func (h *Register) Store(w http.ResponseWriter, r *http.Request) {
-	c := flight.Context(w, r)
-
 	// Validate with required fields
-	if !c.FormValid("first_name", "last_name", "email", "password", "password_verify") {
+	if !h.FormValid(w, r, "first_name", "last_name", "email", "password", "password_verify") {
 		h.Index(w, r)
 		return
 	}
@@ -63,7 +49,7 @@ func (h *Register) Store(w http.ResponseWriter, r *http.Request) {
 
 	// Validate passwords
 	if r.FormValue("password") != r.FormValue("password_verify") {
-		c.FlashError(errors.New("Passwords do not match."))
+		h.FlashError(w, r, errors.New("passwords do not match"))
 		h.Index(w, r)
 		return
 	}
@@ -73,28 +59,28 @@ func (h *Register) Store(w http.ResponseWriter, r *http.Request) {
 
 	// If password hashing failed
 	if errp != nil {
-		c.FlashErrorGeneric(errp)
+		h.FlashErrorGeneric(w, r, errp)
 		http.Redirect(w, r, "/register", http.StatusFound)
 		return
 	}
 
 	// Get database result
-	_, noRows, err := user.ByEmail(c.DB, email)
+	_, noRows, err := user.ByEmail(h.DB, email)
 
 	if noRows { // If success (no user exists with that email)
-		_, err = user.Create(c.DB, firstName, lastName, email, password)
+		_, err = user.Create(h.DB, firstName, lastName, email, password)
 		// Will only error if there is a problem with the query
 		if err != nil {
-			c.FlashErrorGeneric(err)
+			h.FlashErrorGeneric(w, r, err)
 		} else {
-			c.FlashSuccess("Account created successfully for: " + email)
-			http.Redirect(w, r, "/Register", http.StatusFound)
+			h.FlashSuccess(w, r, "Account created successfully for: "+email)
+			http.Redirect(w, r, "/register", http.StatusFound)
 			return
 		}
 	} else if err != nil { // Catch all other errors
-		c.FlashErrorGeneric(err)
+		h.FlashErrorGeneric(w, r, err)
 	} else { // Else the user already exists
-		c.FlashError(errors.New("Account already exists for: " + email))
+		h.FlashError(w, r, errors.New("Account already exists for: "+email))
 	}
 
 	// Display the page

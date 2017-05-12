@@ -2,10 +2,11 @@
 package flight_test
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"log"
 
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/lib/flight"
@@ -28,7 +29,7 @@ func TestRace(t *testing.T) {
 			config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 			// Store the view in flight
-			flight.StoreConfig(*config)
+			flight.StoreSession(&config.Session)
 
 			// Test the context retrieval
 			w := httptest.NewRecorder()
@@ -37,13 +38,11 @@ func TestRace(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			c := flight.Context(w, r)
+			c := flight.Session(w, r)
 
-			c.Config.Asset.Folder = "foo"
-			log.Println(c.Config.Asset.Folder)
-
-			c.View.BaseURI = "bar"
-			log.Println(c.View.BaseURI)
+			c.Sess.Values["test"] = "foo"
+			c.Sess.Save(r, w)
+			log.Println(c.Sess.Values["test"])
 		}()
 	}
 }

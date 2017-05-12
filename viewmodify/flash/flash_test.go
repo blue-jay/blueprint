@@ -6,7 +6,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/lib/flight"
 	flashmod "github.com/blue-jay/blueprint/viewmodify/flash"
 
@@ -59,10 +58,7 @@ func TestModify(t *testing.T) {
 	s.SetupConfig()
 
 	// Set up flight
-	flight.StoreConfig(env.Info{
-		Session: s,
-		View:    *viewInfo,
-	})
+	flight.StoreSession(&s)
 
 	// Simulate a request
 	w := httptest.NewRecorder()
@@ -144,10 +140,7 @@ func TestModifyFail(t *testing.T) {
 	s.SetupConfig()
 
 	// Set up flight
-	flight.StoreConfig(env.Info{
-		Session: s,
-		View:    *viewInfo,
-	})
+	flight.StoreSession(&s)
 
 	// Simulate a request
 	w := httptest.NewRecorder()
@@ -230,10 +223,7 @@ func TestFlashDefault(t *testing.T) {
 	s.SetupConfig()
 
 	// Set up flight
-	flight.StoreConfig(env.Info{
-		Session: s,
-		View:    *viewInfo,
-	})
+	flight.StoreSession(&s)
 
 	// Simulate a request
 	w := httptest.NewRecorder()
@@ -315,10 +305,7 @@ func TestNonStringFlash(t *testing.T) {
 	s.SetupConfig()
 
 	// Set up flight
-	flight.StoreConfig(env.Info{
-		Session: s,
-		View:    *viewInfo,
-	})
+	flight.StoreSession(&s)
 
 	// Simulate a request
 	w := httptest.NewRecorder()

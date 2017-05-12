@@ -2,22 +2,18 @@ package controller
 
 import (
 	"net/http"
-
-	"github.com/blue-jay/core/view"
 )
 
 // About represents the services required for this controller.
 type About struct {
-	View view.Info
+	Service
 }
 
 // LoadAbout registers the About handlers.
-func (s *Service) LoadAbout(r IRouterService) {
+func (s Service) LoadAbout(r IRouterService) {
 	// Create handler.
 	h := new(About)
-
-	// Assign services.
-	h.View = s.View
+	h.Service = s
 
 	// Load routes.
 	r.Get("/about", h.Index)

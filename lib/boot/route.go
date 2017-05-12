@@ -4,24 +4,21 @@ import (
 	"net/http"
 
 	"github.com/blue-jay/blueprint/controller"
-	"github.com/blue-jay/core/router"
 )
 
 // LoadRoutes returns a handler with all the routes.
 func LoadRoutes(s *controller.Service) http.Handler {
-	// Create the router.
-	h := router.New()
+	h := s.Router
 
 	// Register the pages.
 	s.LoadAbout(h)
+	s.LoadDebug(h)
+	s.LoadHome(h)
+	s.LoadLogin(h)
+	s.LoadNotepad(h)
+	s.LoadRegister(h)
 	s.LoadStatic(h)
-	// debug.Load()
-	// register.Load()
-	// login.Load()
-	// home.Load()
-	// static.Load()
-	// status.Load()
-	// notepad.Load()
+	s.LoadStatus(h)
 
 	// Return the handler.
 	return h.Router()
