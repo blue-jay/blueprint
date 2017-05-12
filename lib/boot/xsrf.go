@@ -11,20 +11,28 @@ import (
 	"github.com/gorilla/csrf"
 )
 
+// CSRF represents the services required for this middleware.
+type CSRF struct {
+	controller.Service
+}
+
 // setUpCSRF sets up the CSRF protection.
-func setUpCSRF(h http.Handler) http.Handler {
+func (s CSRF) setUpCSRF(h http.Handler) http.Handler {
 	x := flight.Xsrf()
 
-	// Decode the string
+	// Decode the string.
 	key, err := base64.StdEncoding.DecodeString(x.AuthKey)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Configure the middleware
+	// Create a new Status controller.
+	hs := new(controller.Status)
+	hs.Service = s.Service
+
+	// Configure the middleware.
 	cs := csrf.Protect([]byte(key),
-		//FIXME: Invalid token handler needs to be set up properly.
-		csrf.ErrorHandler(http.HandlerFunc(new(controller.Status).InvalidToken)),
+		csrf.ErrorHandler(http.HandlerFunc(hs.InvalidToken)),
 		csrf.FieldName("_token"),
 		csrf.Secure(x.Secure),
 	)(h)

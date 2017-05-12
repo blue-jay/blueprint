@@ -32,6 +32,7 @@ func (h *Static) Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//FIXME: Probably shouldn't load this this.
-	new(Status).Error404(w, r)
+	hh := new(Status)
+	hh.Service = h.Service
+	hh.Error404(w, r)
 }
