@@ -23,11 +23,10 @@ func LoadHome(s env.Service) {
 
 // Index displays the home page.
 func (h *Home) Index(w http.ResponseWriter, r *http.Request) {
-	sess, _ := h.Sess.Instance(r)
-
 	v := h.View.New("home/index")
-	if sess.Values["id"] != nil {
-		v.Vars["first_name"] = sess.Values["first_name"]
+
+	if u, ok := env.UserSession(r, h.Sess); ok && u.LoggedIn() {
+		v.Vars["first_name"] = u.FirstName
 	}
 
 	v.Render(w, r)

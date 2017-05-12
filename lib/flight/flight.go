@@ -2,7 +2,6 @@
 package flight
 
 import (
-	"net/http"
 	"sync"
 
 	"github.com/blue-jay/core/session"
@@ -28,16 +27,10 @@ type Info struct {
 }
 
 // Session returns the application settings.
-func Session(w http.ResponseWriter, r *http.Request) Info {
+func Session() *session.Info {
 	mutex.RLock()
-	// Get the session
-	sess, _ := sessionInfo.Instance(r)
-	i := Info{
-		Sess: sess,
-	}
-	mutex.RUnlock()
-
-	return i
+	defer mutex.RUnlock()
+	return sessionInfo
 }
 
 // Reset will delete all package globals

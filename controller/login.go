@@ -7,6 +7,8 @@ import (
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/user"
 
+	"fmt"
+
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
@@ -68,15 +70,16 @@ func (h *Login) Store(w http.ResponseWriter, r *http.Request) {
 			// Login successfully
 			session.Empty(sess)
 			sess.AddFlash(flash.Info{"Login successful!", flash.Success})
-			sess.Values["id"] = result.ID
-			sess.Values["email"] = email
-			sess.Values["first_name"] = result.FirstName
 			sess.Save(r, w)
 
-			ctx := r.Context()
+			// Create the user object.
 			u := new(env.User)
-			u.ID = string(result.ID)
-			r.WithContext(env.NewUserContext(ctx, u))
+			u.ID = fmt.Sprint(result.ID)
+			u.Email = email
+			u.FirstName = result.FirstName
+
+			// Store the session.
+			env.StoreUserSession(w, r, h.Sess, u)
 
 			http.Redirect(w, r, "/", http.StatusFound)
 			return
@@ -93,8 +96,8 @@ func (h *Login) Store(w http.ResponseWriter, r *http.Request) {
 func (h *Login) Logout(w http.ResponseWriter, r *http.Request) {
 	sess, _ := h.Sess.Instance(r)
 
-	// If user is authenticated
-	if sess.Values["id"] != nil {
+	// If user is authenticated, empty the session.
+	if u, ok := env.UserSession(r, h.Sess); ok && u.LoggedIn() {
 		session.Empty(sess)
 		h.FlashNotice(w, r, "Goodbye!")
 	}
