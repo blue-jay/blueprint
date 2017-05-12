@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/blue-jay/blueprint/lib/env"
-	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/viewfunc/link"
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
@@ -59,15 +58,18 @@ func RegisterServices(config *env.Info) env.Service {
 	)
 
 	// Set up the variables and modifiers for the views.
+	modAuthlevel := new(authlevel.Service)
+	modAuthlevel.Service = s
+
+	modFlash := new(flash.Service)
+	modFlash.Service = s
+
 	config.View.SetModifiers(
-		authlevel.Modify,
+		modAuthlevel.Modify,
 		uri.Modify,
 		xsrf.Token,
-		flash.Modify,
+		modFlash.Modify,
 	)
-
-	// Store the session in flight.
-	flight.StoreSession(&config.Session)
 
 	return s
 }

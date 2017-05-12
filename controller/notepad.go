@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/blue-jay/blueprint/lib/env"
@@ -37,15 +36,10 @@ func LoadNotepad(s env.Service) {
 
 // Index displays the items.
 func (h *Notepad) Index(w http.ResponseWriter, r *http.Request) {
-	// Get the session
-	sess, err := h.Sess.Instance(r)
-
+	// Get the current user ID.
 	id := ""
-
-	// If the session is valid
-	if err == nil {
-		// Get the user id
-		id = fmt.Sprintf("%v", sess.Values["id"])
+	if u, ok := env.UserSession(r, h.Sess); ok {
+		id = u.ID
 	}
 
 	// Create a pagination instance with a max of 10 results.
@@ -80,15 +74,10 @@ func (h *Notepad) Create(w http.ResponseWriter, r *http.Request) {
 
 // Store handles the create form submission.
 func (h *Notepad) Store(w http.ResponseWriter, r *http.Request) {
-	// Get the session
-	sess, err := h.Sess.Instance(r)
-
+	// Get the current user ID.
 	id := ""
-
-	// If the session is valid
-	if err == nil {
-		// Get the user id
-		id = fmt.Sprintf("%v", sess.Values["id"])
+	if u, ok := env.UserSession(r, h.Sess); ok {
+		id = u.ID
 	}
 
 	if !h.FormValid(w, r, "name") {
@@ -96,7 +85,7 @@ func (h *Notepad) Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = note.Create(h.DB, r.FormValue("name"), id)
+	_, err := note.Create(h.DB, r.FormValue("name"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 		h.Create(w, r)
@@ -109,15 +98,10 @@ func (h *Notepad) Store(w http.ResponseWriter, r *http.Request) {
 
 // Show displays a single item.
 func (h *Notepad) Show(w http.ResponseWriter, r *http.Request) {
-	// Get the session
-	sess, err := h.Sess.Instance(r)
-
+	// Get the current user ID.
 	id := ""
-
-	// If the session is valid
-	if err == nil {
-		// Get the user id
-		id = fmt.Sprintf("%v", sess.Values["id"])
+	if u, ok := env.UserSession(r, h.Sess); ok {
+		id = u.ID
 	}
 
 	item, _, err := note.ByID(h.DB, h.Router.Param(r, "id"), id)
@@ -134,15 +118,10 @@ func (h *Notepad) Show(w http.ResponseWriter, r *http.Request) {
 
 // Edit displays the edit form.
 func (h *Notepad) Edit(w http.ResponseWriter, r *http.Request) {
-	// Get the session
-	sess, err := h.Sess.Instance(r)
-
+	// Get the current user ID.
 	id := ""
-
-	// If the session is valid
-	if err == nil {
-		// Get the user id
-		id = fmt.Sprintf("%v", sess.Values["id"])
+	if u, ok := env.UserSession(r, h.Sess); ok {
+		id = u.ID
 	}
 
 	item, _, err := note.ByID(h.DB, h.Router.Param(r, "id"), id)
@@ -160,15 +139,10 @@ func (h *Notepad) Edit(w http.ResponseWriter, r *http.Request) {
 
 // Update handles the edit form submission.
 func (h *Notepad) Update(w http.ResponseWriter, r *http.Request) {
-	// Get the session
-	sess, err := h.Sess.Instance(r)
-
+	// Get the current user ID.
 	id := ""
-
-	// If the session is valid
-	if err == nil {
-		// Get the user id
-		id = fmt.Sprintf("%v", sess.Values["id"])
+	if u, ok := env.UserSession(r, h.Sess); ok {
+		id = u.ID
 	}
 
 	if !h.FormValid(w, r, "name") {
@@ -176,7 +150,7 @@ func (h *Notepad) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = note.Update(h.DB, r.FormValue("name"), h.Router.Param(r, "id"), id)
+	_, err := note.Update(h.DB, r.FormValue("name"), h.Router.Param(r, "id"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 		h.Edit(w, r)
@@ -189,18 +163,13 @@ func (h *Notepad) Update(w http.ResponseWriter, r *http.Request) {
 
 // Destroy handles the delete form submission.
 func (h *Notepad) Destroy(w http.ResponseWriter, r *http.Request) {
-	// Get the session
-	sess, err := h.Sess.Instance(r)
-
+	// Get the current user ID.
 	id := ""
-
-	// If the session is valid
-	if err == nil {
-		// Get the user id
-		id = fmt.Sprintf("%v", sess.Values["id"])
+	if u, ok := env.UserSession(r, h.Sess); ok {
+		id = u.ID
 	}
 
-	_, err = note.DeleteSoft(h.DB, h.Router.Param(r, "id"), id)
+	_, err := note.DeleteSoft(h.DB, h.Router.Param(r, "id"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 	} else {

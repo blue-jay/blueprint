@@ -5,16 +5,20 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/blue-jay/blueprint/lib/flight"
+	"github.com/blue-jay/blueprint/lib/env"
 
 	flashlib "github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/view"
 )
 
+// Service represents the services required for this controller.
+type Service struct {
+	env.Service
+}
+
 // Modify adds the flashes to the view.
-func Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
-	sessInfo := flight.Session()
-	sess, _ := sessInfo.Instance(r)
+func (s Service) Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
+	sess, _ := s.Sess.Instance(r)
 
 	// Get the flashes for the template
 	if flashes := sess.Flashes(); len(flashes) > 0 {
