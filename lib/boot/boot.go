@@ -5,6 +5,7 @@ import (
 
 	"github.com/blue-jay/blueprint/controller"
 	"github.com/blue-jay/blueprint/lib/env"
+	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/blue-jay/blueprint/viewfunc/link"
 	"github.com/blue-jay/blueprint/viewfunc/noescape"
 	"github.com/blue-jay/blueprint/viewfunc/prettytime"
@@ -61,6 +62,15 @@ func RegisterServices(config *env.Info) *controller.Service {
 		xsrf.Token,
 		flash.Modify,
 	)
+
+	// Store the session in flight.
+	flight.StoreSession(&config.Session)
+
+	// Store the csrf information in flight.
+	flight.StoreXsrf(xsrf.Info{
+		AuthKey: config.Session.CSRFKey,
+		Secure:  config.Session.Options.Secure,
+	})
 
 	return s
 }

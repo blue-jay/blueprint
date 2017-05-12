@@ -16,8 +16,8 @@ type CSRF struct {
 	controller.Service
 }
 
-// setUpCSRF sets up the CSRF protection.
-func (s CSRF) setUpCSRF(h http.Handler) http.Handler {
+// Handler sets up the CSRF protection.
+func (s CSRF) Handler(h http.Handler) http.Handler {
 	x := flight.Xsrf()
 
 	// Decode the string.

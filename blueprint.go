@@ -7,11 +7,9 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/boot"
 	"github.com/blue-jay/blueprint/lib/env"
-	"github.com/blue-jay/blueprint/lib/flight"
 
 	"github.com/blue-jay/core/router"
 	"github.com/blue-jay/core/server"
-	"github.com/blue-jay/core/xsrf"
 )
 
 // init sets runtime settings.
@@ -39,17 +37,8 @@ func main() {
 	s.Router = router.New()
 	h := boot.LoadRoutes(s)
 
-	// Store the session in flight.
-	flight.StoreSession(&config.Session)
-
-	// Store the csrf information in flight.
-	flight.StoreXsrf(xsrf.Info{
-		AuthKey: config.Session.CSRFKey,
-		Secure:  config.Session.Options.Secure,
-	})
-
 	// Apply the middleware.
-	handler := boot.SetUpMiddleware(h)
+	handler := boot.SetUpMiddleware(h, s)
 
 	// Start the HTTP and HTTPS listeners.
 	server.Run(
