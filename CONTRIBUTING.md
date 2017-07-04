@@ -22,9 +22,9 @@ the Jay source code
 - [Core](https://github.com/blue-jay/core/issues) - issues related to
 the Core source code
 - [BlueJay Docs](https://github.com/blue-jay/blue-jay.github.io.hugo/issues)
-- issues related to the BlueJay website or documentation
+- Issues related to the BlueJay website or documentation
 
-When submitting a issue, please answer these questions:
+When submitting an issue, please answer these questions:
 
 - Which commit are you using?
 - Which operating system, processor architecture, and Go version are you using?
