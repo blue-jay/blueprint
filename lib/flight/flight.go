@@ -54,7 +54,7 @@ type Info struct {
 
 // Context returns the application settings.
 func Context(w http.ResponseWriter, r *http.Request) Info {
-	id := ""
+	var id string
 
 	// Get the session
 	sess, err := configInfo.Session.Instance(r)
