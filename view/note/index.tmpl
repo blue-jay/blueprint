@@ -23,7 +23,7 @@
 					</a>
 					
 					<form class="button-form" method="post" action="{{$.CurrentURI}}/{{.ID}}?_method=delete">
-						<button type="submit" class="btn btn-danger" />
+						<button onclick="return confirm('Are you sure?')" type="submit" class="btn btn-danger" />
 							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
 						</button>
 						<input type="hidden" name="_token" value="{{$.token}}">

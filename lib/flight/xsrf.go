@@ -1,4 +1,3 @@
-// Package flight provides access to the application settings safely.
 package flight
 
 import (
