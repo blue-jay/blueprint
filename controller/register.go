@@ -75,7 +75,7 @@ func (h *Register) Store(w http.ResponseWriter, r *http.Request) {
 			h.FlashErrorGeneric(w, r, err)
 		} else {
 			h.FlashSuccess(w, r, "Account created successfully for: "+email)
-			http.Redirect(w, r, "/register", http.StatusFound)
+			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 	} else if err != nil { // Catch all other errors
