@@ -3,6 +3,8 @@ package env
 import (
 	"net/http"
 
+	"github.com/blue-jay/blueprint/model"
+
 	"github.com/blue-jay/core/asset"
 	"github.com/blue-jay/core/email"
 	"github.com/blue-jay/core/form"
@@ -25,6 +27,7 @@ type Service struct {
 	Email      email.Info
 	Form       form.Info
 	Generation generate.Info
+	Model      model.Info
 	MySQL      mysql.Info
 	Server     server.Info
 	DB         *sqlx.DB

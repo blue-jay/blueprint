@@ -1,5 +1,4 @@
-// Package note provides access to the note table in the MySQL database.
-package note
+package model
 
 import (
 	"database/sql"
@@ -8,13 +7,9 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-var (
-	// table is the table name.
-	table = "note"
-)
-
-// Item defines the model.
-type Item struct {
+// Note defines the model.
+type Note struct {
+	Connection
 	ID        uint32         `db:"id"`
 	Name      string         `db:"name"`
 	UserID    uint32         `db:"user_id"`
@@ -23,116 +18,116 @@ type Item struct {
 	DeletedAt mysql.NullTime `db:"deleted_at"`
 }
 
-// Connection is an interface for making queries.
-type Connection interface {
-	Exec(query string, args ...interface{}) (sql.Result, error)
-	Get(dest interface{}, query string, args ...interface{}) error
-	Select(dest interface{}, query string, args ...interface{}) error
+// NewNote returns a note.
+func NewNote(db Connection) Note {
+	return Note{
+		Connection: db,
+	}
 }
 
 // ByID gets an item by ID.
-func ByID(db Connection, ID string, userID string) (Item, bool, error) {
-	result := Item{}
-	err := db.Get(&result, fmt.Sprintf(`
+func (db Note) ByID(ID string, userID string) (Note, bool, error) {
+	result := Note{}
+	err := db.Get(&result, `
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
-		FROM %v
+		FROM note
 		WHERE id = ?
 			AND user_id = ?
 			AND deleted_at IS NULL
 		LIMIT 1
-		`, table),
+		`,
 		ID, userID)
 	return result, err == sql.ErrNoRows, err
 }
 
 // ByUserID gets all items for a user.
-func ByUserID(db Connection, userID string) ([]Item, bool, error) {
-	var result []Item
-	err := db.Select(&result, fmt.Sprintf(`
+func (db Note) ByUserID(userID string) ([]Note, bool, error) {
+	var result []Note
+	err := db.Select(&result, `
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
-		FROM %v
+		FROM note
 		WHERE user_id = ?
 			AND deleted_at IS NULL
-		`, table),
+		`,
 		userID)
 	return result, err == sql.ErrNoRows, err
 }
 
 // ByUserIDPaginate gets items for a user based on page and max variables.
-func ByUserIDPaginate(db Connection, userID string, max int, page int) ([]Item, bool, error) {
-	var result []Item
+func (db Note) ByUserIDPaginate(userID string, max int, page int) ([]Note, bool, error) {
+	var result []Note
 	err := db.Select(&result, fmt.Sprintf(`
 		SELECT id, name, user_id, created_at, updated_at, deleted_at
-		FROM %v
+		FROM note
 		WHERE user_id = ?
 			AND deleted_at IS NULL
 		LIMIT %v OFFSET %v
-		`, table, max, page),
+		`, max, page),
 		userID)
 	return result, err == sql.ErrNoRows, err
 }
 
 // ByUserIDCount counts the number of items for a user.
-func ByUserIDCount(db Connection, userID string) (int, error) {
+func (db Note) ByUserIDCount(userID string) (int, error) {
 	var result int
-	err := db.Get(&result, fmt.Sprintf(`
+	err := db.Get(&result, `
 		SELECT count(*)
-		FROM %v
+		FROM note
 		WHERE user_id = ?
 			AND deleted_at IS NULL
-		`, table),
+		`,
 		userID)
 	return result, err
 }
 
 // Create adds an item.
-func Create(db Connection, name string, userID string) (sql.Result, error) {
-	result, err := db.Exec(fmt.Sprintf(`
-		INSERT INTO %v
+func (db Note) Create(name string, userID string) (sql.Result, error) {
+	result, err := db.Exec(`
+		INSERT INTO note
 		(name, user_id)
 		VALUES
 		(?,?)
-		`, table),
+		`,
 		name, userID)
 	return result, err
 }
 
 // Update makes changes to an existing item.
-func Update(db Connection, name string, ID string, userID string) (sql.Result, error) {
-	result, err := db.Exec(fmt.Sprintf(`
-		UPDATE %v
+func (db Note) Update(name string, ID string, userID string) (sql.Result, error) {
+	result, err := db.Exec(`
+		UPDATE note
 		SET name = ?
 		WHERE id = ?
 			AND user_id = ?
 			AND deleted_at IS NULL
 		LIMIT 1
-		`, table),
+		`,
 		name, ID, userID)
 	return result, err
 }
 
 // DeleteHard removes an item.
-func DeleteHard(db Connection, ID string, userID string) (sql.Result, error) {
-	result, err := db.Exec(fmt.Sprintf(`
-		DELETE FROM %v
+func (db Note) DeleteHard(ID string, userID string) (sql.Result, error) {
+	result, err := db.Exec(`
+		DELETE FROM note
 		WHERE id = ?
 			AND user_id = ?
 			AND deleted_at IS NULL
-		`, table),
+		`,
 		ID, userID)
 	return result, err
 }
 
 // DeleteSoft marks an item as removed.
-func DeleteSoft(db Connection, ID string, userID string) (sql.Result, error) {
-	result, err := db.Exec(fmt.Sprintf(`
-		UPDATE %v
+func (db Note) DeleteSoft(ID string, userID string) (sql.Result, error) {
+	result, err := db.Exec(`
+		UPDATE note
 		SET deleted_at = NOW()
 		WHERE id = ?
 			AND user_id = ?
 			AND deleted_at IS NULL
 		LIMIT 1
-		`, table),
+		`,
 		ID, userID)
 	return result, err
 }

@@ -6,7 +6,6 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model/user"
 
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/passhash"
@@ -66,10 +65,10 @@ func (h *Register) Store(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get database result
-	_, noRows, err := user.ByEmail(h.DB, email)
+	_, noRows, err := h.Model.User.ByEmail(email)
 
 	if noRows { // If success (no user exists with that email)
-		_, err = user.Create(h.DB, firstName, lastName, email, password)
+		_, err = h.Model.User.Create(firstName, lastName, email, password)
 		// Will only error if there is a problem with the query
 		if err != nil {
 			h.FlashErrorGeneric(w, r, err)

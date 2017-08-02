@@ -6,7 +6,6 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model/user"
 
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
@@ -53,7 +52,7 @@ func (h *Login) Store(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// Get database result
-	result, noRows, err := user.ByEmail(h.DB, email)
+	result, noRows, err := h.Model.User.ByEmail(email)
 
 	// Determine if user exists
 	if noRows {

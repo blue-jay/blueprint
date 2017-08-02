@@ -15,10 +15,6 @@ import (
 	"github.com/blue-jay/core/view"
 )
 
-// *****************************************************************************
-// Application Settings
-// *****************************************************************************
-
 // Info structures the application settings.
 type Info struct {
 	Asset      asset.Info    `json:"Asset"`

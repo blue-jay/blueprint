@@ -5,7 +5,7 @@ import (
 
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
-	"github.com/blue-jay/blueprint/model/note"
+	"github.com/blue-jay/blueprint/model"
 
 	"github.com/blue-jay/core/form"
 	"github.com/blue-jay/core/pagination"
@@ -45,13 +45,13 @@ func (h *Notepad) Index(w http.ResponseWriter, r *http.Request) {
 	// Create a pagination instance with a max of 10 results.
 	p := pagination.New(r, 10)
 
-	items, _, err := note.ByUserIDPaginate(h.DB, id, p.PerPage, p.Offset)
+	items, _, err := h.Model.Note.ByUserIDPaginate(id, p.PerPage, p.Offset)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
-		items = []note.Item{}
+		items = []model.Note{}
 	}
 
-	count, err := note.ByUserIDCount(h.DB, id)
+	count, err := h.Model.Note.ByUserIDCount(id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 	}
@@ -85,7 +85,7 @@ func (h *Notepad) Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := note.Create(h.DB, r.FormValue("name"), id)
+	_, err := h.Model.Note.Create(r.FormValue("name"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 		h.Create(w, r)
@@ -104,7 +104,7 @@ func (h *Notepad) Show(w http.ResponseWriter, r *http.Request) {
 		id = u.ID
 	}
 
-	item, _, err := note.ByID(h.DB, h.Router.Param(r, "id"), id)
+	item, _, err := h.Model.Note.ByID(h.Router.Param(r, "id"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 		http.Redirect(w, r, "/notepad", http.StatusFound)
@@ -124,7 +124,7 @@ func (h *Notepad) Edit(w http.ResponseWriter, r *http.Request) {
 		id = u.ID
 	}
 
-	item, _, err := note.ByID(h.DB, h.Router.Param(r, "id"), id)
+	item, _, err := h.Model.Note.ByID(h.Router.Param(r, "id"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 		http.Redirect(w, r, "/notepad", http.StatusFound)
@@ -150,7 +150,7 @@ func (h *Notepad) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := note.Update(h.DB, r.FormValue("name"), h.Router.Param(r, "id"), id)
+	_, err := h.Model.Note.Update(r.FormValue("name"), h.Router.Param(r, "id"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 		h.Edit(w, r)
@@ -169,7 +169,7 @@ func (h *Notepad) Destroy(w http.ResponseWriter, r *http.Request) {
 		id = u.ID
 	}
 
-	_, err := note.DeleteSoft(h.DB, h.Router.Param(r, "id"), id)
+	_, err := h.Model.Note.DeleteSoft(h.Router.Param(r, "id"), id)
 	if err != nil {
 		h.FlashErrorGeneric(w, r, err)
 	} else {

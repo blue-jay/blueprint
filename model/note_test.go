@@ -1,4 +1,4 @@
-package note_test
+package model_test
 
 import (
 	"fmt"
