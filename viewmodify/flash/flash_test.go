@@ -2,11 +2,12 @@ package flash_test
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/blue-jay/blueprint/lib/flight"
+	"github.com/blue-jay/blueprint/lib/env"
 	flashmod "github.com/blue-jay/blueprint/viewmodify/flash"
 
 	"github.com/blue-jay/core/flash"
@@ -16,49 +17,63 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-// TestModify ensures flashes are added to the view.
-func TestModify(t *testing.T) {
-	viewInfo := &view.Info{
+func setup() *env.Info {
+	var config env.Info
+
+	config.View = view.Info{
 		BaseURI:   "/",
 		Extension: "tmpl",
 		Folder:    "testdata/view",
 		Caching:   false,
 	}
 
-	templates := view.Template{
+	config.Template = view.Template{
 		Root:     "test",
 		Children: []string{},
 	}
 
-	options := sessions.Options{
-		Path:     "/",
-		Domain:   "",
-		MaxAge:   28800,
-		Secure:   false,
-		HttpOnly: true,
-	}
-
-	s := session.Info{
+	config.Session = session.Info{
 		AuthKey:    "PzCh6FNAB7/jhmlUQ0+25sjJ+WgcJeKR2bAOtnh9UnfVN+WJSBvY/YC80Rs+rbMtwfmSP4FUSxKPtpYKzKFqFA==",
 		EncryptKey: "3oTKCcKjDHMUlV+qur2Ve664SPpSuviyGQ/UqnroUD8=",
 		CSRFKey:    "xULAGF5FcWvqHsXaovNFJYfgCt6pedRPROqNvsZjU18=",
 		Name:       "sess",
-		Options:    options,
+		Options: sessions.Options{
+			Path:     "/",
+			Domain:   "",
+			MaxAge:   28800,
+			Secure:   false,
+			HttpOnly: true,
+		},
+	}
+
+	// Set up the session cookie store
+	err := config.Session.SetupConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create the service for the controllers.
+	s := env.Service{
+		Sess:     &config.Session,
+		Template: config.Template,
+		View:     &config.View,
 	}
 
 	// Set up the view
-	viewInfo.SetTemplates(templates.Root, templates.Children)
+	config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
-	// Apply the flash modifier
-	viewInfo.SetModifiers(
-		flashmod.Modify,
-	)
+	modFlash := new(flashmod.Service)
+	modFlash.Service = s
 
-	// Set up the session cookie store
-	s.SetupConfig()
+	// Apply the flash modifier.
+	config.View.SetModifiers(modFlash.Modify)
 
-	// Set up flight
-	flight.StoreSession(&s)
+	return &config
+}
+
+// TestModify ensures flashes are added to the view.
+func TestModify(t *testing.T) {
+	config := setup()
 
 	// Simulate a request
 	w := httptest.NewRecorder()
@@ -70,13 +85,13 @@ func TestModify(t *testing.T) {
 	text := "Success test."
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		v := viewInfo.New()
+		v := config.View.New()
 
 		// Get the session
-		sess, _ := s.Instance(r)
+		sess, _ := config.Session.Instance(r)
 
 		// Add flashes to the session
-		sess.AddFlash(flash.Info{text, flash.Success})
+		sess.AddFlash(flash.Success(text))
 		sess.Save(r, w)
 
 		err := v.Render(w, r)
@@ -88,59 +103,22 @@ func TestModify(t *testing.T) {
 	handler.ServeHTTP(w, r)
 
 	actual := w.Body.String()
-	expected := fmt.Sprintf(`<div class="%v">%v</div>`, flash.Success, text)
+	expected := fmt.Sprintf(`<div class="%v">%v</div>`, "alert-success", text)
 
 	if actual != expected {
 		t.Fatalf("\nactual: %v\nexpected: %v", actual, expected)
 	}
-
-	// Reset flight after the tests
-	flight.Reset()
 }
 
 // TestModify ensures flashes are not displayed on the page.
 func TestModifyFail(t *testing.T) {
-	viewInfo := &view.Info{
-		BaseURI:   "/",
-		Extension: "tmpl",
-		Folder:    "testdata/view",
-		Caching:   false,
-	}
+	config := setup()
 
-	templates := view.Template{
-		Root:     "test_fail",
-		Children: []string{},
-	}
+	// Set an invalid root template.
+	config.Template.Root = "test_fail"
 
-	options := sessions.Options{
-		Path:     "/",
-		Domain:   "",
-		MaxAge:   28800,
-		Secure:   false,
-		HttpOnly: true,
-	}
-
-	s := session.Info{
-		AuthKey:    "PzCh6FNAB7/jhmlUQ0+25sjJ+WgcJeKR2bAOtnh9UnfVN+WJSBvY/YC80Rs+rbMtwfmSP4FUSxKPtpYKzKFqFA==",
-		EncryptKey: "3oTKCcKjDHMUlV+qur2Ve664SPpSuviyGQ/UqnroUD8=",
-		CSRFKey:    "xULAGF5FcWvqHsXaovNFJYfgCt6pedRPROqNvsZjU18=",
-		Name:       "sess",
-		Options:    options,
-	}
-
-	// Set up the view
-	viewInfo.SetTemplates(templates.Root, templates.Children)
-
-	// Apply the flash modifier
-	viewInfo.SetModifiers(
-		flashmod.Modify,
-	)
-
-	// Set up the session cookie store
-	s.SetupConfig()
-
-	// Set up flight
-	flight.StoreSession(&s)
+	// Set up the view with teh invalid template.
+	config.View.SetTemplates(config.Template.Root, config.Template.Children)
 
 	// Simulate a request
 	w := httptest.NewRecorder()
@@ -152,13 +130,13 @@ func TestModifyFail(t *testing.T) {
 	text := "Success test."
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		v := viewInfo.New()
+		v := config.View.New()
 
 		// Get the session
-		sess, _ := s.Instance(r)
+		sess, _ := config.Session.Instance(r)
 
 		// Add flashes to the session
-		sess.AddFlash(flash.Info{text, flash.Success})
+		sess.AddFlash(flash.Success(text))
 		sess.Save(r, w)
 
 		err := v.Render(w, r)
@@ -175,55 +153,12 @@ func TestModifyFail(t *testing.T) {
 	if actual != expected {
 		t.Fatalf("\nactual: %v\nexpected: %v", actual, expected)
 	}
-
-	// Reset flight after the tests
-	flight.Reset()
 }
 
 // TestFlashDefault ensures flashes are added to the view even if a plain text
 // message is added to flashes instead of a flash.Info type
 func TestFlashDefault(t *testing.T) {
-	viewInfo := &view.Info{
-		BaseURI:   "/",
-		Extension: "tmpl",
-		Folder:    "testdata/view",
-		Caching:   false,
-	}
-
-	templates := view.Template{
-		Root:     "test",
-		Children: []string{},
-	}
-
-	options := sessions.Options{
-		Path:     "/",
-		Domain:   "",
-		MaxAge:   28800,
-		Secure:   false,
-		HttpOnly: true,
-	}
-
-	s := session.Info{
-		AuthKey:    "PzCh6FNAB7/jhmlUQ0+25sjJ+WgcJeKR2bAOtnh9UnfVN+WJSBvY/YC80Rs+rbMtwfmSP4FUSxKPtpYKzKFqFA==",
-		EncryptKey: "3oTKCcKjDHMUlV+qur2Ve664SPpSuviyGQ/UqnroUD8=",
-		CSRFKey:    "xULAGF5FcWvqHsXaovNFJYfgCt6pedRPROqNvsZjU18=",
-		Name:       "sess",
-		Options:    options,
-	}
-
-	// Set up the view
-	viewInfo.SetTemplates(templates.Root, templates.Children)
-
-	// Apply the flash modifier
-	viewInfo.SetModifiers(
-		flashmod.Modify,
-	)
-
-	// Set up the session cookie store
-	s.SetupConfig()
-
-	// Set up flight
-	flight.StoreSession(&s)
+	config := setup()
 
 	// Simulate a request
 	w := httptest.NewRecorder()
@@ -235,10 +170,10 @@ func TestFlashDefault(t *testing.T) {
 	text := "Just a string."
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		v := viewInfo.New()
+		v := config.View.New()
 
 		// Get the session
-		sess, _ := s.Instance(r)
+		sess, _ := config.Session.Instance(r)
 
 		// Add flashes to the session
 		sess.AddFlash(text)
@@ -253,59 +188,16 @@ func TestFlashDefault(t *testing.T) {
 	handler.ServeHTTP(w, r)
 
 	actual := w.Body.String()
-	expected := fmt.Sprintf(`<div class="%v">%v</div>`, flash.Standard, text)
+	expected := fmt.Sprintf(`<div class="%v">%v</div>`, "alert-box", text)
 
 	if actual != expected {
 		t.Fatalf("\nactual: %v\nexpected: %v", actual, expected)
 	}
-
-	// Reset flight after the tests
-	flight.Reset()
 }
 
 // TestNonStringFlash ensures flashes do not error when added with a non-standard type.
 func TestNonStringFlash(t *testing.T) {
-	viewInfo := &view.Info{
-		BaseURI:   "/",
-		Extension: "tmpl",
-		Folder:    "testdata/view",
-		Caching:   false,
-	}
-
-	templates := view.Template{
-		Root:     "test",
-		Children: []string{},
-	}
-
-	options := sessions.Options{
-		Path:     "/",
-		Domain:   "",
-		MaxAge:   28800,
-		Secure:   false,
-		HttpOnly: true,
-	}
-
-	s := session.Info{
-		AuthKey:    "PzCh6FNAB7/jhmlUQ0+25sjJ+WgcJeKR2bAOtnh9UnfVN+WJSBvY/YC80Rs+rbMtwfmSP4FUSxKPtpYKzKFqFA==",
-		EncryptKey: "3oTKCcKjDHMUlV+qur2Ve664SPpSuviyGQ/UqnroUD8=",
-		CSRFKey:    "xULAGF5FcWvqHsXaovNFJYfgCt6pedRPROqNvsZjU18=",
-		Name:       "sess",
-		Options:    options,
-	}
-
-	// Set up the view
-	viewInfo.SetTemplates(templates.Root, templates.Children)
-
-	// Apply the flash modifier
-	viewInfo.SetModifiers(
-		flashmod.Modify,
-	)
-
-	// Set up the session cookie store
-	s.SetupConfig()
-
-	// Set up flight
-	flight.StoreSession(&s)
+	config := setup()
 
 	// Simulate a request
 	w := httptest.NewRecorder()
@@ -317,10 +209,10 @@ func TestNonStringFlash(t *testing.T) {
 	text := 123
 
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		v := viewInfo.New()
+		v := config.View.New()
 
 		// Get the session
-		sess, _ := s.Instance(r)
+		sess, _ := config.Session.Instance(r)
 
 		// Add flashes to the session
 		sess.AddFlash(text)
@@ -335,12 +227,9 @@ func TestNonStringFlash(t *testing.T) {
 	handler.ServeHTTP(w, r)
 
 	actual := w.Body.String()
-	expected := fmt.Sprintf(`<div class="%v">%v</div>`, flash.Standard, text)
+	expected := fmt.Sprintf(`<div class="%v">%v</div>`, "alert-box", text)
 
 	if actual != expected {
 		t.Fatalf("\nactual: %v\nexpected: %v", actual, expected)
 	}
-
-	// Reset flight after the tests
-	flight.Reset()
 }
