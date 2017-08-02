@@ -10,21 +10,21 @@ import (
 // FlashSuccess saves a success flash.
 func (c Service) FlashSuccess(w http.ResponseWriter, r *http.Request, message string) {
 	sess, _ := c.Sess.Instance(r)
-	sess.AddFlash(flash.Info{message, flash.Success})
+	sess.AddFlash(flash.Success(message))
 	sess.Save(r, w)
 }
 
 // FlashNotice saves a notice flash.
 func (c Service) FlashNotice(w http.ResponseWriter, r *http.Request, message string) {
 	sess, _ := c.Sess.Instance(r)
-	sess.AddFlash(flash.Info{message, flash.Notice})
+	sess.AddFlash(flash.Notice(message))
 	sess.Save(r, w)
 }
 
 // FlashWarning saves a warning flash.
 func (c Service) FlashWarning(w http.ResponseWriter, r *http.Request, message string) {
 	sess, _ := c.Sess.Instance(r)
-	sess.AddFlash(flash.Info{message, flash.Warning})
+	sess.AddFlash(flash.Warning(message))
 	sess.Save(r, w)
 }
 
@@ -32,7 +32,7 @@ func (c Service) FlashWarning(w http.ResponseWriter, r *http.Request, message st
 func (c Service) FlashError(w http.ResponseWriter, r *http.Request, err error) {
 	sess, _ := c.Sess.Instance(r)
 	log.Println(err)
-	sess.AddFlash(flash.Info{err.Error(), flash.Error})
+	sess.AddFlash(flash.Danger(err.Error()))
 	sess.Save(r, w)
 }
 
@@ -40,6 +40,6 @@ func (c Service) FlashError(w http.ResponseWriter, r *http.Request, err error) {
 func (c Service) FlashErrorGeneric(w http.ResponseWriter, r *http.Request, err error) {
 	sess, _ := c.Sess.Instance(r)
 	log.Println(err)
-	sess.AddFlash(flash.Info{"An error occurred on the server. Please try again later.", flash.Error})
+	sess.AddFlash(flash.Danger("An error occurred on the server. Please try again later."))
 	sess.Save(r, w)
 }

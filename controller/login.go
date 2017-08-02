@@ -1,13 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/blue-jay/blueprint/lib/env"
 	"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/blueprint/model/user"
-
-	"fmt"
 
 	"github.com/blue-jay/core/flash"
 	"github.com/blue-jay/core/form"
@@ -69,7 +68,7 @@ func (h *Login) Store(w http.ResponseWriter, r *http.Request) {
 		} else {
 			// Login successfully
 			session.Empty(sess)
-			sess.AddFlash(flash.Info{"Login successful!", flash.Success})
+			sess.AddFlash(flash.Success("Login successful!"))
 			sess.Save(r, w)
 
 			// Create the user object.

@@ -22,13 +22,13 @@ func (s Service) Modify(w http.ResponseWriter, r *http.Request, v *view.Info) {
 
 	// Get the flashes for the template
 	if flashes := sess.Flashes(); len(flashes) > 0 {
-		v.Vars["flashes"] = make([]flashlib.Info, len(flashes))
+		v.Vars["flashes"] = make([]flashlib.Message, len(flashes))
 		for i, f := range flashes {
 			switch f.(type) {
-			case flashlib.Info:
-				v.Vars["flashes"].([]flashlib.Info)[i] = f.(flashlib.Info)
+			case flashlib.Message:
+				v.Vars["flashes"].([]flashlib.Message)[i] = f.(flashlib.Message)
 			default:
-				v.Vars["flashes"].([]flashlib.Info)[i] = flashlib.Info{fmt.Sprint(f), flashlib.Standard}
+				v.Vars["flashes"].([]flashlib.Message)[i] = flashlib.Standard(fmt.Sprint(f))
 			}
 
 		}

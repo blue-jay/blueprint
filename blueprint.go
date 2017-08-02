@@ -3,7 +3,6 @@ package main
 
 import (
 	"log"
-	"runtime"
 
 	"github.com/blue-jay/blueprint/lib/boot"
 	"github.com/blue-jay/blueprint/lib/env"
@@ -16,9 +15,6 @@ import (
 func init() {
 	// Verbose logging with file name and line number.
 	log.SetFlags(log.Lshortfile)
-
-	// Use all CPU cores.
-	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
 // main loads the configuration file, registers the services, applies the

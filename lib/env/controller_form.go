@@ -12,7 +12,7 @@ import (
 func (s Service) FormValid(w http.ResponseWriter, r *http.Request, fields ...string) bool {
 	sess, _ := s.Sess.Instance(r)
 	if valid, missingField := form.Required(r, fields...); !valid {
-		sess.AddFlash(flash.Info{"Field missing: " + missingField, flash.Warning})
+		sess.AddFlash(flash.Warning("Field missing: " + missingField))
 		sess.Save(r, w)
 		return false
 	}
