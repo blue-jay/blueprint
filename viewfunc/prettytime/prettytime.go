@@ -1,4 +1,4 @@
-// Package prettytime provides a funcmap for html/template to that displays
+// Package prettytime provides a funcmap for html/template that displays
 // time using an easy to read format.
 package prettytime
 
