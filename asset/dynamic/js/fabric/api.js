@@ -1,5 +1,5 @@
 define([
-"jquery.min",
+"jquery",
 ], function($){
     var dataAPI = function(base_url){
         this.base_url = base_url;
@@ -72,11 +72,10 @@ define([
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
                 console.log(textStatus, errorThrown, XMLHttpRequest.status, XMLHttpRequest.readyStatus);
-                console.log('get data file failed.');
             },
         };
         update(opt, options || {});
-        this.api_request(this.base_url + path, opt);
+        this.api_request(path, opt);
     };
     return {'dataAPI': dataAPI};
 
