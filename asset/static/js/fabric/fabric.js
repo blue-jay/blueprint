@@ -1,5 +1,4 @@
 requirejs([
-    //"jquery",
     "fabric/api"], function (api) {
 
     $(document).on('click', "input.pushPabric", function(e){
@@ -15,14 +14,14 @@ requirejs([
 
         apiFabric.createFabric("fabric", opt);
         //
-        // axios.post('/fabric',{
-        //     ext: 1,
-        //     type: 2,
-        // }).then(function (response) {
-        //     console.log(response);
-        // }).catch(function (error) {
-        //     console.log(error);
-        // });
+        axios.post('/fabric',{
+            ext: 1,
+            type: 2,
+        }).then(function (response) {
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
     });
 
 });

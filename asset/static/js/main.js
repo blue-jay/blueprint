@@ -1,15 +1,21 @@
-require.config({
-
+requirejs.config({
+    baseUrl: 'static',
     paths : {
-        //"jquery":["https://code.jquery.com/jquery-3.1.1", "jquery.min"],
-        jquery: "jquery.min",
-        bootstrap: "bootstrap.min",
-        all: "all.min",
-        underscore: "underscore-min",
+        jquery: 'js/jquery.min',
+        bootstrap: 'js/bootstrap.min',
+        all: 'js/all.min',
+        underscore: 'js/underscore-min',
+        // axios: "js/axios/axios"
     },
     // shim:{
-    //     "axios/axios.min": {
-    //         exports: "axios"
+    //     axios:{
+    //         deps:[],
+    //         exports: 'axios',
     //     }
     // },
 });
+
+// define(["jquery"], function($) {
+//     $(function() {
+//     });
+// });

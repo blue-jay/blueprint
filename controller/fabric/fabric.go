@@ -6,8 +6,8 @@ import (
 	"github.com/blue-jay/blueprint/lib/flight"
 	//"github.com/blue-jay/blueprint/middleware/acl"
 	"github.com/blue-jay/core/router"
-	//"io/ioutil"
-	//"encoding/json"
+	"io/ioutil"
+	"encoding/json"
 	"fmt"
 
 
@@ -23,6 +23,7 @@ import (
 	// namespace
 	v1 "k8s.io/api/core/v1"
 	"github.com/golang/glog"
+
 )
 
 // Load the routes.
@@ -49,16 +50,16 @@ type Data struct{
 }
 // Index displays the home page.
 func PostFabric(w http.ResponseWriter, r *http.Request) {
-	K8sInit()
+	//K8sInit()
 	//c := flight.Context(w, r)
-	//var data Data
-	//body, err := ioutil.ReadAll(r.Body)
-	//if err != nil{
-	//	fmt.Print(err)
-	//	return
-	//}
-	//json.Unmarshal(body, &data)
-	//fmt.Print(data)
+	var data Data
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil{
+		fmt.Print(err)
+		return
+	}
+	json.Unmarshal(body, &data)
+	fmt.Print(data)
 
 	//v.Render(w, r)
 }
