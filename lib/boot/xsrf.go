@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/blue-jay/blueprint/controller/status"
+	//"github.com/blue-jay/blueprint/controller/status"
 	"github.com/blue-jay/blueprint/lib/flight"
 	"github.com/gorilla/csrf"
 )
@@ -23,9 +23,9 @@ func setUpCSRF(h http.Handler) http.Handler {
 
 	// Configure the middleware
 	cs := csrf.Protect([]byte(key),
-		csrf.ErrorHandler(http.HandlerFunc(status.InvalidToken)),
+		//csrf.ErrorHandler(http.HandlerFunc(status.InvalidToken)),
 		csrf.FieldName("_token"),
-		csrf.Secure(x.Secure),
+		//csrf.Secure(x.Secure),
 	)(h)
 	return cs
 }

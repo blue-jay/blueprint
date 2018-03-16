@@ -57,6 +57,34 @@ gulp.task('javascript', function() {
 		.pipe(reload());
 });
 
+//JavaScript Task
+gulp.task('fabric', function(){
+	var concat = require('gulp-concat');
+        var minify = require('gulp-minify');
+        var babel = require('gulp-babel');
+	return gulp.src(folderAsset + '/dynamic/js/fabric/*.js')
+		.pipe(minify({
+			ext:{
+				src:'.js',
+				min:'.min.js'
+			}
+		}))
+		.pipe(gulp.dest(folderAsset + '/static/js/fabric/'))
+		.pipe(reload());
+});
+
+// requirejs Task
+gulp.task('requirejs', function() {
+	return gulp.src('node_modules/requirejs/require.js')
+		.pipe(gulp.dest(folderAsset + '/static/js/require/'));
+});
+
+// axios Task
+gulp.task('axios', function() {
+	return gulp.src('node_modules/axios/dist/axios.min.*')
+		.pipe(gulp.dest(folderAsset + '/static/js/axios/'));
+});
+
 // jQuery Task
 gulp.task('jquery', function() {
 	return gulp.src('node_modules/jquery/dist/jquery.min.*')

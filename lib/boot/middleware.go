@@ -14,7 +14,7 @@ import (
 func SetUpMiddleware(h http.Handler) http.Handler {
 	return router.ChainHandler( // Chain middleware, top middleware runs first
 		h,                    // Handler to wrap
-		setUpCSRF,            // Prevent CSRF
+		//setUpCSRF,            // Prevent CSRF
 		rest.Handler,         // Support changing HTTP method sent via query string
 		logrequest.Handler,   // Log every request
 		context.ClearHandler, // Prevent memory leak with gorilla.sessions
